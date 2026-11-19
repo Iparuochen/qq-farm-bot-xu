@@ -1,0 +1,8 @@
+{
+  "table": "BigFarmLevel",
+  "bundle": "delayRes",
+  "source": "/Users/xxxscarlxrd/Library/Containers/com.tencent.qqexminiprogram/Data/Library/Application Support/QQEX/miniapp/temps/miniapp_src/1112386029_3_8cb9dd605c485052d82e312af96b1a90",
+  "query": "npm run inspect:cdn -- --table BigFarmLevel --all",
+  "sha256": "5f430037311e504416317022d7ad2c5b5fa0ae0e0c5a60e5888083558334f563",
+  "count": 65
+}

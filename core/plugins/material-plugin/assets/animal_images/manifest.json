@@ -1,0 +1,288 @@
+{
+  "60001": {
+    "1": "/game-config/animal_images/60001_1.png",
+    "2": "/game-config/animal_images/60001_2.png",
+    "3": "/game-config/animal_images/60001_3.png",
+    "4": "/game-config/animal_images/60001_4.png",
+    "giant": {
+      "1": "/game-config/animal_images/65001_1.png",
+      "4": "/game-config/animal_images/65001_4.png"
+    }
+  },
+  "60002": {
+    "1": "/game-config/animal_images/60002_1.png",
+    "2": "/game-config/animal_images/60002_2.png",
+    "3": "/game-config/animal_images/60002_3.png",
+    "4": "/game-config/animal_images/60002_4.png",
+    "giant": {
+      "1": "/game-config/animal_images/65002_1.png",
+      "4": "/game-config/animal_images/65002_4.png"
+    }
+  },
+  "60003": {
+    "1": "/game-config/animal_images/60003_1.png",
+    "2": "/game-config/animal_images/60003_2.png",
+    "3": "/game-config/animal_images/60003_3.png",
+    "4": "/game-config/animal_images/60003_4.png",
+    "giant": {
+      "1": "/game-config/animal_images/65003_1.png",
+      "4": "/game-config/animal_images/65003_4.png"
+    }
+  },
+  "60004": {
+    "1": "/game-config/animal_images/60004_1.png",
+    "2": "/game-config/animal_images/60004_2.png",
+    "3": "/game-config/animal_images/60004_3.png",
+    "4": "/game-config/animal_images/60004_4.png",
+    "giant": {
+      "1": "/game-config/animal_images/65004_1.png",
+      "4": "/game-config/animal_images/65004_4.png"
+    }
+  },
+  "60005": {
+    "1": "/game-config/animal_images/60005_1.png",
+    "2": "/game-config/animal_images/60005_2.png",
+    "3": "/game-config/animal_images/60005_3.png",
+    "4": "/game-config/animal_images/60005_4.png",
+    "giant": {
+      "1": "/game-config/animal_images/65005_1.png",
+      "4": "/game-config/animal_images/65005_4.png"
+    }
+  },
+  "60006": {
+    "1": "/game-config/animal_images/60006_1.png",
+    "2": "/game-config/animal_images/60006_2.png",
+    "3": "/game-config/animal_images/60006_3.png",
+    "4": "/game-config/animal_images/60006_4.png",
+    "giant": {
+      "1": "/game-config/animal_images/65006_1.png",
+      "4": "/game-config/animal_images/65006_4.png"
+    }
+  },
+  "60007": {
+    "1": "/game-config/animal_images/60007_1.png",
+    "2": "/game-config/animal_images/60007_2.png",
+    "3": "/game-config/animal_images/60007_3.png",
+    "4": "/game-config/animal_images/60007_4.png",
+    "giant": {
+      "1": "/game-config/animal_images/65007_1.png",
+      "4": "/game-config/animal_images/65007_4.png"
+    }
+  },
+  "60008": {
+    "1": "/game-config/animal_images/60008_1.png",
+    "2": "/game-config/animal_images/60008_2.png",
+    "3": "/game-config/animal_images/60008_3.png",
+    "4": "/game-config/animal_images/60008_4.png",
+    "giant": {
+      "1": "/game-config/animal_images/65008_1.png",
+      "4": "/game-config/animal_images/65008_4.png"
+    }
+  },
+  "60009": {
+    "1": "/game-config/animal_images/60009_1.png",
+    "2": "/game-config/animal_images/60009_2.png",
+    "3": "/game-config/animal_images/60009_3.png",
+    "4": "/game-config/animal_images/60009_4.png",
+    "giant": {
+      "1": "/game-config/animal_images/65009_1.png",
+      "4": "/game-config/animal_images/65009_4.png"
+    }
+  },
+  "60010": {
+    "1": "/game-config/animal_images/60010_1.png",
+    "2": "/game-config/animal_images/60010_2.png",
+    "3": "/game-config/animal_images/60010_3.png",
+    "4": "/game-config/animal_images/60010_4.png",
+    "giant": {
+      "1": "/game-config/animal_images/65010_1.png",
+      "4": "/game-config/animal_images/65010_4.png"
+    }
+  },
+  "60011": {
+    "1": "/game-config/animal_images/60011_1.png",
+    "2": "/game-config/animal_images/60011_2.png",
+    "3": "/game-config/animal_images/60011_3.png",
+    "4": "/game-config/animal_images/60011_4.png",
+    "giant": {
+      "1": "/game-config/animal_images/65011_1.png",
+      "4": "/game-config/animal_images/65011_4.png"
+    }
+  },
+  "60012": {
+    "1": "/game-config/animal_images/60012_1.png",
+    "2": "/game-config/animal_images/60012_2.png",
+    "3": "/game-config/animal_images/60012_3.png",
+    "4": "/game-config/animal_images/60012_4.png",
+    "giant": {
+      "1": "/game-config/animal_images/65012_1.png",
+      "4": "/game-config/animal_images/65012_4.png"
+    }
+  },
+  "60013": {
+    "1": "/game-config/animal_images/60013_1.png",
+    "2": "/game-config/animal_images/60013_2.png",
+    "3": "/game-config/animal_images/60013_3.png",
+    "4": "/game-config/animal_images/60013_4.png",
+    "giant": {
+      "1": "/game-config/animal_images/65013_1.png",
+      "4": "/game-config/animal_images/65013_4.png"
+    }
+  },
+  "60014": {
+    "1": "/game-config/animal_images/60014_1.png",
+    "2": "/game-config/animal_images/60014_2.png",
+    "3": "/game-config/animal_images/60014_3.png",
+    "4": "/game-config/animal_images/60014_4.png",
+    "giant": {
+      "1": "/game-config/animal_images/65014_1.png",
+      "4": "/game-config/animal_images/65014_4.png"
+    }
+  },
+  "60015": {
+    "1": "/game-config/animal_images/60015_1.png",
+    "2": "/game-config/animal_images/60015_2.png",
+    "3": "/game-config/animal_images/60015_3.png",
+    "4": "/game-config/animal_images/60015_4.png",
+    "giant": {
+      "1": "/game-config/animal_images/65015_1.png",
+      "4": "/game-config/animal_images/65015_4.png"
+    }
+  },
+  "60016": {
+    "1": "/game-config/animal_images/60016_1.png",
+    "2": "/game-config/animal_images/60016_2.png",
+    "3": "/game-config/animal_images/60016_3.png",
+    "4": "/game-config/animal_images/60016_4.png",
+    "giant": {
+      "1": "/game-config/animal_images/65016_1.png",
+      "4": "/game-config/animal_images/65016_4.png"
+    }
+  },
+  "70001": {
+    "1": "/game-config/animal_images/70001_1.png",
+    "2": "/game-config/animal_images/70001_2.png",
+    "3": "/game-config/animal_images/70001_3.png",
+    "4": "/game-config/animal_images/70001_4.png",
+    "giant": {
+      "1": "/game-config/animal_images/75001_1.png",
+      "4": "/game-config/animal_images/75001_4.png"
+    }
+  },
+  "70002": {
+    "1": "/game-config/animal_images/70002_1.png",
+    "2": "/game-config/animal_images/70002_2.png",
+    "3": "/game-config/animal_images/70002_3.png",
+    "4": "/game-config/animal_images/70002_4.png",
+    "giant": {
+      "1": "/game-config/animal_images/75002_1.png",
+      "4": "/game-config/animal_images/75002_4.png"
+    }
+  },
+  "70003": {
+    "1": "/game-config/animal_images/70003_1.png",
+    "2": "/game-config/animal_images/70003_2.png",
+    "3": "/game-config/animal_images/70003_3.png",
+    "4": "/game-config/animal_images/70003_4.png",
+    "giant": {
+      "1": "/game-config/animal_images/75003_1.png",
+      "4": "/game-config/animal_images/75003_4.png"
+    }
+  },
+  "70004": {
+    "1": "/game-config/animal_images/70004_1.png",
+    "2": "/game-config/animal_images/70004_2.png",
+    "3": "/game-config/animal_images/70004_3.png",
+    "4": "/game-config/animal_images/70004_4.png",
+    "giant": {
+      "1": "/game-config/animal_images/75004_1.png",
+      "4": "/game-config/animal_images/75004_4.png"
+    }
+  },
+  "70005": {
+    "1": "/game-config/animal_images/70005_1.png",
+    "2": "/game-config/animal_images/70005_2.png",
+    "3": "/game-config/animal_images/70005_3.png",
+    "4": "/game-config/animal_images/70005_4.png",
+    "giant": {
+      "1": "/game-config/animal_images/75005_1.png",
+      "4": "/game-config/animal_images/75005_4.png"
+    }
+  },
+  "70006": {
+    "1": "/game-config/animal_images/70006_1.png",
+    "2": "/game-config/animal_images/70006_2.png",
+    "3": "/game-config/animal_images/70006_3.png",
+    "4": "/game-config/animal_images/70006_4.png",
+    "giant": {
+      "1": "/game-config/animal_images/75006_1.png",
+      "4": "/game-config/animal_images/75006_4.png"
+    }
+  },
+  "70007": {
+    "1": "/game-config/animal_images/70007_1.png",
+    "2": "/game-config/animal_images/70007_2.png",
+    "3": "/game-config/animal_images/70007_3.png",
+    "4": "/game-config/animal_images/70007_4.png",
+    "giant": {
+      "1": "/game-config/animal_images/75007_1.png",
+      "4": "/game-config/animal_images/75007_4.png"
+    }
+  },
+  "70008": {
+    "1": "/game-config/animal_images/70008_1.png",
+    "2": "/game-config/animal_images/70008_2.png",
+    "3": "/game-config/animal_images/70008_3.png",
+    "4": "/game-config/animal_images/70008_4.png",
+    "giant": {
+      "1": "/game-config/animal_images/75008_1.png",
+      "4": "/game-config/animal_images/75008_4.png"
+    }
+  },
+  "70009": {
+    "1": "/game-config/animal_images/70009_1.png",
+    "2": "/game-config/animal_images/70009_2.png",
+    "3": "/game-config/animal_images/70009_3.png",
+    "4": "/game-config/animal_images/70009_4.png",
+    "giant": {
+      "1": "/game-config/animal_images/75009_1.png",
+      "4": "/game-config/animal_images/75009_4.png"
+    }
+  },
+  "70010": {
+    "1": "/game-config/animal_images/70010_1.png",
+    "2": "/game-config/animal_images/70010_2.png",
+    "3": "/game-config/animal_images/70010_3.png",
+    "4": "/game-config/animal_images/70010_4.png",
+    "giant": {
+      "1": "/game-config/animal_images/75010_1.png",
+      "4": "/game-config/animal_images/75010_4.png"
+    }
+  },
+  "70011": {
+    "1": "/game-config/animal_images/70011_1.png",
+    "2": "/game-config/animal_images/70011_2.png",
+    "3": "/game-config/animal_images/70011_3.png",
+    "4": "/game-config/animal_images/70011_4.png",
+    "giant": {
+      "1": "/game-config/animal_images/75011_1.png",
+      "4": "/game-config/animal_images/75011_4.png"
+    }
+  },
+  "70012": {
+    "1": "/game-config/animal_images/70012_1.png",
+    "2": "/game-config/animal_images/70012_2.png",
+    "3": "/game-config/animal_images/70012_3.png",
+    "4": "/game-config/animal_images/70012_4.png",
+    "giant": {
+      "1": "/game-config/animal_images/75012_1.png",
+      "4": "/game-config/animal_images/75012_4.png"
+    }
+  },
+  "_mutations": {
+    "1": {
+      "name": "巨大",
+      "icon": "/game-config/animal_images/mutant_1.png"
+    }
+  }
+}

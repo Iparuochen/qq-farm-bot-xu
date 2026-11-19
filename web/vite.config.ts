@@ -1,0 +1,89 @@
+import { readFileSync } from 'node:fs'
+import { fileURLToPath, URL } from 'node:url'
+import vue from '@vitejs/plugin-vue'
+import { visualizer } from 'rollup-plugin-visualizer'
+import UnoCSS from 'unocss/vite'
+import { defineConfig } from 'vite'
+import viteCompression from 'vite-plugin-compression'
+
+const corePackageJson = JSON.parse(readFileSync('../core/package.json', 'utf-8'))
+
+// https://vitejs.dev/config/
+export default defineConfig({
+  plugins: [
+    vue(),
+    UnoCSS() as any,
+    viteCompression({
+      verbose: true,
+      disable: false,
+      threshold: 10240,
+      algorithm: 'gzip',
+      ext: '.gz',
+    }),
+    visualizer({
+      open: false,
+      gzipSize: true,
+      brotliSize: true,
+    }),
+  ],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('vue') || id.includes('pinia') || id.includes('vue-router') || id.includes('@vueuse')) {
+              return 'vendor-vue'
+            }
+            if (id.includes('axios')) {
+              return 'vendor-axios'
+            }
+            // Split other large dependencies if needed
+            if (id.includes('echarts') || id.includes('zrender')) {
+              return 'vendor-echarts'
+            }
+            // Default vendor chunk
+            return 'vendor'
+          }
+        },
+      },
+    },
+    chunkSizeWarningLimit: 1000,
+  },
+  define: {
+    __APP_VERSION__: JSON.stringify(corePackageJson.version),
+  },
+  resolve: {
+    alias: {
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
+    },
+  },
+  server: {
+    // 后端默认 3007；需要用另一个端口预览（比如同时跑着别的实例）时可用 VITE_API_TARGET 覆盖
+    proxy: {
+      '/socket.io': {
+        target: process.env.VITE_API_TARGET || 'http://localhost:3007',
+        changeOrigin: true,
+        ws: true,
+      },
+      '/api': {
+        target: process.env.VITE_API_TARGET || 'http://localhost:3007',
+        changeOrigin: true,
+      },
+      '/game-config': {
+        target: process.env.VITE_API_TARGET || 'http://localhost:3007',
+        changeOrigin: true,
+      },
+      // 活动插件：前端 ESM 产物由后端 /plugins 提供；插件素材前缀（如
+      // /activity/milk-tea）由后端插件宿主提供。新插件声明了新的素材前缀时
+      // 在此补一条对应的代理。
+      '/plugins': {
+        target: process.env.VITE_API_TARGET || 'http://localhost:3007',
+        changeOrigin: true,
+      },
+      '/activity/milk-tea': {
+        target: process.env.VITE_API_TARGET || 'http://localhost:3007',
+        changeOrigin: true,
+      },
+    },
+  },
+})

@@ -1,0 +1,535 @@
+<script setup lang="ts">
+import { useDateFormat, useIntervalFn, useNow } from '@vueuse/core'
+import { storeToRefs } from 'pinia'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import api from '@/api'
+
+import { menuRoutes } from '@/router/menu'
+import { ranchMenu } from '@/router/ranch-menu'
+import { useAccountStore } from '@/stores/account'
+import { useAppStore } from '@/stores/app'
+import { useSceneStore } from '@/stores/scene'
+import { useShopStore } from '@/stores/shop'
+import { useStatusStore } from '@/stores/status'
+import { useUserStore } from '@/stores/user'
+
+const sceneStore = useSceneStore()
+const accountStore = useAccountStore()
+const statusStore = useStatusStore()
+const appStore = useAppStore()
+const userStore = useUserStore()
+const shopStore = useShopStore()
+const route = useRoute()
+const router = useRouter()
+const { currentAccount, currentAccountId } = storeToRefs(accountStore)
+const { status, realtimeConnected } = storeToRefs(statusStore)
+const { mysteryOffer, mysteryOfferAccountId } = storeToRefs(shopStore)
+const { loginPageConfig, sidebarOpen } = storeToRefs(appStore)
+
+const wsErrorNotifiedAt = ref<Record<string, number>>({})
+
+const systemConnected = ref(true)
+const serverUptimeBase = ref(0)
+const serverVersion = ref('')
+const lastPingTime = ref(Date.now())
+const now = useNow()
+const formattedTime = useDateFormat(now, 'YYYY-MM-DD HH:mm:ss')
+
+async function checkConnection() {
+  try {
+    const res = await api.get('/api/ping')
+    systemConnected.value = true
+    if (res.data.ok && res.data.data) {
+      if (res.data.data.uptime) {
+        serverUptimeBase.value = res.data.data.uptime
+        lastPingTime.value = Date.now()
+      }
+      if (res.data.data.version) {
+        serverVersion.value = res.data.data.version
+      }
+    }
+    const accountRef = currentAccount.value?.id || currentAccount.value?.uin
+    if (accountRef) {
+      statusStore.connectRealtime(String(accountRef))
+    }
+  }
+  catch {
+    systemConnected.value = false
+  }
+}
+
+async function refreshStatusFallback() {
+  if (realtimeConnected.value)
+    return
+
+  const accountRef = currentAccount.value?.id || currentAccount.value?.uin
+  if (accountRef) {
+    await statusStore.fetchStatus(String(accountRef))
+  }
+}
+
+onMounted(() => {
+  appStore.fetchLoginPageConfig()
+  accountStore.fetchAccounts()
+  checkConnection()
+  // 获取当前用户信息
+  userStore.fetchUserInfo()
+})
+
+onBeforeUnmount(() => {
+  statusStore.disconnectRealtime()
+})
+
+useIntervalFn(checkConnection, 30000)
+useIntervalFn(() => {
+  refreshStatusFallback()
+  accountStore.fetchAccounts()
+}, 10000)
+
+watch(() => currentAccount.value?.id || currentAccount.value?.uin || '', () => {
+  const accountRef = currentAccount.value?.id || currentAccount.value?.uin
+  statusStore.connectRealtime(String(accountRef || ''))
+  refreshStatusFallback()
+}, { immediate: true })
+
+watch(() => status.value?.wsError, (wsError: any) => {
+  if (!wsError || Number(wsError.code) !== 400 || !currentAccount.value)
+    return
+
+  const errAt = Number(wsError.at) || 0
+  const accId = String(currentAccount.value.id || currentAccount.value.uin || '')
+  const lastNotified = wsErrorNotifiedAt.value[accId] || 0
+  if (errAt <= lastNotified)
+    return
+
+  wsErrorNotifiedAt.value[accId] = errAt
+  router.push('/settings')
+}, { deep: true })
+
+const uptime = computed(() => {
+  const diff = Math.floor(serverUptimeBase.value + (now.value.getTime() - lastPingTime.value) / 1000)
+  const h = Math.floor(diff / 3600)
+  const m = Math.floor((diff % 3600) / 60)
+  const s = diff % 60
+  return `${h}h ${m}m ${s}s`
+})
+
+const connectionStatus = computed(() => {
+  if (!systemConnected.value) {
+    return {
+      text: '系统离线',
+      color: 'bg-red-500',
+      pulse: false,
+    }
+  }
+
+  if (!currentAccount.value?.id) {
+    return {
+      text: '请添加账号',
+      color: 'bg-gray-400',
+      pulse: false,
+    }
+  }
+
+  const isConnected = status.value?.connection?.connected
+  if (isConnected) {
+    return {
+      text: '运行中',
+      color: 'bg-green-500',
+      pulse: true,
+    }
+  }
+
+  return {
+    text: '未连接',
+    color: 'bg-gray-400', // Or red? Old version uses gray/offline class which is gray usually
+    pulse: false,
+  }
+})
+
+// 根据用户角色过滤导航菜单
+const navItems = computed(() => {
+  const isAdmin = userStore.isAdmin
+  // 牧场是独立场景：切过去后整栏换成牧场那套导航（后台入口同样仅管理员可见）
+  if (sceneStore.scene === 'ranch')
+    return ranchMenu.filter(item => !item.adminOnly || isAdmin)
+  return menuRoutes
+    .filter(item => item.showInNav !== false && (!item.adminOnly || isAdmin))
+    .map(item => ({
+      path: item.path ? `/${item.path}` : '/',
+      label: item.label,
+      icon: item.icon,
+    }))
+})
+
+const hasActiveMysteryOffer = computed(() => {
+  const offer = mysteryOffer.value
+  if (!currentAccountId.value || mysteryOfferAccountId.value !== String(currentAccountId.value))
+    return false
+  if (!offer?.active || offer.purchased)
+    return false
+  const endTime = Number(offer.endTime || 0)
+  const endMs = endTime > 10_000_000_000 ? endTime : endTime * 1000
+  return !endMs || endMs > Date.now()
+})
+
+const version = __APP_VERSION__
+
+watch(
+  () => route.path,
+  () => {
+    // Close sidebar on route change (mobile only)
+    if (window.innerWidth < 1024)
+      appStore.closeSidebar()
+  },
+)
+
+const showThemeDropdown = ref(false)
+const showUserPanel = ref(false)
+const showTokenPanel = ref(false)
+const tokenVisible = ref(false)
+const tokenCopied = ref(false)
+
+async function copyToken() {
+  const value = userStore.token
+  if (!value)
+    return
+  try {
+    await navigator.clipboard.writeText(value)
+    tokenCopied.value = true
+    setTimeout(() => {
+      tokenCopied.value = false
+    }, 2000)
+  }
+  catch {
+    tokenCopied.value = false
+  }
+}
+
+function navigateToSystemSettings() {
+  router.push('/admin?tab=system')
+  if (window.innerWidth < 1024)
+    appStore.closeSidebar()
+}
+
+async function handleLogout() {
+  try {
+    await userStore.logout()
+    router.push('/login')
+  }
+  catch {
+    // 即使请求失败也清除本地状态并跳转
+    router.push('/login')
+  }
+}
+</script>
+
+<template>
+  <aside
+    class="fixed inset-y-0 left-0 z-50 h-full w-72 flex flex-col border-r border-gray-200/60 p-3 transition-transform duration-300 lg:static lg:translate-x-0 dark:border-gray-700/60"
+    :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
+    :style="{ background: 'color-mix(in srgb, var(--surface-1) 90%, transparent)', color: 'var(--theme-text)' }"
+  >
+    <!-- Brand -->
+    <div class="relative h-16 flex flex-none items-center justify-between px-2">
+      <div class="min-w-0 flex items-center gap-3">
+        <div class="h-11 w-11 flex flex-none items-center justify-center overflow-hidden rounded-full bg-white shadow-sm ring-1 ring-gray-200 dark:bg-gray-900 dark:ring-gray-700">
+          <img
+            src="/icon.svg"
+            :alt="`${loginPageConfig.title || 'QQ农场智能助手'}图标`"
+            class="h-7 w-7 object-contain"
+          >
+        </div>
+        <div class="min-w-0">
+          <div class="truncate text-[15px] font-bold tracking-tight" style="color: var(--theme-text);">
+            {{ loginPageConfig.title || 'QQ农场智能助手' }}
+          </div>
+          <div class="truncate text-xs font-mono opacity-70" style="color: var(--theme-text);">
+            QQ FARM ASSISTANT
+          </div>
+        </div>
+      </div>
+      <!-- Mobile Close Button -->
+      <button
+        aria-label="关闭导航"
+        class="h-11 w-11 flex flex-none items-center justify-center rounded-lg text-gray-500 transition lg:hidden hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700"
+        @click="appStore.closeSidebar"
+      >
+        <div class="i-carbon-close text-xl" />
+      </button>
+    </div>
+
+    <!-- 渐变分隔线 -->
+    <div class="mx-2 mb-3 h-px flex-none" style="background: linear-gradient(90deg, color-mix(in srgb, var(--theme-primary) 45%, transparent), transparent);" />
+
+    <!-- User Info Card -->
+    <div v-if="userStore.isLoggedIn" class="mx-2 mb-3 rounded-xl overflow-hidden" style="background: color-mix(in srgb, var(--surface-2) 80%, transparent);">
+      <button
+        class="w-full flex items-center gap-3 px-3 py-2.5 transition-colors hover:bg-gray-100/50 dark:hover:bg-gray-700/50"
+        @click="showUserPanel = !showUserPanel"
+      >
+        <div
+          class="h-10 w-10 flex-none flex items-center justify-center rounded-full text-base font-bold text-white shadow-md"
+          :style="{ background: 'var(--theme-gradient)' }"
+        >
+          {{ userStore.avatar || userStore.username?.charAt(0)?.toUpperCase() || '?' }}
+        </div>
+        <div class="min-w-0 flex-1 text-left">
+          <div class="truncate text-sm font-semibold" style="color: var(--theme-text);">{{ userStore.username || '未知用户' }}</div>
+          <div
+            class="mt-0.5 inline-block rounded-full px-2 py-0.5 text-[10px] font-semibold leading-tight text-white"
+            :style="{ background: userStore.isAdmin ? 'var(--theme-primary)' : '#94a3b8' }"
+          >
+            {{ userStore.isAdmin ? '管理员' : '用户' }}
+          </div>
+        </div>
+        <div
+          class="h-6 w-6 flex-none flex items-center justify-center rounded-md transition-transform duration-200"
+          :class="{ 'rotate-180': showUserPanel }"
+        >
+          <div class="i-carbon-chevron-down text-sm" style="color: var(--theme-text); opacity: 0.5;" />
+        </div>
+      </button>
+
+      <!-- Expanded Panel -->
+      <div v-show="showUserPanel" class="border-t px-3 py-2" style="border-color: color-mix(in srgb, var(--theme-text) 8%, transparent);">
+        <div class="mb-1 text-sm font-medium" style="color: var(--theme-text);">{{ userStore.username }}</div>
+        <div class="mb-2 text-[11px] opacity-55" style="color: var(--theme-text);">
+          {{ userStore.isAdmin ? '管理员' : '用户' }}
+          <template v-if="userStore.userCard?.expiresAt"> · 到期 {{ new Date(userStore.userCard.expiresAt).toLocaleDateString() }}</template>
+        </div>
+        <div class="space-y-1">
+          <button
+            v-if="userStore.isAdmin"
+            class="w-full flex items-center gap-2 rounded-lg px-2 py-1.5 text-left text-[13px] transition-colors hover:bg-gray-100/60 dark:hover:bg-gray-700/60"
+            style="color: var(--theme-primary);"
+            @click="navigateToSystemSettings"
+          >
+            <div class="i-carbon-notification text-base" />
+            <span>设置公告</span>
+          </button>
+          <button
+            class="w-full flex items-center gap-2 rounded-lg px-2 py-1.5 text-left text-[13px] transition-colors hover:bg-red-50 dark:hover:bg-red-900/20 text-red-500"
+            @click="handleLogout"
+          >
+            <div class="i-carbon-logout text-base" />
+            <span>退出登录</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 农牧场场景切换：牧场不是菜单项，而是整栏导航换一套 -->
+    <div class="grid grid-cols-2 mx-2 mb-3 gap-1 rounded-xl p-1" style="background: var(--surface-2);" role="group" aria-label="农牧场切换">
+      <button
+        v-for="option in (['farm', 'ranch'] as const)"
+        :key="option"
+        class="rounded-lg px-3 py-2 text-sm font-semibold transition-colors"
+        :aria-pressed="sceneStore.scene === option"
+        :style="sceneStore.scene === option ? { background: 'var(--theme-gradient)', color: 'white' } : {}"
+        @click="sceneStore.select(option)"
+      >
+        {{ option === 'farm' ? '农场' : '牧场' }}
+      </button>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="custom-scrollbar flex-1 overflow-y-auto px-1 py-1 space-y-1">
+      <router-link
+        v-for="item in navItems"
+        :key="item.path"
+        :to="item.path"
+        :active-class="sceneStore.scene === 'ranch' || item.path === '/' ? '' : 'router-link-active'"
+        :exact-active-class="sceneStore.scene === 'ranch' ? '' : item.path === '/' ? 'router-link-active' : 'router-link-exact-active'"
+        :class="{ 'router-link-active': sceneStore.scene === 'ranch' && route.path === item.path }"
+        class="nav-item group relative flex items-center gap-3 rounded-xl px-2 py-1.5 transition-colors duration-200"
+      >
+        <span class="nav-icon h-9 w-9 flex flex-none items-center justify-center rounded-lg text-[22px] transition-colors duration-200">
+          <div :class="[item.icon]" />
+        </span>
+        <span class="min-w-0 flex-1 truncate text-sm font-medium">{{ item.label }}</span>
+        <span
+          v-if="item.path === '/shop' && hasActiveMysteryOffer"
+          class="h-2 w-2 shrink-0 rounded-full bg-red-500 shadow-[0_0_0_3px_rgba(239,68,68,0.15)]"
+          title="神秘商人已出现"
+        />
+      </router-link>
+    </nav>
+
+    <!-- 我的 Token（登录会话凭证，可复制用于 x-admin-token 调用接口） -->
+    <div v-if="userStore.token" class="-mx-3 mt-2 flex-none border-t px-3 pt-2" style="border-color: color-mix(in srgb, var(--theme-text) 10%, transparent);">
+      <button
+        class="w-full flex items-center justify-between rounded-lg px-3 py-2 transition-colors hover:bg-gray-100/50 dark:hover:bg-gray-700/50"
+        @click="showTokenPanel = !showTokenPanel"
+      >
+        <div class="flex items-center gap-2">
+          <div class="i-carbon-key text-sm" :style="{ color: 'var(--theme-primary)' }" />
+          <span class="text-xs font-medium opacity-70">我的 Token</span>
+        </div>
+        <div
+          class="i-carbon-chevron-down text-gray-400 transition-transform duration-200"
+          :class="{ 'rotate-180': showTokenPanel }"
+        />
+      </button>
+      <div v-show="showTokenPanel" class="px-1 pt-2 transition-all">
+        <div class="mb-1 flex items-center justify-between">
+          <button
+            class="flex items-center gap-1 rounded px-2 py-1 text-xs transition-colors hover:bg-gray-100 dark:hover:bg-gray-700"
+            :class="tokenVisible ? 'text-blue-500' : 'opacity-70'"
+            @click="tokenVisible = !tokenVisible"
+          >
+            <div :class="tokenVisible ? 'i-carbon-view-off' : 'i-carbon-view'" />
+            <span>{{ tokenVisible ? '隐藏' : '显示' }}</span>
+          </button>
+          <button
+            class="flex items-center gap-1 rounded px-2 py-1 text-xs transition-colors hover:bg-gray-100 dark:hover:bg-gray-700"
+            :class="tokenCopied ? 'text-green-500' : 'opacity-70'"
+            @click="copyToken"
+          >
+            <div v-if="tokenCopied" class="i-carbon-checkmark" />
+            <div v-else class="i-carbon-copy" />
+            <span>{{ tokenCopied ? '已复制' : '复制' }}</span>
+          </button>
+        </div>
+        <div class="break-all rounded bg-gray-100/50 px-2 py-1.5 text-[10px] font-mono text-gray-600 dark:bg-gray-700/50 dark:text-gray-400">
+          {{ tokenVisible ? userStore.token : '••••••••••••••••' }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer Status -->
+    <div class="relative mt-4 flex-none rounded-xl px-3 py-2.5" style="background: color-mix(in srgb, var(--surface-2) 80%, transparent);">
+      <div class="flex items-center justify-between text-xs">
+        <div class="flex items-center gap-1.5 font-medium" style="color: var(--theme-text);">
+          <span class="h-2 w-2 rounded-full" :class="[connectionStatus.color, { 'animate-pulse': connectionStatus.pulse }]" />
+          <span>{{ connectionStatus.text }}</span>
+        </div>
+        <span class="font-mono opacity-60" style="color: var(--theme-text);">{{ uptime }}</span>
+      </div>
+
+      <div class="mt-2 flex items-center justify-between border-t pt-2 text-xs opacity-80" style="border-color: color-mix(in srgb, var(--theme-text) 10%, transparent); color: var(--theme-text);">
+        <span class="font-mono">{{ formattedTime }}</span>
+        <!-- 主题调色盘按钮 -->
+        <button
+          class="h-7 w-7 flex items-center justify-center rounded-lg transition-colors hover:bg-gray-200/60 dark:hover:bg-gray-700/60"
+          title="主题设置"
+          @click="showThemeDropdown = !showThemeDropdown"
+        >
+          <div class="i-carbon-color-palette text-sm" :style="{ color: 'var(--theme-primary)' }" />
+        </button>
+      </div>
+
+      <div class="mt-1 flex items-center justify-between text-xs font-mono opacity-70" style="color: var(--theme-text);">
+        <div class="flex items-center gap-2">
+          <span>Web v{{ version }}</span>
+          <a
+            href="https://github.com/Asunxu/qq-farm-bot-404"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="开源地址"
+            class="inline-flex items-center transition-opacity hover:opacity-70"
+          >
+            <div class="i-carbon-logo-github text-base" />
+          </a>
+        </div>
+        <span v-if="serverVersion">Core v{{ serverVersion }}</span>
+      </div>
+
+      <!-- 主题选择弹出面板 -->
+      <div
+        v-show="showThemeDropdown"
+        class="glass-panel absolute bottom-full left-0 right-0 z-50 grid grid-cols-4 mb-2 gap-1.5 rounded-lg p-2"
+      >
+        <button
+          v-for="(t, theme) in appStore.themes"
+          :key="theme"
+          class="group relative flex flex-col items-center justify-center gap-1 rounded-lg p-2 transition-colors"
+          :class="{
+            'ring-2 ring-offset-1': appStore.currentTheme === theme,
+          }"
+          :style="{
+            'background': t.gradient,
+            '--tw-ring-color': t.primary,
+            '--tw-ring-offset-color': 'var(--theme-bg)',
+          }"
+          :title="t.name"
+          @click="appStore.applyTheme(theme as any); showThemeDropdown = false"
+        >
+          <div :class="t.icon" class="text-base text-white" />
+          <span class="text-xs text-white font-medium leading-tight">{{ t.name }}</span>
+          <div
+            v-if="appStore.currentTheme === theme"
+            class="absolute right-1 top-1 h-3 w-3 flex items-center justify-center rounded-full bg-white shadow"
+          >
+            <div class="i-carbon-checkmark text-xs" :style="{ color: t.primary }" />
+          </div>
+        </button>
+      </div>
+    </div>
+  </aside>
+</template>
+
+<style scoped>
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(156, 163, 175, 0.3);
+  border-radius: 2px;
+}
+.custom-scrollbar:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(156, 163, 175, 0.5);
+}
+
+/* ===== 导航菜单项 ===== */
+
+/* 默认态 */
+.nav-item {
+  opacity: 0.82;
+}
+.nav-item:hover {
+  background: var(--surface-2);
+  opacity: 1;
+}
+
+/* 图标容器 */
+.nav-item .nav-icon {
+  color: color-mix(in srgb, var(--theme-text) 58%, transparent);
+}
+.nav-item:hover .nav-icon {
+  background: color-mix(in srgb, var(--theme-text) 7%, transparent);
+  color: var(--theme-text);
+}
+
+/* 选中态：渐变图标胶囊 + 左侧指示条 */
+.router-link-active.nav-item,
+.router-link-exact-active.nav-item {
+  background: color-mix(in srgb, var(--theme-primary) 9%, transparent) !important;
+  color: var(--theme-primary) !important;
+  opacity: 1;
+}
+
+.router-link-active .nav-icon,
+.router-link-exact-active .nav-icon {
+  background: var(--theme-gradient) !important;
+  color: #fff !important;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--theme-primary) 28%, transparent);
+}
+
+.router-link-active::before,
+.router-link-exact-active::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: -4px;
+  width: 3px;
+  height: 56%;
+  transform: translateY(-50%);
+  border-radius: 0 4px 4px 0;
+  background: var(--theme-gradient);
+}
+</style>

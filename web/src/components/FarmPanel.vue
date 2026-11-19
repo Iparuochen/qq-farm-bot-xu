@@ -1,0 +1,579 @@
+<script setup lang="ts">
+import { useIntervalFn } from '@vueuse/core'
+import { storeToRefs } from 'pinia'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
+import ConfirmModal from '@/components/ConfirmModal.vue'
+import FarmScene from '@/components/FarmScene.vue'
+import BaseSelect from '@/components/ui/BaseSelect.vue'
+import { useAccountStore } from '@/stores/account'
+import { useFarmStore, type FertilizerType } from '@/stores/farm'
+import { useStatusStore } from '@/stores/status'
+import { useToastStore } from '@/stores/toast'
+
+const farmStore = useFarmStore()
+const accountStore = useAccountStore()
+const statusStore = useStatusStore()
+const toast = useToastStore()
+const { lands, summary, weather, loading, dogSkillGiftPendingCount, dogSkillGiftLoading, dogSkillGiftError, fertilizeAllLoading } = storeToRefs(farmStore)
+const { currentAccountId, currentAccount } = storeToRefs(accountStore)
+const { status, loading: statusLoading, realtimeConnected, currentStatusReady } = storeToRefs(statusStore)
+
+const operating = ref(false)
+const farmLoaded = ref(false)
+const confirmVisible = ref(false)
+const farmViewport = ref<HTMLElement | null>(null)
+const farmStageWidth = ref<number | null>(null)
+const FARM_CANVAS_WIDTH = 1200
+const FARM_CANVAS_HEIGHT = 650
+type PendingLandAction = 'fertilize' | 'remove'
+
+const confirmConfig = ref({
+  title: '',
+  message: '',
+  opType: '',
+  bulkAction: '' as 'removeAll' | '',
+  landAction: '' as PendingLandAction | '',
+  land: null as any | null,
+  type: 'primary' as 'primary' | 'danger',
+})
+
+const upgradeVisible = ref(false)
+const upgradeSubmitting = ref(false)
+const upgradeLandTarget = ref<any | null>(null)
+
+const UPGRADE_ITEM_ICONS: Record<number, string> = {
+  1004: '/game-config/resource-icons/diamond.png',
+  1005: '/game-config/resource-icons/gold-bean.png',
+  1001: '/game-config/resource-icons/gold.png',
+}
+
+const upgradeInfo = computed(() => upgradeLandTarget.value?.upgradeInfo || null)
+const upgradeItems = computed(() => {
+  const info = upgradeInfo.value
+  if (!info || !Array.isArray(info.items))
+    return []
+  const current = status.value?.status || {}
+  return info.items.map((item: any) => {
+    const id = Number(item?.id) || 0
+    const need = Number(item?.count) || 0
+    let owned = 0
+    if (id === 1001)
+      owned = Number(current.gold) || 0
+    else if (id === 1005)
+      owned = Number(current.goldBean) || 0
+    else if (id === 1004)
+      owned = Number(current.diamond) || 0
+    else if (id === 1002)
+      owned = Number(current.coupon) || 0
+    return {
+      id,
+      name: String(item?.name || `物品${id}`),
+      need,
+      owned,
+      enough: owned >= need,
+      icon: UPGRADE_ITEM_ICONS[id] || '',
+    }
+  })
+})
+const upgradePlayerLevel = computed(() => Number(status.value?.status?.level) || 0)
+const upgradeLevelEnough = computed(() => {
+  const need = Number(upgradeInfo.value?.levelNeed) || 0
+  return need <= 0 || upgradePlayerLevel.value >= need
+})
+const upgradeEnough = computed(() => upgradeItems.value.every((item: any) => item.enough) && upgradeLevelEnough.value)
+
+function formatAmount(value: any) {
+  return (Number(value) || 0).toLocaleString('zh-CN')
+}
+
+function closeUpgradeModal() {
+  if (upgradeSubmitting.value)
+    return
+  upgradeVisible.value = false
+  upgradeLandTarget.value = null
+}
+
+function handleLandUpgrade(land: any) {
+  if (!currentAccountId.value)
+    return
+  if (!land?.upgradeInfo) {
+    toast.info('该土地暂不可升级')
+    return
+  }
+  upgradeLandTarget.value = land
+  upgradeVisible.value = true
+  statusStore.fetchStatus(currentAccountId.value)
+}
+
+async function executeLandUpgrade() {
+  if (!currentAccountId.value || !upgradeLandTarget.value || !upgradeEnough.value || upgradeSubmitting.value)
+    return
+
+  const landId = Number(upgradeLandTarget.value.id) || 0
+  upgradeSubmitting.value = true
+  try {
+    const result = await farmStore.upgradeLand(currentAccountId.value, landId)
+    if (result && result.ok === false)
+      throw new Error(String(result.error || '升级失败'))
+    toast.success(`土地#${landId} 升级成功`)
+    upgradeVisible.value = false
+    upgradeLandTarget.value = null
+    await statusStore.fetchStatus(currentAccountId.value)
+  }
+  catch (error: any) {
+    toast.error(String(error?.response?.data?.error || error?.message || '升级失败'))
+  }
+  finally {
+    upgradeSubmitting.value = false
+  }
+}
+
+async function executeOperate() {
+  if (!currentAccountId.value)
+    return
+
+  const config = confirmConfig.value
+  if (!config.opType && !config.bulkAction && (!config.landAction || !config.land))
+    return
+
+  confirmVisible.value = false
+  operating.value = true
+  try {
+    if (config.opType) {
+      await farmStore.operate(currentAccountId.value, config.opType)
+    }
+    else if (config.bulkAction === 'removeAll') {
+      await farmStore.removeAllPlants(currentAccountId.value)
+    }
+    else if (config.landAction === 'fertilize') {
+      await farmStore.fertilizeLand(currentAccountId.value, Number(config.land.id))
+    }
+    else if (config.landAction === 'remove') {
+      await farmStore.removePlant(currentAccountId.value, Number(config.land.id))
+    }
+  }
+  finally {
+    operating.value = false
+  }
+}
+
+function handleOperate(opType: string) {
+  if (!currentAccountId.value)
+    return
+
+  const confirmMap: Record<string, string> = {
+    harvest: '确定要收获所有成熟作物吗？',
+    clear: '确定要执行一键务农吗？将自动浇水、除草、除虫。',
+    plant: '确定要一键种植吗？(根据策略配置)',
+    upgrade: '确定要升级所有可升级的土地吗？(消耗金币)',
+    all: '确定要执行一键全收吗？将依次执行收获、务农、种植与升级。',
+  }
+
+  confirmConfig.value = {
+    title: '确认操作',
+    message: confirmMap[opType] || '确定执行此操作吗？',
+    opType,
+    bulkAction: '',
+    landAction: '',
+    land: null,
+    type: 'primary',
+  }
+  confirmVisible.value = true
+}
+
+function getLandActionName(land: any) {
+  return `#${land?.id ?? '-'} ${land?.plantName || '该作物'}`
+}
+
+function handleLandFertilize(land: any) {
+  if (!currentAccountId.value)
+    return
+
+  confirmConfig.value = {
+    title: '确认催熟',
+    message: `确定要对 ${getLandActionName(land)} 使用有机肥料催熟吗？`,
+    opType: '',
+    bulkAction: '',
+    landAction: 'fertilize',
+    land,
+    type: 'primary',
+  }
+  confirmVisible.value = true
+}
+
+function handleLandRemove(land: any) {
+  if (!currentAccountId.value)
+    return
+
+  confirmConfig.value = {
+    title: '确认铲除',
+    message: `确定要铲除 ${getLandActionName(land)} 吗？此操作不可恢复。`,
+    opType: '',
+    bulkAction: '',
+    landAction: 'remove',
+    land,
+    type: 'danger',
+  }
+  confirmVisible.value = true
+}
+
+const operations = [
+  { type: 'harvest', label: '收获', icon: 'i-carbon-wheat', color: 'bg-blue-600 hover:bg-blue-700' },
+  { type: 'clear', label: '一键务农', icon: 'i-carbon-clean', color: 'bg-teal-600 hover:bg-teal-700' },
+  { type: 'plant', label: '种植', icon: 'i-carbon-sprout', color: 'bg-green-600 hover:bg-green-700' },
+  { type: 'upgrade', label: '升级土地', icon: 'i-carbon-upgrade', color: 'bg-purple-600 hover:bg-purple-700' },
+  { type: 'all', label: '一键全收', icon: 'i-carbon-flash', color: 'bg-orange-600 hover:bg-orange-700' },
+]
+
+// 一键施肥（普通/有机化肥各施一次）
+const bulkFertilizerVisible = ref(false)
+const bulkFertilizerType = ref<FertilizerType>('normal')
+const bulkFertilizerOptions = [
+  { label: '普通化肥', value: 'normal' },
+  { label: '有机化肥', value: 'organic' },
+]
+const currentAccountRunning = computed(() => !!currentAccount.value?.running)
+
+// 与后端筛选口径保持一致：已解锁、非多格作物副地块、生长中且尚未成熟
+function isFertilizeCandidate(land: any) {
+  return !!land
+    && land.unlocked !== false
+    && !land.occupiedByMaster
+    && land.status === 'growing'
+    && Number(land.matureInSec) > 0
+}
+
+const bulkFertilizerCount = computed(() =>
+  (lands.value || []).filter(isFertilizeCandidate).length,
+)
+
+function formatFertilizerRemaining(totalSec: number) {
+  if (!totalSec || totalSec <= 0)
+    return ''
+  const day = Math.floor(totalSec / 86400)
+  const hour = Math.floor((totalSec % 86400) / 3600)
+  const minute = Math.floor((totalSec % 3600) / 60)
+  if (day > 0)
+    return `化肥剩余 ${day}天${hour}小时`
+  if (hour > 0)
+    return `化肥剩余 ${hour}小时${minute}分`
+  return `化肥剩余 ${minute}分`
+}
+
+async function handleBulkFertilize() {
+  if (!currentAccountId.value || !currentAccountRunning.value || operating.value || fertilizeAllLoading.value)
+    return
+  if (!bulkFertilizerCount.value) {
+    bulkFertilizerVisible.value = false
+    toast.info('当前没有可施肥的作物')
+    return
+  }
+  // store 内部已捕获网络与业务错误并写入 fertilizeAllError，失败时返回 null
+  const result = await farmStore.fertilizeAll(currentAccountId.value, bulkFertilizerType.value)
+  if (!result) {
+    toast.error(farmStore.fertilizeAllError || '一键施肥失败，请刷新土地确认最新状态')
+    return
+  }
+  bulkFertilizerVisible.value = false
+  if (!result.successCount) {
+    toast.info('当前没有可施肥的作物')
+    return
+  }
+  const skipped = result.skippedCount ? `，${result.skippedCount} 株未施肥` : ''
+  const remaining = formatFertilizerRemaining(Number(result.fertilizerRemainingSec || 0))
+  toast.success(`已为 ${result.successCount} 株作物施肥${skipped}${remaining ? `，${remaining}` : ''}`)
+}
+
+async function refresh() {
+  if (currentAccountId.value) {
+    const acc = currentAccount.value
+    if (!acc)
+      return
+
+    try {
+      if (!realtimeConnected.value) {
+        await statusStore.fetchStatus(currentAccountId.value)
+      }
+
+      if (acc.running) {
+        await Promise.all([
+          farmStore.fetchLands(currentAccountId.value),
+          farmStore.fetchDogSkillGiftStatus(currentAccountId.value),
+        ])
+      }
+    }
+    finally {
+      farmLoaded.value = true
+    }
+  }
+}
+
+async function claimDogSkillGifts() {
+  if (currentAccountId.value)
+    await farmStore.claimDogSkillGifts(currentAccountId.value)
+}
+
+const showInitialLoading = computed(() =>
+  !farmLoaded.value && (loading.value || statusLoading.value),
+)
+
+const farmStageStyle = computed(() => farmStageWidth.value
+  ? { width: `${farmStageWidth.value}px` }
+  : undefined)
+
+function updateFarmStageSize() {
+  const viewport = farmViewport.value
+  if (!viewport || window.innerWidth < 640) {
+    farmStageWidth.value = null
+    return
+  }
+  const documentTop = viewport.getBoundingClientRect().top + window.scrollY
+  const availableHeight = Math.max(240, window.innerHeight - documentTop - 72)
+  const availableWidth = viewport.parentElement?.clientWidth || FARM_CANVAS_WIDTH
+  // 保持 1200×650 比例并限制在当前一屏内；外层 viewport 同步收窄，不再露出第二层背景。
+  farmStageWidth.value = Math.min(availableWidth, FARM_CANVAS_WIDTH, availableHeight * FARM_CANVAS_WIDTH / FARM_CANVAS_HEIGHT)
+}
+
+watch(currentAccountId, (newId, oldId) => {
+  if (oldId !== undefined && newId !== oldId) {
+    farmLoaded.value = false
+    bulkFertilizerVisible.value = false
+    farmStore.clearFarmData()
+    statusStore.clearAccountScopedData()
+  }
+  refresh()
+}, { immediate: true })
+
+watch(() => currentAccount.value?.running, () => {
+  refresh()
+})
+
+const { pause, resume } = useIntervalFn(() => {
+  if (lands.value) {
+    lands.value = lands.value.map((l: any) =>
+      l.matureInSec > 0 ? { ...l, matureInSec: l.matureInSec - 1 } : l,
+    )
+  }
+}, 1000)
+
+const { pause: pauseRefresh, resume: resumeRefresh } = useIntervalFn(refresh, 60000)
+
+resume()
+resumeRefresh()
+onMounted(() => {
+  window.addEventListener('resize', updateFarmStageSize)
+  updateFarmStageSize()
+})
+onUnmounted(() => {
+  pause()
+  pauseRefresh()
+  window.removeEventListener('resize', updateFarmStageSize)
+})
+</script>
+
+<template>
+  <div
+    class="space-y-4"
+    :class="{ 'farm-panel-modal-open': confirmVisible || bulkFertilizerVisible }"
+  >
+    <div class="rounded-lg bg-white shadow dark:bg-gray-800">
+      <!-- Header with Title and Actions -->
+      <div class="flex flex-col items-stretch justify-between gap-3 border-b border-gray-100 p-4 sm:flex-row sm:items-center dark:border-gray-700">
+        <h3 class="flex items-center gap-2 text-lg font-bold">
+          <div class="i-carbon-grid text-xl" />
+          土地详情
+        </h3>
+        <div class="grid grid-cols-3 gap-2 sm:flex sm:flex-wrap">
+          <button
+            v-for="op in operations"
+            :key="op.type"
+            class="flex items-center justify-center gap-1.5 rounded px-3 py-2 text-sm text-white transition disabled:cursor-not-allowed disabled:opacity-50"
+            :class="op.color"
+            :disabled="operating"
+            @click="handleOperate(op.type)"
+          >
+            <div :class="op.icon" />
+            <span class="hidden sm:inline">{{ op.label }}</span>
+            <span class="sm:hidden">{{ op.type === 'clear' ? '务农' : op.label.replace('一键', '') }}</span>
+          </button>
+          <button
+            class="flex items-center justify-center gap-1.5 rounded bg-amber-600 px-3 py-2 text-sm text-white transition disabled:cursor-not-allowed hover:bg-amber-700 disabled:opacity-50"
+            :disabled="operating || fertilizeAllLoading || !currentAccountRunning || !bulkFertilizerCount"
+            @click="bulkFertilizerVisible = true"
+          >
+            <div class="i-carbon-soil-moisture" />
+            <span>一键施肥</span>
+          </button>
+        </div>
+      </div>
+
+      <div
+        v-if="dogSkillGiftPendingCount > 0"
+        class="flex items-center gap-3 border-b border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-800 dark:bg-amber-950/30 dark:text-amber-100"
+      >
+        <div class="i-carbon-gift text-xl" />
+        <div class="min-w-0 flex-1">
+          待拾取同气连枝礼包 ×{{ dogSkillGiftPendingCount }}
+        </div>
+        <button
+          class="rounded bg-amber-600 px-3 py-1.5 text-white hover:bg-amber-700 disabled:opacity-50"
+          :disabled="dogSkillGiftLoading"
+          @click="claimDogSkillGifts"
+        >
+          {{ dogSkillGiftLoading ? '拾取中…' : '拾取' }}
+        </button>
+      </div>
+      <div v-else-if="dogSkillGiftError" class="border-b border-red-200 bg-red-50 px-4 py-2 text-xs text-red-700 dark:border-red-800 dark:bg-red-950/30 dark:text-red-300">
+        {{ dogSkillGiftError }}
+      </div>
+
+      <!-- Summary -->
+      <div class="grid grid-cols-4 gap-2 border-b border-gray-100 bg-gray-50 p-3 text-xs sm:flex sm:flex-wrap sm:gap-4 dark:border-gray-700 dark:bg-gray-900/50 sm:p-4 sm:text-sm">
+        <div class="flex items-center gap-1.5 rounded-full bg-orange-100 px-3 py-1 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400">
+          <div class="i-carbon-clean" />
+          <span class="font-medium">可收: {{ summary?.harvestable || 0 }}</span>
+        </div>
+        <div class="flex items-center gap-1.5 rounded-full bg-green-100 px-3 py-1 text-green-700 dark:bg-green-900/30 dark:text-green-400">
+          <div class="i-carbon-sprout" />
+          <span class="font-medium">生长: {{ summary?.growing || 0 }}</span>
+        </div>
+        <div class="flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-gray-700 dark:bg-gray-800 dark:text-gray-400">
+          <div class="i-carbon-checkbox" />
+          <span class="font-medium">空闲: {{ summary?.empty || 0 }}</span>
+        </div>
+        <div class="flex items-center gap-1.5 rounded-full bg-red-100 px-3 py-1 text-red-700 dark:bg-red-900/30 dark:text-red-400">
+          <div class="i-carbon-warning" />
+          <span class="font-medium">枯萎: {{ summary?.dead || 0 }}</span>
+        </div>
+      </div>
+
+      <!-- Grid -->
+      <div class="p-2 sm:p-4">
+        <div v-if="showInitialLoading" class="flex justify-center py-12">
+          <div class="i-svg-spinners-90-ring-with-bg text-4xl text-blue-500" />
+        </div>
+
+        <div v-else-if="!currentAccountId" class="flex flex-col items-center justify-center gap-4 rounded-lg bg-white p-12 text-center text-gray-500 shadow dark:bg-gray-800">
+          <div class="i-carbon-user-offline text-4xl text-gray-400" />
+          <div>
+            <div class="text-lg text-gray-700 font-medium dark:text-gray-300">
+              未登录账号
+            </div>
+            <div class="mt-1 text-sm text-gray-400">
+              请先添加农场账号
+            </div>
+          </div>
+        </div>
+
+        <div v-else-if="!lands || lands.length === 0" class="flex justify-center py-12 text-gray-500">
+          暂无土地数据
+        </div>
+
+        <div v-else-if="currentStatusReady && !status?.connection?.connected" class="flex flex-col items-center justify-center gap-4 rounded-lg bg-white p-12 text-center text-gray-500 shadow dark:bg-gray-800">
+          <div class="i-carbon-connection-signal-off text-4xl text-gray-400" />
+          <div>
+            <div class="text-lg text-gray-700 font-medium dark:text-gray-300">
+              账号未登录
+            </div>
+            <div class="mt-1 text-sm text-gray-400">
+              请先运行账号或检查网络连接
+            </div>
+          </div>
+        </div>
+
+        <div v-else>
+          <div ref="farmViewport">
+            <FarmScene
+              :lands="lands"
+              :weather="weather"
+              :style="farmStageStyle"
+              @fertilize="handleLandFertilize"
+              @remove="handleLandRemove"
+              @upgrade="handleLandUpgrade"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <ConfirmModal
+      :show="confirmVisible"
+      :title="confirmConfig.title"
+      :message="confirmConfig.message"
+      :type="confirmConfig.type"
+      @confirm="executeOperate"
+      @close="confirmVisible = false"
+      @cancel="confirmVisible = false"
+    />
+
+    <ConfirmModal
+      :show="bulkFertilizerVisible"
+      title="一键施肥"
+      message="将为所有生长中的作物施用一次所选化肥，确认施肥吗？"
+      confirm-text="确认施肥"
+      :loading="fertilizeAllLoading"
+      @confirm="handleBulkFertilize"
+      @close="bulkFertilizerVisible = false"
+      @cancel="bulkFertilizerVisible = false"
+    >
+      <div class="mt-4 text-left">
+        <BaseSelect
+          v-model="bulkFertilizerType"
+          label="化肥类型"
+          :options="bulkFertilizerOptions"
+          :disabled="fertilizeAllLoading"
+        />
+        <p class="mt-3 text-sm text-gray-500 dark:text-gray-400">
+          可施肥 {{ bulkFertilizerCount }} 株作物
+        </p>
+      </div>
+    </ConfirmModal>
+
+    <ConfirmModal
+      :show="upgradeVisible"
+      :title="`升级土地 #${upgradeLandTarget?.id ?? '-'}`"
+      :message="`Lv${upgradeLandTarget?.level ?? '-'} 升级至 Lv${upgradeInfo?.nextLevel ?? '-'}`"
+      :confirm-text="upgradeEnough ? '确认升级' : '资源不足'"
+      :confirm-disabled="!upgradeEnough"
+      :loading="upgradeSubmitting"
+      @confirm="executeLandUpgrade"
+      @close="closeUpgradeModal"
+      @cancel="closeUpgradeModal"
+    >
+      <div class="mt-4 space-y-2 text-left">
+        <div
+          v-if="upgradeInfo?.levelNeed"
+          class="flex items-center justify-between rounded-lg bg-gray-50 px-3 py-2 text-sm dark:bg-gray-700/40"
+        >
+          <span class="text-gray-600 dark:text-gray-300">角色等级</span>
+          <span :class="upgradeLevelEnough ? 'text-gray-700 dark:text-gray-200' : 'text-red-600 dark:text-red-400'">
+            Lv{{ upgradePlayerLevel }} / Lv{{ upgradeInfo.levelNeed }}
+          </span>
+        </div>
+        <div
+          v-for="item in upgradeItems"
+          :key="item.id"
+          class="flex items-center justify-between rounded-lg bg-gray-50 px-3 py-2 text-sm dark:bg-gray-700/40"
+        >
+          <span class="flex min-w-0 items-center gap-2 text-gray-600 dark:text-gray-300">
+            <img v-if="item.icon" :src="item.icon" class="h-5 w-5 shrink-0" alt="">
+            <span class="truncate">{{ item.name }}</span>
+          </span>
+          <span :class="item.enough ? 'text-gray-700 dark:text-gray-200' : 'text-red-600 dark:text-red-400'">
+            已有 {{ formatAmount(item.owned) }} / 需要 {{ formatAmount(item.need) }}
+            <span v-if="!item.enough" class="ml-1">不足</span>
+          </span>
+        </div>
+        <p v-if="!upgradeLevelEnough" class="text-sm text-red-600 dark:text-red-400">
+          角色等级不足，需达到 Lv{{ upgradeInfo?.levelNeed }}。
+        </p>
+        <p v-else-if="!upgradeEnough" class="text-sm text-red-600 dark:text-red-400">
+          金币或金豆不足，暂时无法升级。
+        </p>
+        <p v-else class="text-xs text-gray-500 dark:text-gray-400">
+          确认后将扣除上述资源并立即升级土地。
+        </p>
+      </div>
+    </ConfirmModal>
+  </div>
+</template>

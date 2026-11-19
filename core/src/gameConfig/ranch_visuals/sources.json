@@ -1,0 +1,1793 @@
+{
+  "source": "/Users/xxxscarlxrd/Library/Containers/com.tencent.qqexminiprogram/Data/Library/Application Support/QQEX/miniapp/temps/miniapp_src/1112386029_3_be3b19f45e0f8b42ef5134e45489da69",
+  "settingsSha256": "9d4c2cb71d109d025f703bf9ef1eb7148bf2f44825bbdc8dfaaeae9d61fc6827",
+  "renderer": {
+    "runtime": "@pixi-spine/runtime-3.8@4.0.6",
+    "canvas": "@napi-rs/canvas",
+    "method": "Spine idle pose, actual bone/mesh transforms; Cocos Prefab layers and transforms; per-triangle clip outset 0.75px to eliminate AA seams"
+  },
+  "downloads": [
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/config.c86eb.json",
+      "sha256": "ff5b88650fa2e6f50caee1db83ac90e780488efbc24e895dfffe2cf44fb491d7"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/config.a93d7.json",
+      "sha256": "87cf738892a1cba7c622f0e713456d6540b04ae23ddd44d598fb61d7a392b3d9"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/3d/3d0684ba-947a-4971-a9d7-5936fcb180b8.fa26e.json",
+      "sha256": "713b0594d40e4c4b814c3bc237d3e3583a9f97bad65ecdcf42452e139c0f624b"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/3d/3d0684ba-947a-4971-a9d7-5936fcb180b8.68a5f.bin",
+      "sha256": "b8114aa9bac163c1ea954387318b710a1acf87a6d9fb3ce694145235413dc6c5"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/17/17729358-2a50-4af8-a77a-ebb8d84e9f9d.5666a.png",
+      "sha256": "7b00812d59ab4709d0283239006cb6cc2e52e7d9990510606495e906bde3da4f"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/76/76629069-76d8-41c7-8d3e-f8148805a518.d13d1.json",
+      "sha256": "3d2b20ccadf480bd83de81c0be2c5b233fdbfac5bf74b34a2df804913dc43a23"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/76/76629069-76d8-41c7-8d3e-f8148805a518.17591.bin",
+      "sha256": "9c983154763a8794b0fc935fd23d63bf897153a93375dc9446c6e191dce6dd70"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/e9/e9705efb-09ef-4328-bad7-3ceaea824a85.7f4d1.png",
+      "sha256": "ff5a8e08094c3dd5cbe39d2bb451d4206a6cd6ea37425702ab3badbf6e92f9aa"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/d3/d311a4e6-c946-4aaf-966d-cbde437801a3.d8d29.json",
+      "sha256": "2ee7cd73e4ec930e18eca7ee3dbc62e7a4cf2650133a0b8d2f97f18d37d2f4de"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/d3/d311a4e6-c946-4aaf-966d-cbde437801a3.d79d4.bin",
+      "sha256": "271b3d518596ec05624649a574332c8d1bc3346a79cdac6fb20f048c4691fec2"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/7b/7b0ebeea-9c42-48a2-ab53-ead3cdb04340.a0a7c.png",
+      "sha256": "07d6382927e42955c4704f199647c265779114137f9f2cc5224dd3c7c71ef5f4"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/9d/9d98c35d-7f5e-4227-95d1-cbba6c946068.24187.json",
+      "sha256": "58bad02e979a724b2960bb89c4a1a4aaba4cb8a767f947cf05e40b3ee85d9286"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/9d/9d98c35d-7f5e-4227-95d1-cbba6c946068.13c4e.bin",
+      "sha256": "8b57797e5f3cc5ffdf575b986112bf030d8774689c023b2bae24804d33045bb3"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/5f/5ff799f0-9bf4-4fb9-bbbd-cb77e7cb14cd.23284.png",
+      "sha256": "a8be2c28837e005ad71f8cb89244882ec01d7cce5e3cb4e9c9d8ca47446a2582"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/34/34697280-97c6-4ad9-ad21-bcb5d9e9676f.42b69.json",
+      "sha256": "9f69018b921058cc14c80dd9c63b8bd528435fdc15cb38b3386b8e15f7465951"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/34/34697280-97c6-4ad9-ad21-bcb5d9e9676f.115d2.bin",
+      "sha256": "3e452fd89fd4a8eb6633b8386709bb07d32a8dcc760c34bfaf3a6c628eb29d3a"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/83/833c234a-08d9-4428-8219-90306196358b.b6f17.png",
+      "sha256": "c2fa9e7980a11a31f668a621b94d678b87a1101efa5f821a3a67b0fe7a6965a8"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/e8/e8d83752-1860-4db9-9de0-e5c47691763d.5e274.json",
+      "sha256": "7195dc6ce54be3ef075bcf02cc6e626a63c9e9eb761ff6b47e339c8305487583"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/e8/e8d83752-1860-4db9-9de0-e5c47691763d.2cf3d.bin",
+      "sha256": "e146d8c9871841bb04c21efac367b8fe8716e7d9817e0d9fd6ea0419d0e71a8f"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/8d/8d16c6e6-eb80-4603-98e0-68a4bd6401dc.b603a.png",
+      "sha256": "3edd609b90232e18dc5d53912844f9166897a40277729584f16acf9571796bb4"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/a1/a1ca47b9-4677-4699-b708-84dc40e03b7f.77008.json",
+      "sha256": "4da41fa784f389e3b6ba54cb794dd098829f4e89aec18cc708c10fb22ffc015d"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/a1/a1ca47b9-4677-4699-b708-84dc40e03b7f.6fb22.bin",
+      "sha256": "585743857e2c169122a595cd0f945dce4a22f345d1477173260834209537d3f4"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/ee/ee94107a-5fc7-4cde-9d74-2104d072df44.8a6e1.png",
+      "sha256": "3046ea1c7c39021fac7fb24c8a4519848b1c8fd72bbe50e9ec4a250f6348a77c"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/f1/f1dbab95-3e33-4559-bcde-93f188e73ca4.5cca8.json",
+      "sha256": "1b3c439c4003575f9fc4e2db3c9689f8119c32615c2090c4713cf1b2a293a619"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/f1/f1dbab95-3e33-4559-bcde-93f188e73ca4.05402.bin",
+      "sha256": "174fa35cfac8f2fafeb4af4df372d499deab9b3e19e81bbf9737c197d837e4b4"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/bf/bf065acd-e9b1-4287-912d-54945dc300a8.a9621.png",
+      "sha256": "2550055fc509b40ba0cd90f2ab93a1e2a0ab49942f447603d8d7bc81099f17cb"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/08/08718f76-c808-42d1-9425-9ac879ca2a74.827d1.json",
+      "sha256": "06398a429fe12497edcd7a6b820d731c91259c242b9f2c3f13916a54db9d01d7"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/08/08718f76-c808-42d1-9425-9ac879ca2a74.b2a92.bin",
+      "sha256": "c55b5c1cd56cb0634f047dc0062b1a047fcebcac0ba4323a2ade523737bc24f7"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/b7/b7a10e11-0982-46f7-bf96-b612cc23c4bd.4a0de.png",
+      "sha256": "fb32301c0dd68050ede1ccd1968ff91a6b5c5fd819ae918f843bb87eb1f4fa63"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/ec/ec09c97d-1c3f-42e4-83c7-103f90d8487f.23616.json",
+      "sha256": "0a813797d5e9769cf44e163af899708c3df8e39daeb364d97b7511a828599770"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/ec/ec09c97d-1c3f-42e4-83c7-103f90d8487f.5ebbd.bin",
+      "sha256": "f164c7e3683e3b7ed9705bcc658720dee3178c2429ac5c378369f8069e4d0b1a"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/72/72671ab3-f086-4573-817f-70e82d408a1a.0e54e.png",
+      "sha256": "3715046738c8d5f729f10211490cf35f777c9a06e0d3bf25b21fcc011ae0e536"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/32/322d01f0-87c5-4703-824c-945e093e344a.8bf5f.json",
+      "sha256": "fb41d75e6de7b6224a50c374eb719f05f3d57581e5a587478782f7fb1e0dc8a8"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/32/322d01f0-87c5-4703-824c-945e093e344a.79a61.bin",
+      "sha256": "47d2092f796d2ecbfa6a8f7df8e4888d41ff2a2449b47ade4849be0648590d69"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/70/7056ad27-6db6-4467-b1ea-93f597db4b93.3ebea.png",
+      "sha256": "acd5358e1e86bed1a2e4462212122c461eb2be94feb714dad411bd62bf14e771"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/d9/d99cc8e5-b146-45d4-b384-48a063f3a5eb.b84d7.json",
+      "sha256": "99f0fb73feaefdb1fa1d0c3bae317fa586cb0581f46734c8e8ebb8f0286dc73b"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/d9/d99cc8e5-b146-45d4-b384-48a063f3a5eb.372f2.bin",
+      "sha256": "91f9aafe912aa3d2eabd343e262ed0d2b21e30f11a8fc3152fdfb9afb8342aa8"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/d4/d43fd137-7be9-4b63-9a94-7ba44cf16900.6f276.png",
+      "sha256": "d0d23e67f9effa56d7c33fc5ad4c25e646b3661b26b345aa90b6a514da021640"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/86/863be270-1840-4435-9265-77be57db16ef.99248.json",
+      "sha256": "2f5570787a200bf4f072683ad3b447a693c099edeb2050c21e89b18fa67d2e5e"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/86/863be270-1840-4435-9265-77be57db16ef.b89f6.bin",
+      "sha256": "075205e3c1d213a8c6dfaf0d376e16eb8556fc008c353307b6f5ded121216b98"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/3d/3dda37e7-4a4d-4d6d-81ae-a8b5dea291da.239c9.png",
+      "sha256": "598c391ebfa3875bb5f5e7652d3546dbef7ee0e41a65b76aa0b52f8254b35d54"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/8b/8bab7c7c-cb60-48b4-98b6-a9afe312c68c.48ec0.json",
+      "sha256": "327a70a8a75c73f8668ef353602cb4d348ad21586862ceaeafec4f8fe44d1b59"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/8b/8bab7c7c-cb60-48b4-98b6-a9afe312c68c.5c2fb.bin",
+      "sha256": "15d1360a62d5473cc282d6b14eb369a2fda79ef19c1631786d766c9bb741f469"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/67/679f4fb2-f078-4139-9167-ca6bf0187532.3b6f1.png",
+      "sha256": "bf58dd29df85269e60ceb5fcd21c94bc61e8aef14fdc3a4185ed28880783ffb5"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/5d/5df9e0eb-e7da-4b89-832e-03960278afe1.d4475.json",
+      "sha256": "54b189531b8e82e6baaf24ed2a52852a8730941bd9865d96ba8e450085c7db20"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/5d/5df9e0eb-e7da-4b89-832e-03960278afe1.8c598.bin",
+      "sha256": "98f9f00326da45d6e0b426c2cb5793caba5bb19c1ae20d4647deb4cb46534025"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/e7/e7003edd-62f9-4ead-835e-f6387d1f7e8c.a4d41.png",
+      "sha256": "babadfb33501eba43968f07c91710d84396273365de4a0b182b81ef858147946"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/15/15366615-c231-4a4b-8709-17e1f95dba08.424aa.json",
+      "sha256": "a465332a9058d0449ffd67996932926a978d97e7ba35e724038ecb700f162c66"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/15/15366615-c231-4a4b-8709-17e1f95dba08.bc2db.bin",
+      "sha256": "0188f7b9ea099df1513ce96d76c9b714f7243e390929bbe2aceccf3341840d41"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/8b/8b639dc8-c4c0-428f-8206-d9956178600e.ca86e.png",
+      "sha256": "f4086fcfd1711ab67c0f3fe736ab1f299de89749492418d93fde9c71a9fc5aec"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/b8/b856c121-4c31-47d0-bdcd-0963b451faa2.44f1c.json",
+      "sha256": "7325457afc70b06da4ef9c32c50ba4028c5ce90adaed2d4ec65475f9edd42d36"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/b8/b856c121-4c31-47d0-bdcd-0963b451faa2.44131.bin",
+      "sha256": "468a653dada28b53816f71aa280c5f586aca644b5b0e8089fdc2377d698b49e7"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/ad/adad6c29-3c50-4e79-8711-7f94cd2c6539.8fa04.png",
+      "sha256": "5da380ac7a7c6dbc61cd6ad4f634faab8986af5626f705569327db1901f6faa1"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/94/94d74848-eea8-4cf6-a4c8-ed9ac434025f.96a19.json",
+      "sha256": "8212b910ccce8eebf4e57f6a09ad965ea36e6292abf13f67fdfe1ddafd2a9f72"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/94/94d74848-eea8-4cf6-a4c8-ed9ac434025f.d148f.bin",
+      "sha256": "33f4ea63cc634416c9f59871e4f3db5ddb4f9698178cf3dfc2dca337fe7001a7"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/a2/a2b09ef6-3459-40bb-99f6-136468395854.b62df.png",
+      "sha256": "faeb6f138e31128ca1e1782a9c15d100cbac8a602944a0d19f4da877591b1079"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/58/58d1aa45-1437-413f-b11f-90379931a026.22660.json",
+      "sha256": "fadd6fd89e29282e40b62b2b9ae04b164ef7e07f42891a21d95d1042a7cfb758"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/58/58d1aa45-1437-413f-b11f-90379931a026.f8864.bin",
+      "sha256": "4d4418b602616c0b9486551269a72d03b40451662fdd332f6bb937b183ec5626"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/26/268632ba-ca19-4b9d-9a99-7c1a678bbbe3.44bb7.png",
+      "sha256": "bd7eceec2d0546aabbd7d352a6ce57e6cb18ae8f77211a6056aa8b99fec0f16e"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/d7/d793ad2f-0167-493b-8c61-6208f1d9f031.6ea55.json",
+      "sha256": "5dfb560ee8ec994a27f2fffe203e2dc4b9c8ed6e59e8800b17aa167b76b7b36b"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/d7/d793ad2f-0167-493b-8c61-6208f1d9f031.205b7.bin",
+      "sha256": "7d39574184e4c0cfc9b7ef2e088ce6d8d93f696b60781300d5ff0b015c6bdc03"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/c6/c6beb43d-d501-4bed-855f-d97da39f4b84.ee32e.png",
+      "sha256": "9641f98895dd11b542710a1923ff8770e9cea462481659146c38b90e9336c052"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/74/748bd84e-198a-4704-b926-4aed49c9cb1c.4ec5f.json",
+      "sha256": "b852694e16d382468f201cdee5f5afacd11bddea8f2e2e609d9b0733b8c75624"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/74/748bd84e-198a-4704-b926-4aed49c9cb1c.764af.bin",
+      "sha256": "9e7946869b56f88e4928787507407afaae442abd50137b7789f9b6f7b3143968"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/9f/9fff9ef3-e17b-4a45-9528-e3f081b2cb12.6b76e.png",
+      "sha256": "9a991efa11a0cd68eaf93f149edefe6156e059d447a2788e1e5f7ca5d5013262"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/20/20b661a7-635e-4f5d-b60b-6cee47e27337.365ba.json",
+      "sha256": "452426d0ca60f93a0d2b705e1fe9e400f035224866987aec4b3ac4c8560967a2"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/20/20b661a7-635e-4f5d-b60b-6cee47e27337.8cde8.bin",
+      "sha256": "d71c57d2db2f99024530edc6c953472c626823bb6f31691eec88a4b190cd1dc1"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/f9/f92bc996-d226-4c45-8f52-6410934b1054.d93a3.png",
+      "sha256": "12a3618de148366d6b9b46d84dbeb1a579899a945c524bf138c1ebdc72c979a5"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/91/9187b86f-7f02-4557-94be-681b8d81293e.81ebc.json",
+      "sha256": "d564f9152b854e4fa13e12f461bc393d367ff63ad53e2f15c60245616efa9c52"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/91/9187b86f-7f02-4557-94be-681b8d81293e.fbff3.bin",
+      "sha256": "fda025b7734074ad6bf33544025bc2111fda9ee3eebfb3be8d267161c0bcbf65"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/53/534d5c8d-0344-4cf0-a85c-f0886497def1.62b0f.png",
+      "sha256": "525240f7fa21a8af15d870f214d59033fd5ec04059f19806bc1065f256d8d349"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/61/619580e0-0bc8-4e18-83a5-c472d24d11df.d6234.json",
+      "sha256": "666dc3ab8eb17bf78a61cd37092bab068d16ee03307352ed1347c6f9027e750c"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/61/619580e0-0bc8-4e18-83a5-c472d24d11df.5fe93.bin",
+      "sha256": "8f2f784f684a9c4a1ad934532110137e8f98b1b5d18e07a5e733c583123c9ffd"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/8d/8d781d18-df23-448e-97dd-b9538fe2ec1b.a756a.png",
+      "sha256": "08f4da11ca67d7a81667e03112e4fa9a8856aab98720354879f90aa936a9a26d"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/43/43192d12-b5ed-40b8-9f3b-7d883451ad0a.1bfcf.json",
+      "sha256": "80284a4681bf312c9524bfba83de7b14f8f7c39170cee0b6d1284be95f4ea736"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/43/43192d12-b5ed-40b8-9f3b-7d883451ad0a.d5674.bin",
+      "sha256": "28c7bca812b7c84c4a599b67104b063bf127a8f461f5317e10d6fce670475fb0"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/1d/1d6a58bd-1e05-4709-a01c-e9d74e91380b.79a18.png",
+      "sha256": "99b5ea023d5c444b94b3d6972269f0c0a0ed04baa1d465a38bd781f659ccfe7e"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/06/061c3afb-a076-441c-8512-6d2bb75e242d.c6d5c.json",
+      "sha256": "2522655a050d965d19c9f242eae2571ebd4a203e7e4954f7cad64e7de4f4f2e8"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/06/061c3afb-a076-441c-8512-6d2bb75e242d.ae2a8.bin",
+      "sha256": "7d39fa0f0366c9b87d8fd139bb77abc63fdc586cfe6a15414b1fe14af7369eba"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/8e/8ef9524d-83b5-492c-a8b0-2feaf9768b83.31f74.png",
+      "sha256": "bcb444f995c723ed310096fc4065699d3690568c0cc844d22b25bf47fe61f6b8"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/ec/ecdb057c-826d-44d2-9196-fee0a822b172.1f976.json",
+      "sha256": "1d46c04a3d32ee4463394c8552a1635fa4353730d0d9111111dd4b96a1d0697f"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/ec/ecdb057c-826d-44d2-9196-fee0a822b172.8d843.bin",
+      "sha256": "d7f4d660c1cdeb7f6b4ddbe60bd80ad42a0d670c607743d99e1b38c4de9b3c8c"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/54/545f26ab-4814-4559-8a2b-e5624cb12f5e.1f22a.png",
+      "sha256": "7d84761c20dbc3277b66243858de71a5740e9a9eda01e1e415fc0f8fbd543bac"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/70/70c08840-a98a-450c-b03e-3754e7b90be8.a6f0b.json",
+      "sha256": "c8223191f2301693efb211f05861953a18f48dc40d0ee18deb67f21c59d5df7f"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/70/70c08840-a98a-450c-b03e-3754e7b90be8.3edb9.bin",
+      "sha256": "56a10926a508323c4b2f3b2edf60416f296ff1ce96fee04e7ffacc72590826cb"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/38/38de17be-0f94-436a-ae7d-d0a0d11b087d.73dd0.png",
+      "sha256": "e97ca7e38efeb19952a24b7680be75a49a12f648772f088a4e5098db8c6dea49"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/import/0b/0b4849018.6f453.json",
+      "sha256": "b6d5b666083b748a1f8884d9ad3e8e2a76d4621f8c2e02497d3c9382f8789095"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/native/db/dbb1513b-d563-4283-890c-f65e48b15bb6.a5282.png",
+      "sha256": "8453a22da0d5f76cc48f583e40f59af91f65dad6ab74abc4dce55ba4dd7a5a98"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/native/1e/1e32f270-776b-4ffc-81dc-29571dee80b6.f4d0d.png",
+      "sha256": "fda6450b1ea0c874accb8862f54d088d7c60cdc49136d6313394b813c5fc1a9b"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/import/0e/0e82c1dec.38fb4.json",
+      "sha256": "08d3ba13804a0dfa51f8d1469c1a9a3975ade588d96934ddb3790bcb00fd0523"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/native/30/30886b1c-1b4b-439c-95ff-b97b6bb39025.4f7aa.png",
+      "sha256": "df0f78d5096ebd70536662c2eea51442bc1f28fea93027600900d4c6060ef603"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/native/dd/ddeecd6d-42a0-41c3-a0b4-76a5a167eaaf.51b1d.png",
+      "sha256": "51639663a579dd090e2bdadd2a733a732fb17f6512d523d36bb49269ea0b1867"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/native/d3/d33deb82-2821-4bcc-bb3a-0e11fce733e8.7af37.png",
+      "sha256": "74f1027cd1d90d872a5382eb66422e66b254d01af85a400447790450db7bd8b8"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/native/6b/6b1811d7-e584-4f72-ada1-94e87f98841f.74882.png",
+      "sha256": "e2b75e06d13908c7995a7a52fcbaab379e129374ca8b23fae890de8998c09181"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/native/cb/cb008a84-c1f4-44b1-99fc-494dc245213a.603d6.png",
+      "sha256": "3f1f99eb5b23658e1885fce6e16f54975c8f84592031fe362e279e094e5f1c80"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/import/09/09ea70f85.321c4.json",
+      "sha256": "b3ced6fe83508a742bd86e8701e15fc3b1783cfb8e42f382ea4db1c3958ed471"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/native/8f/8f858826-77b5-49ec-9a4e-16c278490471.8799b.png",
+      "sha256": "40f93ef2ab2ec7ed5ad03dd543693f8ba48814c81a36a2b30eaf0111dce48f9f"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/native/1a/1a256949-eed5-497d-b119-58d2bbdcd8a2.61e89.png",
+      "sha256": "01310fbda78c35f0a2682f401205a114e74e5fc445af379e4107f2fa1b5bc676"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/import/0c/0cef5a4da.94e71.json",
+      "sha256": "30c924f453f55078ba931dc912aabec8568e4165f9cc77311954e32a9c395ca1"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/native/24/2410f9db-2a86-452b-a102-85464b771301.43f32.png",
+      "sha256": "525a07020bfe21b41e2f1f7bed91e7620d704fa5e1187d2a5da2bc66087f69b3"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/import/04/04ba26919.bd1f2.json",
+      "sha256": "8c0b978930022f7fe3f296f7f71c2cbafdfde050213532d34e44c5ddfd05e354"
+    },
+    {
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/native/ec/ecef177e-a866-492e-8b49-0e1acb355eef.fa716.png",
+      "sha256": "6e1c88bfc04d45dd69e5a7b8f9cdd9756ac3a4861593361cdbd589a6b24068d8"
+    }
+  ],
+  "files": [
+    {
+      "file": "animals/60001/1.png",
+      "sha256": "a6abb7fa208ab9f8aeba9403f3ead6187e7689c029d92ef2e265bcfe183477e5",
+      "bundle": "animal",
+      "assetPath": "spine/60001/60001",
+      "animation": "idle_1",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/3d/3d0684ba-947a-4971-a9d7-5936fcb180b8.fa26e.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/3d/3d0684ba-947a-4971-a9d7-5936fcb180b8.68a5f.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/17/17729358-2a50-4af8-a77a-ebb8d84e9f9d.5666a.png"
+    },
+    {
+      "file": "animals/60001/2.png",
+      "sha256": "4ed1604ccd2bf6cad3354077f168267f933f5815ce4e37144def2e4cdf4be158",
+      "bundle": "animal",
+      "assetPath": "spine/60001/60001",
+      "animation": "idle_2",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/3d/3d0684ba-947a-4971-a9d7-5936fcb180b8.fa26e.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/3d/3d0684ba-947a-4971-a9d7-5936fcb180b8.68a5f.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/17/17729358-2a50-4af8-a77a-ebb8d84e9f9d.5666a.png"
+    },
+    {
+      "file": "animals/60001/3.png",
+      "sha256": "1e17f1d5e7c5788d98b888818611fecebea136e65eb4c5b279cf605a61e40a0d",
+      "bundle": "animal",
+      "assetPath": "spine/60001/60001",
+      "animation": "idle_3",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/3d/3d0684ba-947a-4971-a9d7-5936fcb180b8.fa26e.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/3d/3d0684ba-947a-4971-a9d7-5936fcb180b8.68a5f.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/17/17729358-2a50-4af8-a77a-ebb8d84e9f9d.5666a.png"
+    },
+    {
+      "file": "animals/60001/4.png",
+      "sha256": "e9e9194292b51bbd3ba402dc7fadaefededf1981d52bcbc42ee7b151972a5c76",
+      "bundle": "animal",
+      "assetPath": "spine/60001/60001",
+      "animation": "idle_4",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/3d/3d0684ba-947a-4971-a9d7-5936fcb180b8.fa26e.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/3d/3d0684ba-947a-4971-a9d7-5936fcb180b8.68a5f.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/17/17729358-2a50-4af8-a77a-ebb8d84e9f9d.5666a.png"
+    },
+    {
+      "file": "animals/60002/1.png",
+      "sha256": "3e3afec957b8dbe3a4bb0a2ac2180aba322efa4405d904a5a14455f2f46e6510",
+      "bundle": "animal",
+      "assetPath": "spine/60002/60002",
+      "animation": "idle_1",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/76/76629069-76d8-41c7-8d3e-f8148805a518.d13d1.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/76/76629069-76d8-41c7-8d3e-f8148805a518.17591.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/e9/e9705efb-09ef-4328-bad7-3ceaea824a85.7f4d1.png"
+    },
+    {
+      "file": "animals/60002/2.png",
+      "sha256": "2c8592b34aefaed943a348848b1dcbdd3cb418f52551d6ba79ec15c29f85bb53",
+      "bundle": "animal",
+      "assetPath": "spine/60002/60002",
+      "animation": "idle_2",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/76/76629069-76d8-41c7-8d3e-f8148805a518.d13d1.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/76/76629069-76d8-41c7-8d3e-f8148805a518.17591.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/e9/e9705efb-09ef-4328-bad7-3ceaea824a85.7f4d1.png"
+    },
+    {
+      "file": "animals/60002/3.png",
+      "sha256": "9f8e0517ab06ea30d4a87174e500f9e76a5ed38d6d5f2acf1c15450576eb9150",
+      "bundle": "animal",
+      "assetPath": "spine/60002/60002",
+      "animation": "idle_3",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/76/76629069-76d8-41c7-8d3e-f8148805a518.d13d1.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/76/76629069-76d8-41c7-8d3e-f8148805a518.17591.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/e9/e9705efb-09ef-4328-bad7-3ceaea824a85.7f4d1.png"
+    },
+    {
+      "file": "animals/60002/4.png",
+      "sha256": "ee4dfd9bfafb1c132e538a863ae68fe6fe6eb4bddd4910a9499bf4331fccad59",
+      "bundle": "animal",
+      "assetPath": "spine/60002/60002",
+      "animation": "idle_4",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/76/76629069-76d8-41c7-8d3e-f8148805a518.d13d1.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/76/76629069-76d8-41c7-8d3e-f8148805a518.17591.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/e9/e9705efb-09ef-4328-bad7-3ceaea824a85.7f4d1.png"
+    },
+    {
+      "file": "animals/60003/1.png",
+      "sha256": "2d3c8eab5949016557e030b0e2f0406a80cc6a75565e4f304dfe63d1bf633d19",
+      "bundle": "animal",
+      "assetPath": "spine/60003/60003",
+      "animation": "idle_1",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/d3/d311a4e6-c946-4aaf-966d-cbde437801a3.d8d29.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/d3/d311a4e6-c946-4aaf-966d-cbde437801a3.d79d4.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/7b/7b0ebeea-9c42-48a2-ab53-ead3cdb04340.a0a7c.png"
+    },
+    {
+      "file": "animals/60003/2.png",
+      "sha256": "ae95be95b0163722350b9542fbd331158bd56a93ede60da7ac9d7fef2888bb6f",
+      "bundle": "animal",
+      "assetPath": "spine/60003/60003",
+      "animation": "idle_2",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/d3/d311a4e6-c946-4aaf-966d-cbde437801a3.d8d29.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/d3/d311a4e6-c946-4aaf-966d-cbde437801a3.d79d4.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/7b/7b0ebeea-9c42-48a2-ab53-ead3cdb04340.a0a7c.png"
+    },
+    {
+      "file": "animals/60003/3.png",
+      "sha256": "d725811c0afee89db41ceaf4316b805a08696ae8ac5c6f8e2baf8ec4e990c11f",
+      "bundle": "animal",
+      "assetPath": "spine/60003/60003",
+      "animation": "idle_3",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/d3/d311a4e6-c946-4aaf-966d-cbde437801a3.d8d29.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/d3/d311a4e6-c946-4aaf-966d-cbde437801a3.d79d4.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/7b/7b0ebeea-9c42-48a2-ab53-ead3cdb04340.a0a7c.png"
+    },
+    {
+      "file": "animals/60003/4.png",
+      "sha256": "9e82ba2e54f9f5677f59812ef0383272dfa50870afb08f61b9fe21e45b088a6f",
+      "bundle": "animal",
+      "assetPath": "spine/60003/60003",
+      "animation": "idle_4",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/d3/d311a4e6-c946-4aaf-966d-cbde437801a3.d8d29.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/d3/d311a4e6-c946-4aaf-966d-cbde437801a3.d79d4.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/7b/7b0ebeea-9c42-48a2-ab53-ead3cdb04340.a0a7c.png"
+    },
+    {
+      "file": "animals/60004/1.png",
+      "sha256": "d53381ac97be7422dee39f0ca8825d5985f2bf1b1ef1c3618c9b9ef1de2b0bd3",
+      "bundle": "animal",
+      "assetPath": "spine/60004/60004",
+      "animation": "idle_1",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/9d/9d98c35d-7f5e-4227-95d1-cbba6c946068.24187.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/9d/9d98c35d-7f5e-4227-95d1-cbba6c946068.13c4e.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/5f/5ff799f0-9bf4-4fb9-bbbd-cb77e7cb14cd.23284.png"
+    },
+    {
+      "file": "animals/60004/2.png",
+      "sha256": "57eb0a6ee89229e0e7fb7d739a5709f0c6ca74c49c71441423c8ce61f8a65e34",
+      "bundle": "animal",
+      "assetPath": "spine/60004/60004",
+      "animation": "idle_2",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/9d/9d98c35d-7f5e-4227-95d1-cbba6c946068.24187.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/9d/9d98c35d-7f5e-4227-95d1-cbba6c946068.13c4e.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/5f/5ff799f0-9bf4-4fb9-bbbd-cb77e7cb14cd.23284.png"
+    },
+    {
+      "file": "animals/60004/3.png",
+      "sha256": "b591fe5242614b10d59411294e7228d03042cbceafb23c4a7f6c17c86c92bd02",
+      "bundle": "animal",
+      "assetPath": "spine/60004/60004",
+      "animation": "idle_3",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/9d/9d98c35d-7f5e-4227-95d1-cbba6c946068.24187.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/9d/9d98c35d-7f5e-4227-95d1-cbba6c946068.13c4e.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/5f/5ff799f0-9bf4-4fb9-bbbd-cb77e7cb14cd.23284.png"
+    },
+    {
+      "file": "animals/60004/4.png",
+      "sha256": "71c71dae13a1898230e97a5afb7bab95b9f66b34714787c73117d510f670d996",
+      "bundle": "animal",
+      "assetPath": "spine/60004/60004",
+      "animation": "idle_4",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/9d/9d98c35d-7f5e-4227-95d1-cbba6c946068.24187.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/9d/9d98c35d-7f5e-4227-95d1-cbba6c946068.13c4e.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/5f/5ff799f0-9bf4-4fb9-bbbd-cb77e7cb14cd.23284.png"
+    },
+    {
+      "file": "animals/60005/1.png",
+      "sha256": "3143aefea560933345677d6b6a8c8c464a50edb30194c796d39641af92aeaf7b",
+      "bundle": "animal",
+      "assetPath": "spine/60005/60005",
+      "animation": "idle_1",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/34/34697280-97c6-4ad9-ad21-bcb5d9e9676f.42b69.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/34/34697280-97c6-4ad9-ad21-bcb5d9e9676f.115d2.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/83/833c234a-08d9-4428-8219-90306196358b.b6f17.png"
+    },
+    {
+      "file": "animals/60005/2.png",
+      "sha256": "36ead6c7a57634279beb45f3b2759e99cbe588c2be9cdbf639ed4ef04601cf39",
+      "bundle": "animal",
+      "assetPath": "spine/60005/60005",
+      "animation": "idle_2",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/34/34697280-97c6-4ad9-ad21-bcb5d9e9676f.42b69.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/34/34697280-97c6-4ad9-ad21-bcb5d9e9676f.115d2.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/83/833c234a-08d9-4428-8219-90306196358b.b6f17.png"
+    },
+    {
+      "file": "animals/60005/3.png",
+      "sha256": "7f16382086c1bc06922cf163a0e358b09bedb32e6c42d739132ee8a4a36b5c45",
+      "bundle": "animal",
+      "assetPath": "spine/60005/60005",
+      "animation": "idle_3",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/34/34697280-97c6-4ad9-ad21-bcb5d9e9676f.42b69.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/34/34697280-97c6-4ad9-ad21-bcb5d9e9676f.115d2.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/83/833c234a-08d9-4428-8219-90306196358b.b6f17.png"
+    },
+    {
+      "file": "animals/60005/4.png",
+      "sha256": "17ca80e38e140b777e165d93f7e3e6ca91e91b32ba2ec247e50cbc98ef382c59",
+      "bundle": "animal",
+      "assetPath": "spine/60005/60005",
+      "animation": "idle_4",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/34/34697280-97c6-4ad9-ad21-bcb5d9e9676f.42b69.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/34/34697280-97c6-4ad9-ad21-bcb5d9e9676f.115d2.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/83/833c234a-08d9-4428-8219-90306196358b.b6f17.png"
+    },
+    {
+      "file": "animals/60006/1.png",
+      "sha256": "25e1578a193a3dff23d90cb0f34f7c90df81ef00cd1dc0fbc44ed1d21b1d12a4",
+      "bundle": "animal",
+      "assetPath": "spine/60006/60006",
+      "animation": "idle_1",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/e8/e8d83752-1860-4db9-9de0-e5c47691763d.5e274.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/e8/e8d83752-1860-4db9-9de0-e5c47691763d.2cf3d.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/8d/8d16c6e6-eb80-4603-98e0-68a4bd6401dc.b603a.png"
+    },
+    {
+      "file": "animals/60006/2.png",
+      "sha256": "c984fe58ba9cf0d7e352b06661d090149cc00a911f7dd86ecf391efaa01dbc1a",
+      "bundle": "animal",
+      "assetPath": "spine/60006/60006",
+      "animation": "idle_2",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/e8/e8d83752-1860-4db9-9de0-e5c47691763d.5e274.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/e8/e8d83752-1860-4db9-9de0-e5c47691763d.2cf3d.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/8d/8d16c6e6-eb80-4603-98e0-68a4bd6401dc.b603a.png"
+    },
+    {
+      "file": "animals/60006/3.png",
+      "sha256": "f7ae8f19a4a8785cd89bfe8016e4a42a12ec1c6521c653d85f11f1c5d98bbd59",
+      "bundle": "animal",
+      "assetPath": "spine/60006/60006",
+      "animation": "idle_3",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/e8/e8d83752-1860-4db9-9de0-e5c47691763d.5e274.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/e8/e8d83752-1860-4db9-9de0-e5c47691763d.2cf3d.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/8d/8d16c6e6-eb80-4603-98e0-68a4bd6401dc.b603a.png"
+    },
+    {
+      "file": "animals/60006/4.png",
+      "sha256": "6dc015876077d2b15eb3847a02b256b000fe475bd6d457d158a27b1fd2c25857",
+      "bundle": "animal",
+      "assetPath": "spine/60006/60006",
+      "animation": "idle_4",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/e8/e8d83752-1860-4db9-9de0-e5c47691763d.5e274.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/e8/e8d83752-1860-4db9-9de0-e5c47691763d.2cf3d.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/8d/8d16c6e6-eb80-4603-98e0-68a4bd6401dc.b603a.png"
+    },
+    {
+      "file": "animals/60007/1.png",
+      "sha256": "2393e327c7d344aef4a61e46ff9fbd42503176c23673cb51b8729665de49c4fd",
+      "bundle": "animal",
+      "assetPath": "spine/60007/60007",
+      "animation": "idle_1",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/a1/a1ca47b9-4677-4699-b708-84dc40e03b7f.77008.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/a1/a1ca47b9-4677-4699-b708-84dc40e03b7f.6fb22.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/ee/ee94107a-5fc7-4cde-9d74-2104d072df44.8a6e1.png"
+    },
+    {
+      "file": "animals/60007/2.png",
+      "sha256": "514ee01f58317c5583284b7f3fd36d42cc28fecba944b30772df50baa532dcf4",
+      "bundle": "animal",
+      "assetPath": "spine/60007/60007",
+      "animation": "idle_2",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/a1/a1ca47b9-4677-4699-b708-84dc40e03b7f.77008.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/a1/a1ca47b9-4677-4699-b708-84dc40e03b7f.6fb22.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/ee/ee94107a-5fc7-4cde-9d74-2104d072df44.8a6e1.png"
+    },
+    {
+      "file": "animals/60007/3.png",
+      "sha256": "f892548726b9ef7eb830c79ec2891887bfea244484c9a95d7b90ec9178655686",
+      "bundle": "animal",
+      "assetPath": "spine/60007/60007",
+      "animation": "idle_3",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/a1/a1ca47b9-4677-4699-b708-84dc40e03b7f.77008.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/a1/a1ca47b9-4677-4699-b708-84dc40e03b7f.6fb22.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/ee/ee94107a-5fc7-4cde-9d74-2104d072df44.8a6e1.png"
+    },
+    {
+      "file": "animals/60007/4.png",
+      "sha256": "031fa4bcec6f6c2d6f6ddf742741efb6977071363ea7a7c4c59d532f4ba84e1f",
+      "bundle": "animal",
+      "assetPath": "spine/60007/60007",
+      "animation": "idle_4",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/a1/a1ca47b9-4677-4699-b708-84dc40e03b7f.77008.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/a1/a1ca47b9-4677-4699-b708-84dc40e03b7f.6fb22.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/ee/ee94107a-5fc7-4cde-9d74-2104d072df44.8a6e1.png"
+    },
+    {
+      "file": "animals/60008/1.png",
+      "sha256": "08cd58ede727ffae3d2c515bdf788541e230b2a10a3d7bea0b4a754c0c705b9c",
+      "bundle": "animal",
+      "assetPath": "spine/60008/60008",
+      "animation": "idle_1",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/f1/f1dbab95-3e33-4559-bcde-93f188e73ca4.5cca8.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/f1/f1dbab95-3e33-4559-bcde-93f188e73ca4.05402.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/bf/bf065acd-e9b1-4287-912d-54945dc300a8.a9621.png"
+    },
+    {
+      "file": "animals/60008/2.png",
+      "sha256": "93a18093f93aa1f24ad19748b84d14ec26801dc85d46681b98fc44076eefecb5",
+      "bundle": "animal",
+      "assetPath": "spine/60008/60008",
+      "animation": "idle_2",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/f1/f1dbab95-3e33-4559-bcde-93f188e73ca4.5cca8.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/f1/f1dbab95-3e33-4559-bcde-93f188e73ca4.05402.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/bf/bf065acd-e9b1-4287-912d-54945dc300a8.a9621.png"
+    },
+    {
+      "file": "animals/60008/3.png",
+      "sha256": "ae5232c4a6642b003b8de178a8dfb80012112b5672adcbbca25524919c80db78",
+      "bundle": "animal",
+      "assetPath": "spine/60008/60008",
+      "animation": "idle_3",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/f1/f1dbab95-3e33-4559-bcde-93f188e73ca4.5cca8.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/f1/f1dbab95-3e33-4559-bcde-93f188e73ca4.05402.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/bf/bf065acd-e9b1-4287-912d-54945dc300a8.a9621.png"
+    },
+    {
+      "file": "animals/60008/4.png",
+      "sha256": "0fbbd9529defc303bdfdbeccae0127afbd06a87088608e4c8d4c8889873f307f",
+      "bundle": "animal",
+      "assetPath": "spine/60008/60008",
+      "animation": "idle_4",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/f1/f1dbab95-3e33-4559-bcde-93f188e73ca4.5cca8.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/f1/f1dbab95-3e33-4559-bcde-93f188e73ca4.05402.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/bf/bf065acd-e9b1-4287-912d-54945dc300a8.a9621.png"
+    },
+    {
+      "file": "animals/60009/1.png",
+      "sha256": "38e183da1fcdd759aa9491d7845fd607ae8e415f7b156c90670fe4f1ae19cde4",
+      "bundle": "animal",
+      "assetPath": "spine/60009/60009",
+      "animation": "idle_1",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/08/08718f76-c808-42d1-9425-9ac879ca2a74.827d1.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/08/08718f76-c808-42d1-9425-9ac879ca2a74.b2a92.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/b7/b7a10e11-0982-46f7-bf96-b612cc23c4bd.4a0de.png"
+    },
+    {
+      "file": "animals/60009/2.png",
+      "sha256": "5ad7a11c3f25290f8270c794c1e03e37145fb6ed3bbda59dde8e140d8f16c367",
+      "bundle": "animal",
+      "assetPath": "spine/60009/60009",
+      "animation": "idle_2",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/08/08718f76-c808-42d1-9425-9ac879ca2a74.827d1.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/08/08718f76-c808-42d1-9425-9ac879ca2a74.b2a92.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/b7/b7a10e11-0982-46f7-bf96-b612cc23c4bd.4a0de.png"
+    },
+    {
+      "file": "animals/60009/3.png",
+      "sha256": "40eb0ac943b8c659011cef3e4b0e347cc81b2bfcfd8bce84b2b9bb5a986a8434",
+      "bundle": "animal",
+      "assetPath": "spine/60009/60009",
+      "animation": "idle_3",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/08/08718f76-c808-42d1-9425-9ac879ca2a74.827d1.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/08/08718f76-c808-42d1-9425-9ac879ca2a74.b2a92.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/b7/b7a10e11-0982-46f7-bf96-b612cc23c4bd.4a0de.png"
+    },
+    {
+      "file": "animals/60009/4.png",
+      "sha256": "15aff0b3eb46a4454abc443ada98de78167035210bc667b164504d440e5209ce",
+      "bundle": "animal",
+      "assetPath": "spine/60009/60009",
+      "animation": "idle_4",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/08/08718f76-c808-42d1-9425-9ac879ca2a74.827d1.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/08/08718f76-c808-42d1-9425-9ac879ca2a74.b2a92.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/b7/b7a10e11-0982-46f7-bf96-b612cc23c4bd.4a0de.png"
+    },
+    {
+      "file": "animals/60010/1.png",
+      "sha256": "1b01daf84d5cabc840f0080d3c8e646c4e1887aa7844d463676c5ecaf88313a4",
+      "bundle": "animal",
+      "assetPath": "spine/60010/60010",
+      "animation": "idle_1",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/ec/ec09c97d-1c3f-42e4-83c7-103f90d8487f.23616.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/ec/ec09c97d-1c3f-42e4-83c7-103f90d8487f.5ebbd.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/72/72671ab3-f086-4573-817f-70e82d408a1a.0e54e.png"
+    },
+    {
+      "file": "animals/60010/2.png",
+      "sha256": "7928b5e33f4b0f3ca717621e0c7f11ced7291db4194e5c75480b83dd8d2e21e8",
+      "bundle": "animal",
+      "assetPath": "spine/60010/60010",
+      "animation": "idle_2",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/ec/ec09c97d-1c3f-42e4-83c7-103f90d8487f.23616.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/ec/ec09c97d-1c3f-42e4-83c7-103f90d8487f.5ebbd.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/72/72671ab3-f086-4573-817f-70e82d408a1a.0e54e.png"
+    },
+    {
+      "file": "animals/60010/3.png",
+      "sha256": "cf1fef853689458867fbc3b7b080a348c7ccbd7fb897181308f0b6b2a254e5fd",
+      "bundle": "animal",
+      "assetPath": "spine/60010/60010",
+      "animation": "idle_3",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/ec/ec09c97d-1c3f-42e4-83c7-103f90d8487f.23616.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/ec/ec09c97d-1c3f-42e4-83c7-103f90d8487f.5ebbd.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/72/72671ab3-f086-4573-817f-70e82d408a1a.0e54e.png"
+    },
+    {
+      "file": "animals/60010/4.png",
+      "sha256": "f10f66a88ae615ed305c3db0a209778f2ffc03b9a6828deae00b9b282efab2e7",
+      "bundle": "animal",
+      "assetPath": "spine/60010/60010",
+      "animation": "idle_4",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/ec/ec09c97d-1c3f-42e4-83c7-103f90d8487f.23616.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/ec/ec09c97d-1c3f-42e4-83c7-103f90d8487f.5ebbd.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/72/72671ab3-f086-4573-817f-70e82d408a1a.0e54e.png"
+    },
+    {
+      "file": "animals/60011/1.png",
+      "sha256": "c872514cb5ae364bf97f018dd4a426b4003ce3cea01c0c2c3d9e46b796a8331f",
+      "bundle": "animal",
+      "assetPath": "spine/60011/60011",
+      "animation": "idle_1",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/32/322d01f0-87c5-4703-824c-945e093e344a.8bf5f.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/32/322d01f0-87c5-4703-824c-945e093e344a.79a61.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/70/7056ad27-6db6-4467-b1ea-93f597db4b93.3ebea.png"
+    },
+    {
+      "file": "animals/60011/2.png",
+      "sha256": "50c5085d8b1f3c5f888686ba4454ac0e7c7baaab575210883ccaecdc1b1ba043",
+      "bundle": "animal",
+      "assetPath": "spine/60011/60011",
+      "animation": "idle_2",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/32/322d01f0-87c5-4703-824c-945e093e344a.8bf5f.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/32/322d01f0-87c5-4703-824c-945e093e344a.79a61.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/70/7056ad27-6db6-4467-b1ea-93f597db4b93.3ebea.png"
+    },
+    {
+      "file": "animals/60011/3.png",
+      "sha256": "b78ffa6debc1d6d0c36ff943ac83d0bc46028aa8a88369fd35cf5daf8830f52d",
+      "bundle": "animal",
+      "assetPath": "spine/60011/60011",
+      "animation": "idle_3",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/32/322d01f0-87c5-4703-824c-945e093e344a.8bf5f.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/32/322d01f0-87c5-4703-824c-945e093e344a.79a61.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/70/7056ad27-6db6-4467-b1ea-93f597db4b93.3ebea.png"
+    },
+    {
+      "file": "animals/60011/4.png",
+      "sha256": "879cd56219799b69ec9e369838074264343dd7979de9bb1d94b4862f808b22b2",
+      "bundle": "animal",
+      "assetPath": "spine/60011/60011",
+      "animation": "idle_4",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/32/322d01f0-87c5-4703-824c-945e093e344a.8bf5f.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/32/322d01f0-87c5-4703-824c-945e093e344a.79a61.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/70/7056ad27-6db6-4467-b1ea-93f597db4b93.3ebea.png"
+    },
+    {
+      "file": "animals/60012/1.png",
+      "sha256": "839cd9c1372a3704dbbde834f5e3802613a5ce6d85fa098ab97886b7e1eb8b2a",
+      "bundle": "animal",
+      "assetPath": "spine/60012/60012",
+      "animation": "idle_1",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/d9/d99cc8e5-b146-45d4-b384-48a063f3a5eb.b84d7.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/d9/d99cc8e5-b146-45d4-b384-48a063f3a5eb.372f2.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/d4/d43fd137-7be9-4b63-9a94-7ba44cf16900.6f276.png"
+    },
+    {
+      "file": "animals/60012/2.png",
+      "sha256": "5bb8ea000f840dcb709b23a5eea1c765c78a859cb3236ee22a1ca6ef9d1038c8",
+      "bundle": "animal",
+      "assetPath": "spine/60012/60012",
+      "animation": "idle_2",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/d9/d99cc8e5-b146-45d4-b384-48a063f3a5eb.b84d7.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/d9/d99cc8e5-b146-45d4-b384-48a063f3a5eb.372f2.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/d4/d43fd137-7be9-4b63-9a94-7ba44cf16900.6f276.png"
+    },
+    {
+      "file": "animals/60012/3.png",
+      "sha256": "b5c0600e1721ef1886fd92d6b17ef8f8eeaa39100239cfec4975f46f748c256f",
+      "bundle": "animal",
+      "assetPath": "spine/60012/60012",
+      "animation": "idle_3",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/d9/d99cc8e5-b146-45d4-b384-48a063f3a5eb.b84d7.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/d9/d99cc8e5-b146-45d4-b384-48a063f3a5eb.372f2.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/d4/d43fd137-7be9-4b63-9a94-7ba44cf16900.6f276.png"
+    },
+    {
+      "file": "animals/60012/4.png",
+      "sha256": "e512c640666aea6bd5e43b870725ce136829cfe588e853ee63cab0b2c5a55ecb",
+      "bundle": "animal",
+      "assetPath": "spine/60012/60012",
+      "animation": "idle_4",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/d9/d99cc8e5-b146-45d4-b384-48a063f3a5eb.b84d7.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/d9/d99cc8e5-b146-45d4-b384-48a063f3a5eb.372f2.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/d4/d43fd137-7be9-4b63-9a94-7ba44cf16900.6f276.png"
+    },
+    {
+      "file": "animals/70001/1.png",
+      "sha256": "e6265633826d2dbfbdab7485352ec56956a496eeeadc44c9a60bf889fba5d565",
+      "bundle": "animal",
+      "assetPath": "spine/70001/70001",
+      "animation": "idle_1",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/86/863be270-1840-4435-9265-77be57db16ef.99248.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/86/863be270-1840-4435-9265-77be57db16ef.b89f6.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/3d/3dda37e7-4a4d-4d6d-81ae-a8b5dea291da.239c9.png"
+    },
+    {
+      "file": "animals/70001/2.png",
+      "sha256": "66dba534723f748333e3de9d3341771260155290acc435ec32548320e30582ed",
+      "bundle": "animal",
+      "assetPath": "spine/70001/70001",
+      "animation": "idle_2",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/86/863be270-1840-4435-9265-77be57db16ef.99248.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/86/863be270-1840-4435-9265-77be57db16ef.b89f6.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/3d/3dda37e7-4a4d-4d6d-81ae-a8b5dea291da.239c9.png"
+    },
+    {
+      "file": "animals/70001/3.png",
+      "sha256": "133e3fabad464c1cf77714b67dd8994bb98891f9ffd6c82ff5f658e679e93526",
+      "bundle": "animal",
+      "assetPath": "spine/70001/70001",
+      "animation": "idle_3",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/86/863be270-1840-4435-9265-77be57db16ef.99248.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/86/863be270-1840-4435-9265-77be57db16ef.b89f6.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/3d/3dda37e7-4a4d-4d6d-81ae-a8b5dea291da.239c9.png"
+    },
+    {
+      "file": "animals/70001/4.png",
+      "sha256": "a9adc11a74e93a5a4a58bb65ecac2e3a55f3cdd0b65f9ecd0965908577355b95",
+      "bundle": "animal",
+      "assetPath": "spine/70001/70001",
+      "animation": "idle_4",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/86/863be270-1840-4435-9265-77be57db16ef.99248.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/86/863be270-1840-4435-9265-77be57db16ef.b89f6.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/3d/3dda37e7-4a4d-4d6d-81ae-a8b5dea291da.239c9.png"
+    },
+    {
+      "file": "animals/70002/1.png",
+      "sha256": "4f3860ac45b7e3660328f5c2a3e6f0d708004d224819105eed948a0d43b53332",
+      "bundle": "animal",
+      "assetPath": "spine/70002/70002",
+      "animation": "idle_1",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/8b/8bab7c7c-cb60-48b4-98b6-a9afe312c68c.48ec0.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/8b/8bab7c7c-cb60-48b4-98b6-a9afe312c68c.5c2fb.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/67/679f4fb2-f078-4139-9167-ca6bf0187532.3b6f1.png"
+    },
+    {
+      "file": "animals/70002/2.png",
+      "sha256": "e805fe142e3d1d1f5a9d05309773e87f53839d10120061216d9f22ba8a76d04d",
+      "bundle": "animal",
+      "assetPath": "spine/70002/70002",
+      "animation": "idle_2",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/8b/8bab7c7c-cb60-48b4-98b6-a9afe312c68c.48ec0.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/8b/8bab7c7c-cb60-48b4-98b6-a9afe312c68c.5c2fb.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/67/679f4fb2-f078-4139-9167-ca6bf0187532.3b6f1.png"
+    },
+    {
+      "file": "animals/70002/3.png",
+      "sha256": "03ea55d559a6df896707c98e152d8064eaae1667885642c5a9689528e9a56d1c",
+      "bundle": "animal",
+      "assetPath": "spine/70002/70002",
+      "animation": "idle_3",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/8b/8bab7c7c-cb60-48b4-98b6-a9afe312c68c.48ec0.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/8b/8bab7c7c-cb60-48b4-98b6-a9afe312c68c.5c2fb.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/67/679f4fb2-f078-4139-9167-ca6bf0187532.3b6f1.png"
+    },
+    {
+      "file": "animals/70002/4.png",
+      "sha256": "ddc134e69e2eb7f530b7fb397c969b33732c921f82f9045c911be1a28842cb62",
+      "bundle": "animal",
+      "assetPath": "spine/70002/70002",
+      "animation": "idle_4",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/8b/8bab7c7c-cb60-48b4-98b6-a9afe312c68c.48ec0.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/8b/8bab7c7c-cb60-48b4-98b6-a9afe312c68c.5c2fb.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/67/679f4fb2-f078-4139-9167-ca6bf0187532.3b6f1.png"
+    },
+    {
+      "file": "animals/70003/1.png",
+      "sha256": "dbcb80dc23edd7596b411665d972871d90b5f46a70b79ab482976fb5e51e9388",
+      "bundle": "animal",
+      "assetPath": "spine/70003/70003",
+      "animation": "idle_1",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/5d/5df9e0eb-e7da-4b89-832e-03960278afe1.d4475.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/5d/5df9e0eb-e7da-4b89-832e-03960278afe1.8c598.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/e7/e7003edd-62f9-4ead-835e-f6387d1f7e8c.a4d41.png"
+    },
+    {
+      "file": "animals/70003/2.png",
+      "sha256": "167934c23ecee124ed407c70e25aa264ba273359087bfd609e1d9e39b8da4745",
+      "bundle": "animal",
+      "assetPath": "spine/70003/70003",
+      "animation": "idle_2",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/5d/5df9e0eb-e7da-4b89-832e-03960278afe1.d4475.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/5d/5df9e0eb-e7da-4b89-832e-03960278afe1.8c598.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/e7/e7003edd-62f9-4ead-835e-f6387d1f7e8c.a4d41.png"
+    },
+    {
+      "file": "animals/70003/3.png",
+      "sha256": "2855f2b0914d10939ff9e7b1de8c90c8c2775c895add3f091bb31b5b2623e954",
+      "bundle": "animal",
+      "assetPath": "spine/70003/70003",
+      "animation": "idle_3",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/5d/5df9e0eb-e7da-4b89-832e-03960278afe1.d4475.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/5d/5df9e0eb-e7da-4b89-832e-03960278afe1.8c598.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/e7/e7003edd-62f9-4ead-835e-f6387d1f7e8c.a4d41.png"
+    },
+    {
+      "file": "animals/70003/4.png",
+      "sha256": "06c221c1ab6baae007a457dedacc59c341a2e94fc6cc276a164726831a80a6b0",
+      "bundle": "animal",
+      "assetPath": "spine/70003/70003",
+      "animation": "idle_4",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/5d/5df9e0eb-e7da-4b89-832e-03960278afe1.d4475.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/5d/5df9e0eb-e7da-4b89-832e-03960278afe1.8c598.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/e7/e7003edd-62f9-4ead-835e-f6387d1f7e8c.a4d41.png"
+    },
+    {
+      "file": "animals/70004/1.png",
+      "sha256": "a55b3533a74db3ac5a000e2faa6cc99a241b79dba4e5d7564ddf1cf8ec88fcc0",
+      "bundle": "animal",
+      "assetPath": "spine/70004/70004",
+      "animation": "idle_1",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/15/15366615-c231-4a4b-8709-17e1f95dba08.424aa.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/15/15366615-c231-4a4b-8709-17e1f95dba08.bc2db.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/8b/8b639dc8-c4c0-428f-8206-d9956178600e.ca86e.png"
+    },
+    {
+      "file": "animals/70004/2.png",
+      "sha256": "3490d7f0d1e4153b65317ba11352f1205fee2ac4d76a739fb2480bf1fa3b41fd",
+      "bundle": "animal",
+      "assetPath": "spine/70004/70004",
+      "animation": "idle_2",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/15/15366615-c231-4a4b-8709-17e1f95dba08.424aa.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/15/15366615-c231-4a4b-8709-17e1f95dba08.bc2db.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/8b/8b639dc8-c4c0-428f-8206-d9956178600e.ca86e.png"
+    },
+    {
+      "file": "animals/70004/3.png",
+      "sha256": "ecd4805e15dcd045a1aa2ea7f2259046c503ea7f25bacda57d200e01da805cdd",
+      "bundle": "animal",
+      "assetPath": "spine/70004/70004",
+      "animation": "idle_3",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/15/15366615-c231-4a4b-8709-17e1f95dba08.424aa.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/15/15366615-c231-4a4b-8709-17e1f95dba08.bc2db.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/8b/8b639dc8-c4c0-428f-8206-d9956178600e.ca86e.png"
+    },
+    {
+      "file": "animals/70004/4.png",
+      "sha256": "b85d8c9fce7b7331435d528db189c517ec14736b0dde4ac337d105929139c0ef",
+      "bundle": "animal",
+      "assetPath": "spine/70004/70004",
+      "animation": "idle_4",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/15/15366615-c231-4a4b-8709-17e1f95dba08.424aa.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/15/15366615-c231-4a4b-8709-17e1f95dba08.bc2db.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/8b/8b639dc8-c4c0-428f-8206-d9956178600e.ca86e.png"
+    },
+    {
+      "file": "animals/70005/1.png",
+      "sha256": "538a34c1a2c1c88fb696ef1fd32af2cce7b122d64549be043fe358c103b89881",
+      "bundle": "animal",
+      "assetPath": "spine/70005/70005",
+      "animation": "idle_1",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/b8/b856c121-4c31-47d0-bdcd-0963b451faa2.44f1c.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/b8/b856c121-4c31-47d0-bdcd-0963b451faa2.44131.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/ad/adad6c29-3c50-4e79-8711-7f94cd2c6539.8fa04.png"
+    },
+    {
+      "file": "animals/70005/2.png",
+      "sha256": "c75e7d0a3d9027797603606f8b1a9a4f711b4e0cac416b0ee6c514ed829bcf83",
+      "bundle": "animal",
+      "assetPath": "spine/70005/70005",
+      "animation": "idle_2",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/b8/b856c121-4c31-47d0-bdcd-0963b451faa2.44f1c.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/b8/b856c121-4c31-47d0-bdcd-0963b451faa2.44131.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/ad/adad6c29-3c50-4e79-8711-7f94cd2c6539.8fa04.png"
+    },
+    {
+      "file": "animals/70005/3.png",
+      "sha256": "038b30b12d4727a0ae07579b8da14b9ed3149c9b57b63d8647e0081d940d99ca",
+      "bundle": "animal",
+      "assetPath": "spine/70005/70005",
+      "animation": "idle_3",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/b8/b856c121-4c31-47d0-bdcd-0963b451faa2.44f1c.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/b8/b856c121-4c31-47d0-bdcd-0963b451faa2.44131.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/ad/adad6c29-3c50-4e79-8711-7f94cd2c6539.8fa04.png"
+    },
+    {
+      "file": "animals/70005/4.png",
+      "sha256": "2322ed15d3aaabeb079468ce7eb8e13ce06027a542289620c3a9a3d2faf8aa5f",
+      "bundle": "animal",
+      "assetPath": "spine/70005/70005",
+      "animation": "idle_4",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/b8/b856c121-4c31-47d0-bdcd-0963b451faa2.44f1c.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/b8/b856c121-4c31-47d0-bdcd-0963b451faa2.44131.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/ad/adad6c29-3c50-4e79-8711-7f94cd2c6539.8fa04.png"
+    },
+    {
+      "file": "animals/70006/1.png",
+      "sha256": "acbf5e8fa775be93e9e4e24cd9246b9b89f8af0fc714ccb5fea3dcd2a6cf933e",
+      "bundle": "animal",
+      "assetPath": "spine/70006/70006",
+      "animation": "idle_1",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/94/94d74848-eea8-4cf6-a4c8-ed9ac434025f.96a19.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/94/94d74848-eea8-4cf6-a4c8-ed9ac434025f.d148f.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/a2/a2b09ef6-3459-40bb-99f6-136468395854.b62df.png"
+    },
+    {
+      "file": "animals/70006/2.png",
+      "sha256": "c871cdf4f965d5fa828c3def6a5d42cf6effeee4ac6f68fc041b03e8421c94ef",
+      "bundle": "animal",
+      "assetPath": "spine/70006/70006",
+      "animation": "idle_2",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/94/94d74848-eea8-4cf6-a4c8-ed9ac434025f.96a19.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/94/94d74848-eea8-4cf6-a4c8-ed9ac434025f.d148f.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/a2/a2b09ef6-3459-40bb-99f6-136468395854.b62df.png"
+    },
+    {
+      "file": "animals/70006/3.png",
+      "sha256": "0f766ad30f48e063684620be8d5634f0c0a7035b06bb9f603ef943d3c8257635",
+      "bundle": "animal",
+      "assetPath": "spine/70006/70006",
+      "animation": "idle_3",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/94/94d74848-eea8-4cf6-a4c8-ed9ac434025f.96a19.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/94/94d74848-eea8-4cf6-a4c8-ed9ac434025f.d148f.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/a2/a2b09ef6-3459-40bb-99f6-136468395854.b62df.png"
+    },
+    {
+      "file": "animals/70006/4.png",
+      "sha256": "1e4ff72a671570898aa430c63d948df4cb95fc0d130440e9f15dc1593d85bcd2",
+      "bundle": "animal",
+      "assetPath": "spine/70006/70006",
+      "animation": "idle_4",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/94/94d74848-eea8-4cf6-a4c8-ed9ac434025f.96a19.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/94/94d74848-eea8-4cf6-a4c8-ed9ac434025f.d148f.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/a2/a2b09ef6-3459-40bb-99f6-136468395854.b62df.png"
+    },
+    {
+      "file": "animals/70007/1.png",
+      "sha256": "8f538c6eb04252177d3943d1ab6e94d987ac94013a6f6f2fa80e66c09bd721fd",
+      "bundle": "animal",
+      "assetPath": "spine/70007/70007",
+      "animation": "idle_1",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/58/58d1aa45-1437-413f-b11f-90379931a026.22660.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/58/58d1aa45-1437-413f-b11f-90379931a026.f8864.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/26/268632ba-ca19-4b9d-9a99-7c1a678bbbe3.44bb7.png"
+    },
+    {
+      "file": "animals/70007/2.png",
+      "sha256": "a810cf1dacc92d9115bb311287d5755f1d4fe6c288e16457896d40aefce1d3d6",
+      "bundle": "animal",
+      "assetPath": "spine/70007/70007",
+      "animation": "idle_2",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/58/58d1aa45-1437-413f-b11f-90379931a026.22660.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/58/58d1aa45-1437-413f-b11f-90379931a026.f8864.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/26/268632ba-ca19-4b9d-9a99-7c1a678bbbe3.44bb7.png"
+    },
+    {
+      "file": "animals/70007/3.png",
+      "sha256": "979a1102427e3e4d39ba0d1e94dce45b6d10b8bad28a7ddba095dfdd601f6982",
+      "bundle": "animal",
+      "assetPath": "spine/70007/70007",
+      "animation": "idle_3",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/58/58d1aa45-1437-413f-b11f-90379931a026.22660.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/58/58d1aa45-1437-413f-b11f-90379931a026.f8864.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/26/268632ba-ca19-4b9d-9a99-7c1a678bbbe3.44bb7.png"
+    },
+    {
+      "file": "animals/70007/4.png",
+      "sha256": "b11624791f1aa45228da30a11a5050a7b1786c6cc3464d3659c7b2386a3a3bea",
+      "bundle": "animal",
+      "assetPath": "spine/70007/70007",
+      "animation": "idle_4",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/58/58d1aa45-1437-413f-b11f-90379931a026.22660.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/58/58d1aa45-1437-413f-b11f-90379931a026.f8864.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/26/268632ba-ca19-4b9d-9a99-7c1a678bbbe3.44bb7.png"
+    },
+    {
+      "file": "animals/70008/1.png",
+      "sha256": "ff4e423f93d041cf74925719a002ae74dcff3000ea23c013aac1802a0ae05c64",
+      "bundle": "animal",
+      "assetPath": "spine/70008/70008",
+      "animation": "idle_1",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/d7/d793ad2f-0167-493b-8c61-6208f1d9f031.6ea55.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/d7/d793ad2f-0167-493b-8c61-6208f1d9f031.205b7.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/c6/c6beb43d-d501-4bed-855f-d97da39f4b84.ee32e.png"
+    },
+    {
+      "file": "animals/70008/2.png",
+      "sha256": "1c41c4966da38a271374bbf576424fd0f27e1921272a555ac3a0417a3fc2e126",
+      "bundle": "animal",
+      "assetPath": "spine/70008/70008",
+      "animation": "idle_2",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/d7/d793ad2f-0167-493b-8c61-6208f1d9f031.6ea55.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/d7/d793ad2f-0167-493b-8c61-6208f1d9f031.205b7.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/c6/c6beb43d-d501-4bed-855f-d97da39f4b84.ee32e.png"
+    },
+    {
+      "file": "animals/70008/3.png",
+      "sha256": "beac1638be3dd48a3ed997c303b007baead6de12858a29bc4f44791d54f84aca",
+      "bundle": "animal",
+      "assetPath": "spine/70008/70008",
+      "animation": "idle_3",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/d7/d793ad2f-0167-493b-8c61-6208f1d9f031.6ea55.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/d7/d793ad2f-0167-493b-8c61-6208f1d9f031.205b7.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/c6/c6beb43d-d501-4bed-855f-d97da39f4b84.ee32e.png"
+    },
+    {
+      "file": "animals/70008/4.png",
+      "sha256": "b4aa06d2b7358d57d8a89f3ec516b383e752899c96e43b41401e25aa8e809095",
+      "bundle": "animal",
+      "assetPath": "spine/70008/70008",
+      "animation": "idle_4",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/d7/d793ad2f-0167-493b-8c61-6208f1d9f031.6ea55.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/d7/d793ad2f-0167-493b-8c61-6208f1d9f031.205b7.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/c6/c6beb43d-d501-4bed-855f-d97da39f4b84.ee32e.png"
+    },
+    {
+      "file": "animals/70009/1.png",
+      "sha256": "9a6e3fb32fec5a46180f464f82046f926a9377b91cccf49d663bcae4d100020c",
+      "bundle": "animal",
+      "assetPath": "spine/70009/70009",
+      "animation": "idle_1",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/74/748bd84e-198a-4704-b926-4aed49c9cb1c.4ec5f.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/74/748bd84e-198a-4704-b926-4aed49c9cb1c.764af.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/9f/9fff9ef3-e17b-4a45-9528-e3f081b2cb12.6b76e.png"
+    },
+    {
+      "file": "animals/70009/2.png",
+      "sha256": "177a7d501dfc84d2dcebeda94ba0e45dfdeafeec6e1c377ec698120498e23670",
+      "bundle": "animal",
+      "assetPath": "spine/70009/70009",
+      "animation": "idle_2",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/74/748bd84e-198a-4704-b926-4aed49c9cb1c.4ec5f.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/74/748bd84e-198a-4704-b926-4aed49c9cb1c.764af.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/9f/9fff9ef3-e17b-4a45-9528-e3f081b2cb12.6b76e.png"
+    },
+    {
+      "file": "animals/70009/3.png",
+      "sha256": "b26a6782f5591ae63d4f3f6d1359a8701a6ef92eca5fe420ffb107ebf5059368",
+      "bundle": "animal",
+      "assetPath": "spine/70009/70009",
+      "animation": "idle_3",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/74/748bd84e-198a-4704-b926-4aed49c9cb1c.4ec5f.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/74/748bd84e-198a-4704-b926-4aed49c9cb1c.764af.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/9f/9fff9ef3-e17b-4a45-9528-e3f081b2cb12.6b76e.png"
+    },
+    {
+      "file": "animals/70009/4.png",
+      "sha256": "17a94091b3267af16b2d6d3ac3a3445c808525b1300a43fffb675d567eca8b5d",
+      "bundle": "animal",
+      "assetPath": "spine/70009/70009",
+      "animation": "idle_4",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/74/748bd84e-198a-4704-b926-4aed49c9cb1c.4ec5f.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/74/748bd84e-198a-4704-b926-4aed49c9cb1c.764af.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/9f/9fff9ef3-e17b-4a45-9528-e3f081b2cb12.6b76e.png"
+    },
+    {
+      "file": "animals/70010/1.png",
+      "sha256": "351cfbb90c9ca357b6782c9346749b4911e516813a837944c37506601028fba0",
+      "bundle": "animal",
+      "assetPath": "spine/70010/70010",
+      "animation": "idle_1",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/20/20b661a7-635e-4f5d-b60b-6cee47e27337.365ba.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/20/20b661a7-635e-4f5d-b60b-6cee47e27337.8cde8.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/f9/f92bc996-d226-4c45-8f52-6410934b1054.d93a3.png"
+    },
+    {
+      "file": "animals/70010/2.png",
+      "sha256": "29d062b3f07c302996488916c424b810808522ab7562bbec945de28bf895d911",
+      "bundle": "animal",
+      "assetPath": "spine/70010/70010",
+      "animation": "idle_2",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/20/20b661a7-635e-4f5d-b60b-6cee47e27337.365ba.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/20/20b661a7-635e-4f5d-b60b-6cee47e27337.8cde8.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/f9/f92bc996-d226-4c45-8f52-6410934b1054.d93a3.png"
+    },
+    {
+      "file": "animals/70010/3.png",
+      "sha256": "7e1096522ec68f187ee71787bf3e1ccbad9a574bb0e8d7ecad631f849b6dd11c",
+      "bundle": "animal",
+      "assetPath": "spine/70010/70010",
+      "animation": "idle_3",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/20/20b661a7-635e-4f5d-b60b-6cee47e27337.365ba.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/20/20b661a7-635e-4f5d-b60b-6cee47e27337.8cde8.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/f9/f92bc996-d226-4c45-8f52-6410934b1054.d93a3.png"
+    },
+    {
+      "file": "animals/70010/4.png",
+      "sha256": "63b8d496b3b29cb1bd4b8be322c2116dd6fedf3335ed6b0cbdec5c1adb72223e",
+      "bundle": "animal",
+      "assetPath": "spine/70010/70010",
+      "animation": "idle_4",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/20/20b661a7-635e-4f5d-b60b-6cee47e27337.365ba.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/20/20b661a7-635e-4f5d-b60b-6cee47e27337.8cde8.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/f9/f92bc996-d226-4c45-8f52-6410934b1054.d93a3.png"
+    },
+    {
+      "file": "animals/70011/1.png",
+      "sha256": "f3e8ad2054bd4cc78d151dfc8bda98c6ecde94aec17a5679544a8fe150ba9cc6",
+      "bundle": "animal",
+      "assetPath": "spine/70011/70011",
+      "animation": "idle_1",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/91/9187b86f-7f02-4557-94be-681b8d81293e.81ebc.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/91/9187b86f-7f02-4557-94be-681b8d81293e.fbff3.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/53/534d5c8d-0344-4cf0-a85c-f0886497def1.62b0f.png"
+    },
+    {
+      "file": "animals/70011/2.png",
+      "sha256": "a9be43070d16faeec04d16468127a10b599c55302738375f98d463f28e60ab50",
+      "bundle": "animal",
+      "assetPath": "spine/70011/70011",
+      "animation": "idle_2",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/91/9187b86f-7f02-4557-94be-681b8d81293e.81ebc.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/91/9187b86f-7f02-4557-94be-681b8d81293e.fbff3.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/53/534d5c8d-0344-4cf0-a85c-f0886497def1.62b0f.png"
+    },
+    {
+      "file": "animals/70011/3.png",
+      "sha256": "247e48c93b94c64e8a248d858ce17c139dcbc00be02202b86e938fc38ee6ac82",
+      "bundle": "animal",
+      "assetPath": "spine/70011/70011",
+      "animation": "idle_3",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/91/9187b86f-7f02-4557-94be-681b8d81293e.81ebc.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/91/9187b86f-7f02-4557-94be-681b8d81293e.fbff3.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/53/534d5c8d-0344-4cf0-a85c-f0886497def1.62b0f.png"
+    },
+    {
+      "file": "animals/70011/4.png",
+      "sha256": "a68adaf61e307747a9d66047a1511a8c3e974a4fcdb3a22f8a7d1277a93a6216",
+      "bundle": "animal",
+      "assetPath": "spine/70011/70011",
+      "animation": "idle_4",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/91/9187b86f-7f02-4557-94be-681b8d81293e.81ebc.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/91/9187b86f-7f02-4557-94be-681b8d81293e.fbff3.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/53/534d5c8d-0344-4cf0-a85c-f0886497def1.62b0f.png"
+    },
+    {
+      "file": "animals/70012/1.png",
+      "sha256": "7f94555cde7af9c48626482faa53b5bd22d8c17c1ac6d72f191a8778166a85a3",
+      "bundle": "animal",
+      "assetPath": "spine/70012/70012",
+      "animation": "idle_1",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/61/619580e0-0bc8-4e18-83a5-c472d24d11df.d6234.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/61/619580e0-0bc8-4e18-83a5-c472d24d11df.5fe93.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/8d/8d781d18-df23-448e-97dd-b9538fe2ec1b.a756a.png"
+    },
+    {
+      "file": "animals/70012/2.png",
+      "sha256": "9843ee5bcf618730c504cbe963c989fbe5f527ddafd8789bd1017ec53cb4cf4c",
+      "bundle": "animal",
+      "assetPath": "spine/70012/70012",
+      "animation": "idle_2",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/61/619580e0-0bc8-4e18-83a5-c472d24d11df.d6234.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/61/619580e0-0bc8-4e18-83a5-c472d24d11df.5fe93.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/8d/8d781d18-df23-448e-97dd-b9538fe2ec1b.a756a.png"
+    },
+    {
+      "file": "animals/70012/3.png",
+      "sha256": "35c0ab57b1fa26f6d38312af50b51df3b118b1106dea0077deeed484baa4bd17",
+      "bundle": "animal",
+      "assetPath": "spine/70012/70012",
+      "animation": "idle_3",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/61/619580e0-0bc8-4e18-83a5-c472d24d11df.d6234.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/61/619580e0-0bc8-4e18-83a5-c472d24d11df.5fe93.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/8d/8d781d18-df23-448e-97dd-b9538fe2ec1b.a756a.png"
+    },
+    {
+      "file": "animals/70012/4.png",
+      "sha256": "cd3a22a33963c258b11727c5a3b6bc7128d5745819edd785db9680c5342de176",
+      "bundle": "animal",
+      "assetPath": "spine/70012/70012",
+      "animation": "idle_4",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/61/619580e0-0bc8-4e18-83a5-c472d24d11df.d6234.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/61/619580e0-0bc8-4e18-83a5-c472d24d11df.5fe93.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/8d/8d781d18-df23-448e-97dd-b9538fe2ec1b.a756a.png"
+    },
+    {
+      "file": "animals/60013/1.png",
+      "sha256": "96a1a795ae421003ae1fc00865e2b448eb74fccfdf2c3462cccb7b27070df245",
+      "bundle": "animal",
+      "assetPath": "spine/60013/60013",
+      "animation": "idle_1",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/43/43192d12-b5ed-40b8-9f3b-7d883451ad0a.1bfcf.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/43/43192d12-b5ed-40b8-9f3b-7d883451ad0a.d5674.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/1d/1d6a58bd-1e05-4709-a01c-e9d74e91380b.79a18.png"
+    },
+    {
+      "file": "animals/60013/2.png",
+      "sha256": "fe08883fdbc0d4bae704ae018317f556de6cbe5ac7657de8c9cc0ed1235aa70c",
+      "bundle": "animal",
+      "assetPath": "spine/60013/60013",
+      "animation": "idle_2",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/43/43192d12-b5ed-40b8-9f3b-7d883451ad0a.1bfcf.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/43/43192d12-b5ed-40b8-9f3b-7d883451ad0a.d5674.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/1d/1d6a58bd-1e05-4709-a01c-e9d74e91380b.79a18.png"
+    },
+    {
+      "file": "animals/60013/3.png",
+      "sha256": "a3d848f69f11def780bff789c6dc05b74ee3cf70c7f547f82e89aff02d0e6077",
+      "bundle": "animal",
+      "assetPath": "spine/60013/60013",
+      "animation": "idle_3",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/43/43192d12-b5ed-40b8-9f3b-7d883451ad0a.1bfcf.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/43/43192d12-b5ed-40b8-9f3b-7d883451ad0a.d5674.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/1d/1d6a58bd-1e05-4709-a01c-e9d74e91380b.79a18.png"
+    },
+    {
+      "file": "animals/60013/4.png",
+      "sha256": "1f45fbab58354a618f2a4aa015abca4f4666f7f20a048a068da54df8b6d08b22",
+      "bundle": "animal",
+      "assetPath": "spine/60013/60013",
+      "animation": "idle_4",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/43/43192d12-b5ed-40b8-9f3b-7d883451ad0a.1bfcf.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/43/43192d12-b5ed-40b8-9f3b-7d883451ad0a.d5674.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/1d/1d6a58bd-1e05-4709-a01c-e9d74e91380b.79a18.png"
+    },
+    {
+      "file": "animals/60014/1.png",
+      "sha256": "8364a1e0ceb0250a272b1b30c14f27ad8692c687146932c0d8864bd55bc4a5cb",
+      "bundle": "animal",
+      "assetPath": "spine/60014/60014",
+      "animation": "idle_1",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/06/061c3afb-a076-441c-8512-6d2bb75e242d.c6d5c.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/06/061c3afb-a076-441c-8512-6d2bb75e242d.ae2a8.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/8e/8ef9524d-83b5-492c-a8b0-2feaf9768b83.31f74.png"
+    },
+    {
+      "file": "animals/60014/2.png",
+      "sha256": "c2e36ee90e7ec1815e1d990f98886c1e07de0238746d23c8491bc11c55aff9e1",
+      "bundle": "animal",
+      "assetPath": "spine/60014/60014",
+      "animation": "idle_2",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/06/061c3afb-a076-441c-8512-6d2bb75e242d.c6d5c.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/06/061c3afb-a076-441c-8512-6d2bb75e242d.ae2a8.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/8e/8ef9524d-83b5-492c-a8b0-2feaf9768b83.31f74.png"
+    },
+    {
+      "file": "animals/60014/3.png",
+      "sha256": "cd198024ea9fc92024cd43a627814c2f5288862727693a446c915376a291571f",
+      "bundle": "animal",
+      "assetPath": "spine/60014/60014",
+      "animation": "idle_3",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/06/061c3afb-a076-441c-8512-6d2bb75e242d.c6d5c.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/06/061c3afb-a076-441c-8512-6d2bb75e242d.ae2a8.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/8e/8ef9524d-83b5-492c-a8b0-2feaf9768b83.31f74.png"
+    },
+    {
+      "file": "animals/60014/4.png",
+      "sha256": "63dc7178ebbee91809640b23ffd4fd2f0b1b1c4337723e1977c45bef6e2f16e9",
+      "bundle": "animal",
+      "assetPath": "spine/60014/60014",
+      "animation": "idle_4",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/06/061c3afb-a076-441c-8512-6d2bb75e242d.c6d5c.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/06/061c3afb-a076-441c-8512-6d2bb75e242d.ae2a8.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/8e/8ef9524d-83b5-492c-a8b0-2feaf9768b83.31f74.png"
+    },
+    {
+      "file": "animals/60015/1.png",
+      "sha256": "de2f3bbae3987a909dfd94bfba03330359f392d7ade55defb1c11cfd06c63773",
+      "bundle": "animal",
+      "assetPath": "spine/60015/60015",
+      "animation": "idle_1",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/ec/ecdb057c-826d-44d2-9196-fee0a822b172.1f976.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/ec/ecdb057c-826d-44d2-9196-fee0a822b172.8d843.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/54/545f26ab-4814-4559-8a2b-e5624cb12f5e.1f22a.png"
+    },
+    {
+      "file": "animals/60015/2.png",
+      "sha256": "867e8469efc711c6851666a0436fd7e903601f7c260e2effc34c247aae6f4b19",
+      "bundle": "animal",
+      "assetPath": "spine/60015/60015",
+      "animation": "idle_2",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/ec/ecdb057c-826d-44d2-9196-fee0a822b172.1f976.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/ec/ecdb057c-826d-44d2-9196-fee0a822b172.8d843.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/54/545f26ab-4814-4559-8a2b-e5624cb12f5e.1f22a.png"
+    },
+    {
+      "file": "animals/60015/3.png",
+      "sha256": "447a6c9cc7a4a0e83467778d18f51b22784d90990fb5719af7c8c469c61bb174",
+      "bundle": "animal",
+      "assetPath": "spine/60015/60015",
+      "animation": "idle_3",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/ec/ecdb057c-826d-44d2-9196-fee0a822b172.1f976.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/ec/ecdb057c-826d-44d2-9196-fee0a822b172.8d843.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/54/545f26ab-4814-4559-8a2b-e5624cb12f5e.1f22a.png"
+    },
+    {
+      "file": "animals/60015/4.png",
+      "sha256": "7dc6dfef126382a9c500240f8e6a67ac27dadf59aaf364a446954e37698ede9b",
+      "bundle": "animal",
+      "assetPath": "spine/60015/60015",
+      "animation": "idle_4",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/ec/ecdb057c-826d-44d2-9196-fee0a822b172.1f976.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/ec/ecdb057c-826d-44d2-9196-fee0a822b172.8d843.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/54/545f26ab-4814-4559-8a2b-e5624cb12f5e.1f22a.png"
+    },
+    {
+      "file": "animals/60016/1.png",
+      "sha256": "36078662ee487cae6c4e61d3490cf5d611aa468ac3c72eff1c8b04cff2843736",
+      "bundle": "animal",
+      "assetPath": "spine/60016/60016",
+      "animation": "idle_1",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/70/70c08840-a98a-450c-b03e-3754e7b90be8.a6f0b.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/70/70c08840-a98a-450c-b03e-3754e7b90be8.3edb9.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/38/38de17be-0f94-436a-ae7d-d0a0d11b087d.73dd0.png"
+    },
+    {
+      "file": "animals/60016/2.png",
+      "sha256": "a4ad545ea598d22114ed652217b73bf0e4ff072c4517717e32190b33de3f423f",
+      "bundle": "animal",
+      "assetPath": "spine/60016/60016",
+      "animation": "idle_2",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/70/70c08840-a98a-450c-b03e-3754e7b90be8.a6f0b.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/70/70c08840-a98a-450c-b03e-3754e7b90be8.3edb9.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/38/38de17be-0f94-436a-ae7d-d0a0d11b087d.73dd0.png"
+    },
+    {
+      "file": "animals/60016/3.png",
+      "sha256": "e33052070bbffa2ecedc935b8cce562d701d706a3585d7de8396ca9a4c6b05b9",
+      "bundle": "animal",
+      "assetPath": "spine/60016/60016",
+      "animation": "idle_3",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/70/70c08840-a98a-450c-b03e-3754e7b90be8.a6f0b.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/70/70c08840-a98a-450c-b03e-3754e7b90be8.3edb9.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/38/38de17be-0f94-436a-ae7d-d0a0d11b087d.73dd0.png"
+    },
+    {
+      "file": "animals/60016/4.png",
+      "sha256": "17ffc8125ab533e3dfa316e94062a805b43fa17f0e81b30fbb84ed909ec35c7d",
+      "bundle": "animal",
+      "assetPath": "spine/60016/60016",
+      "animation": "idle_4",
+      "sampleTime": 0.1,
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/import/70/70c08840-a98a-450c-b03e-3754e7b90be8.a6f0b.json",
+      "skeletonUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/70/70c08840-a98a-450c-b03e-3754e7b90be8.3edb9.bin",
+      "textureUrl": "https://cdn-resource.nqf.qq.com/release/remote/animal/native/38/38de17be-0f94-436a-ae7d-d0a0d11b087d.73dd0.png"
+    },
+    {
+      "file": "facilities/MainHouse/MainHouse.png",
+      "sha256": "8453a22da0d5f76cc48f583e40f59af91f65dad6ab74abc4dce55ba4dd7a5a98",
+      "bundle": "mcRes",
+      "assetPath": "res/texture/building/MainHouse/MainHouse",
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/native/db/dbb1513b-d563-4283-890c-f65e48b15bb6.a5282.png",
+      "sourceSha256": "8453a22da0d5f76cc48f583e40f59af91f65dad6ab74abc4dce55ba4dd7a5a98",
+      "prefab": "unit/prefab/buildings/MainHouse",
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/import/0b/0b4849018.6f453.json"
+    },
+    {
+      "file": "facilities/MainHouse/chushi_zhucheng.png",
+      "sha256": "fda6450b1ea0c874accb8862f54d088d7c60cdc49136d6313394b813c5fc1a9b",
+      "bundle": "mcRes",
+      "assetPath": "res/texture/building/MainHouse/chushi_zhucheng",
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/native/1e/1e32f270-776b-4ffc-81dc-29571dee80b6.f4d0d.png",
+      "sourceSha256": "fda6450b1ea0c874accb8862f54d088d7c60cdc49136d6313394b813c5fc1a9b",
+      "prefab": "unit/prefab/buildings/MainHouse",
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/import/0b/0b4849018.6f453.json"
+    },
+    {
+      "file": "facilities/Pasture-Coop/chushi_wopeng_2.png",
+      "sha256": "df0f78d5096ebd70536662c2eea51442bc1f28fea93027600900d4c6060ef603",
+      "bundle": "mcRes",
+      "assetPath": "res/texture/building/pasture/chushi_wopeng_2",
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/native/30/30886b1c-1b4b-439c-95ff-b97b6bb39025.4f7aa.png",
+      "sourceSha256": "df0f78d5096ebd70536662c2eea51442bc1f28fea93027600900d4c6060ef603",
+      "prefab": "unit/prefab/buildings/Pasture-Coop",
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/import/0e/0e82c1dec.38fb4.json"
+    },
+    {
+      "file": "facilities/Pasture-Coop/chushi_wopeng_9.png",
+      "sha256": "51639663a579dd090e2bdadd2a733a732fb17f6512d523d36bb49269ea0b1867",
+      "bundle": "mcRes",
+      "assetPath": "res/texture/building/pasture/chushi_wopeng_9",
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/native/dd/ddeecd6d-42a0-41c3-a0b4-76a5a167eaaf.51b1d.png",
+      "sourceSha256": "51639663a579dd090e2bdadd2a733a732fb17f6512d523d36bb49269ea0b1867",
+      "prefab": "unit/prefab/buildings/Pasture-Coop",
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/import/0e/0e82c1dec.38fb4.json"
+    },
+    {
+      "file": "facilities/Pasture-Coop/chushi_wopeng_3.png",
+      "sha256": "74f1027cd1d90d872a5382eb66422e66b254d01af85a400447790450db7bd8b8",
+      "bundle": "mcRes",
+      "assetPath": "res/texture/building/pasture/chushi_wopeng_3",
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/native/d3/d33deb82-2821-4bcc-bb3a-0e11fce733e8.7af37.png",
+      "sourceSha256": "74f1027cd1d90d872a5382eb66422e66b254d01af85a400447790450db7bd8b8",
+      "prefab": "unit/prefab/buildings/Pasture-Coop",
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/import/0e/0e82c1dec.38fb4.json"
+    },
+    {
+      "file": "facilities/Pasture-Coop/chushi_wopeng_0.png",
+      "sha256": "e2b75e06d13908c7995a7a52fcbaab379e129374ca8b23fae890de8998c09181",
+      "bundle": "mcRes",
+      "assetPath": "res/texture/building/pasture/chushi_wopeng_0",
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/native/6b/6b1811d7-e584-4f72-ada1-94e87f98841f.74882.png",
+      "sourceSha256": "e2b75e06d13908c7995a7a52fcbaab379e129374ca8b23fae890de8998c09181",
+      "prefab": "unit/prefab/buildings/Pasture-Coop",
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/import/0e/0e82c1dec.38fb4.json"
+    },
+    {
+      "file": "facilities/Pasture-Coop/chushi_wopeng_6.png",
+      "sha256": "3f1f99eb5b23658e1885fce6e16f54975c8f84592031fe362e279e094e5f1c80",
+      "bundle": "mcRes",
+      "assetPath": "res/texture/building/pasture/chushi_wopeng_6",
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/native/cb/cb008a84-c1f4-44b1-99fc-494dc245213a.603d6.png",
+      "sourceSha256": "3f1f99eb5b23658e1885fce6e16f54975c8f84592031fe362e279e094e5f1c80",
+      "prefab": "unit/prefab/buildings/Pasture-Coop",
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/import/0e/0e82c1dec.38fb4.json"
+    },
+    {
+      "file": "facilities/Pasture/chushi_wopeng_2.png",
+      "sha256": "df0f78d5096ebd70536662c2eea51442bc1f28fea93027600900d4c6060ef603",
+      "bundle": "mcRes",
+      "assetPath": "res/texture/building/pasture/chushi_wopeng_2",
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/native/30/30886b1c-1b4b-439c-95ff-b97b6bb39025.4f7aa.png",
+      "sourceSha256": "df0f78d5096ebd70536662c2eea51442bc1f28fea93027600900d4c6060ef603",
+      "prefab": "unit/prefab/buildings/Pasture",
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/import/09/09ea70f85.321c4.json"
+    },
+    {
+      "file": "facilities/Pasture/chushi_wopeng_4.png",
+      "sha256": "40f93ef2ab2ec7ed5ad03dd543693f8ba48814c81a36a2b30eaf0111dce48f9f",
+      "bundle": "mcRes",
+      "assetPath": "res/texture/building/pasture/chushi_wopeng_4",
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/native/8f/8f858826-77b5-49ec-9a4e-16c278490471.8799b.png",
+      "sourceSha256": "40f93ef2ab2ec7ed5ad03dd543693f8ba48814c81a36a2b30eaf0111dce48f9f",
+      "prefab": "unit/prefab/buildings/Pasture",
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/import/09/09ea70f85.321c4.json"
+    },
+    {
+      "file": "facilities/Pasture/chushi_wopeng_3.png",
+      "sha256": "74f1027cd1d90d872a5382eb66422e66b254d01af85a400447790450db7bd8b8",
+      "bundle": "mcRes",
+      "assetPath": "res/texture/building/pasture/chushi_wopeng_3",
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/native/d3/d33deb82-2821-4bcc-bb3a-0e11fce733e8.7af37.png",
+      "sourceSha256": "74f1027cd1d90d872a5382eb66422e66b254d01af85a400447790450db7bd8b8",
+      "prefab": "unit/prefab/buildings/Pasture",
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/import/09/09ea70f85.321c4.json"
+    },
+    {
+      "file": "facilities/Pasture/chushi_wopeng_0.png",
+      "sha256": "e2b75e06d13908c7995a7a52fcbaab379e129374ca8b23fae890de8998c09181",
+      "bundle": "mcRes",
+      "assetPath": "res/texture/building/pasture/chushi_wopeng_0",
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/native/6b/6b1811d7-e584-4f72-ada1-94e87f98841f.74882.png",
+      "sourceSha256": "e2b75e06d13908c7995a7a52fcbaab379e129374ca8b23fae890de8998c09181",
+      "prefab": "unit/prefab/buildings/Pasture",
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/import/09/09ea70f85.321c4.json"
+    },
+    {
+      "file": "facilities/Pasture/chushi_wopeng_1.png",
+      "sha256": "01310fbda78c35f0a2682f401205a114e74e5fc445af379e4107f2fa1b5bc676",
+      "bundle": "mcRes",
+      "assetPath": "res/texture/building/pasture/chushi_wopeng_1",
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/native/1a/1a256949-eed5-497d-b119-58d2bbdcd8a2.61e89.png",
+      "sourceSha256": "01310fbda78c35f0a2682f401205a114e74e5fc445af379e4107f2fa1b5bc676",
+      "prefab": "unit/prefab/buildings/Pasture",
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/import/09/09ea70f85.321c4.json"
+    },
+    {
+      "file": "facilities/GrassMachine_1/GrassMachine_1.png",
+      "sha256": "525a07020bfe21b41e2f1f7bed91e7620d704fa5e1187d2a5da2bc66087f69b3",
+      "bundle": "mcRes",
+      "assetPath": "res/texture/building/GrassMachine/GrassMachine_1",
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/native/24/2410f9db-2a86-452b-a102-85464b771301.43f32.png",
+      "sourceSha256": "525a07020bfe21b41e2f1f7bed91e7620d704fa5e1187d2a5da2bc66087f69b3",
+      "prefab": "unit/prefab/buildings/GrassMachine_1",
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/import/0c/0cef5a4da.94e71.json"
+    },
+    {
+      "file": "facilities/MessageBoard/liuyanban.png",
+      "sha256": "6e1c88bfc04d45dd69e5a7b8f9cdd9756ac3a4861593361cdbd589a6b24068d8",
+      "bundle": "mcRes",
+      "assetPath": "res/texture/building/MessageBoard/liuyanban",
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/native/ec/ecef177e-a866-492e-8b49-0e1acb355eef.fa716.png",
+      "sourceSha256": "6e1c88bfc04d45dd69e5a7b8f9cdd9756ac3a4861593361cdbd589a6b24068d8",
+      "prefab": "unit/prefab/buildings/MessageBoard",
+      "importUrl": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/import/04/04ba26919.bd1f2.json"
+    }
+  ]
+}

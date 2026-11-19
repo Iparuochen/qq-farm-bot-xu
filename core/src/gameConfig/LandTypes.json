@@ -1,0 +1,38 @@
+[
+  {
+    "level": 1,
+    "type": "normal",
+    "name": "普通土地",
+    "rotateTexture": false
+  },
+  {
+    "level": 2,
+    "type": "red",
+    "name": "红土地",
+    "rotateTexture": false
+  },
+  {
+    "level": 3,
+    "type": "black",
+    "name": "黑土地",
+    "rotateTexture": false
+  },
+  {
+    "level": 4,
+    "type": "gold",
+    "name": "金土地",
+    "rotateTexture": false
+  },
+  {
+    "level": 5,
+    "type": "purple",
+    "name": "紫晶土地",
+    "rotateTexture": true
+  },
+  {
+    "level": 6,
+    "type": "blue",
+    "name": "蓝晶土地",
+    "rotateTexture": false
+  }
+]

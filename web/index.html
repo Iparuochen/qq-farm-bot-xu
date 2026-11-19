@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QQ农场智能助手</title>
+
+    <!-- PWA：可安装到桌面 / 主屏幕，全屏无地址栏 -->
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="theme-color" content="#16a34a" />
+    <meta name="description" content="QQ农场自动化助手 - 农场看板、任务、统计一站式管理" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <!-- iOS Safari 支持 -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="QQ农场" />
+    <link rel="apple-touch-icon" href="/pwa-icons/icon-180.png" />
+    <link rel="apple-touch-icon" sizes="192x192" href="/pwa-icons/icon-192.png" />
+
+    <!-- 预加载主界面背景图（CSS 内引用发现较晚，预加载避免背景延迟出现） -->
+    <link rel="preload" as="image" href="/backgrounds/pc-dashboard-bg.jpg" media="(min-width: 769px)" fetchpriority="high" />
+    <link rel="preload" as="image" href="/backgrounds/mobile-dashboard-bg.jpg" media="(max-width: 768px)" fetchpriority="high" />
+</head>
+<body>
+<div id="app"></div>
+<iframe src="/icon.svg" style="display:none"></iframe>
+<script type="module" src="/src/main.ts"></script>
+<script>
+    // 注册 Service Worker（仅 HTTPS 或 localhost 下有效）
+    if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+        window.addEventListener('load', function () {
+            navigator.serviceWorker.register('/sw.js').catch(function () { /* 忽略注册失败，不影响正常使用 */ });
+        });
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+{
+  "id": "muge-ranch",
+  "name": "牧歌初启",
+  "version": "1.0.0",
+  "apiVersion": 1,
+  "description": "兴牧庆典、牧友同行、成长手册三模块进度查看与奖励领取（牧场人格暂无协议样本，仅展示入口）",
+  "activityIds": [2026111700, 2026111702, 2026111703, 2026111704, 2026111705],
+  "windows": [
+    { "key": "activity", "startTime": 1794880800, "endTime": 1796054399 }
+  ],
+  "automation": [
+    { "key": "muge_celebration_claim", "label": "自动领取兴牧庆典奖励", "detail": "全服饲养数达到档位后自动领取", "window": "activity", "type": "boolean", "default": false },
+    { "key": "muge_friend_claim", "label": "自动领取牧友同行奖励", "detail": "已开启牧场的好友数达到档位后自动领取", "window": "activity", "type": "boolean", "default": false },
+    { "key": "muge_manual_task_claim", "label": "自动领取成长手册任务奖励", "detail": "当前阶段内已完成的任务自动领取", "window": "activity", "type": "boolean", "default": false },
+    { "key": "muge_manual_stage_claim", "label": "自动领取成长手册阶段奖励", "detail": "阶段任务全部完成后自动领取阶段奖励", "window": "activity", "type": "boolean", "default": false }
+  ],
+  "frontend": {
+    "entry": "frontend/plugin.mjs",
+    "css": "frontend/plugin.css"
+  },
+  "card": {
+    "icon": "i-carbon-agriculture",
+    "image": "",
+    "updatedMs": 1794880800000
+  }
+}

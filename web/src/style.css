@@ -1,0 +1,410 @@
+/*
+ * 本地存档字体（latin 分片，来源 Google Fonts CSS2 API，wOF2）。
+ * 中文及其他字符由 font-family 后备链（PingFang SC / Microsoft YaHei）渲染。
+ * 更新方式：带 Chrome UA 请求
+ * https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500
+ * 仅保存 /* latin *\/ 分片到 /fonts/，保持下方 unicode-range 与官方一致。
+ */
+@font-face {
+  font-family: 'DM Sans';
+  font-style: normal;
+  font-weight: 100 1000;
+  font-display: swap;
+  src: url(/fonts/dm-sans-latin-var.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'DM Sans';
+  font-style: italic;
+  font-weight: 100 1000;
+  font-display: swap;
+  src: url(/fonts/dm-sans-italic-latin-var.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'DM Mono';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url(/fonts/dm-mono-latin-300.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'DM Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/dm-mono-latin-400.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'DM Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(/fonts/dm-mono-latin-500.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'DM Mono';
+  font-style: italic;
+  font-weight: 300;
+  font-display: swap;
+  src: url(/fonts/dm-mono-italic-latin-300.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'DM Mono';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/dm-mono-italic-latin-400.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'DM Mono';
+  font-style: italic;
+  font-weight: 500;
+  font-display: swap;
+  src: url(/fonts/dm-mono-italic-latin-500.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* Global Scrollbar Customization */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1; /* slate-300 */
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #94a3b8; /* slate-400 */
+}
+
+/* Dark mode scrollbar */
+.dark ::-webkit-scrollbar-thumb {
+  background-color: #475569; /* slate-600 */
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background-color: #64748b; /* slate-500 */
+}
+
+/* Base styles to reset some defaults if needed, though UnoCSS reset handles most */
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* App handles scrolling */
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* NProgress Customization */
+#nprogress .bar {
+  background: var(--theme-gradient) !important;
+  height: 3px !important;
+}
+
+#nprogress .peg {
+  box-shadow:
+    0 0 10px var(--theme-primary),
+    0 0 5px var(--theme-primary) !important;
+}
+
+/* Shared interaction and accessibility defaults. */
+:where(button, a, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--theme-primary);
+  outline-offset: 3px;
+}
+
+.base-button {
+  transition-property: color, background-color, border-color, opacity, transform;
+}
+.base-button:active:not(:disabled):not([aria-disabled='true']) {
+  transition-duration: 80ms;
+}
+.base-input, .base-select-trigger {
+  min-height: 2.75rem;
+}
+
+@media (pointer: coarse) {
+  .base-button, button, [role='option'] {
+    min-height: 44px;
+  }
+  button {
+    min-width: 44px;
+  }
+  .base-input, .base-textarea, .base-select-trigger {
+    font-size: 1rem;
+  }
+  /* 分段切换控件（农牧场药丸、各页 tab 组）内部按钮不参与 44px 触达规则，
+     否则按钮被撑爆溢出固定高度容器（移动端农牧场切换显示异常的根因） */
+  .scene-pill button,
+  :where([class*='inline-flex'][class*='p-0.5']) > button {
+    min-height: 0;
+    min-width: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition-property: opacity, color, background-color, border-color !important;
+    transition-duration: 100ms !important;
+    scroll-behavior: auto !important;
+  }
+  .base-button:active,
+  [class*='-enter-from'], [class*='-leave-to'],
+  .confirm-modal-enter-from .confirm-modal,
+  .confirm-modal-leave-to .confirm-modal {
+    transform: none !important;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+  :root { --input-bg: #fff; }
+  .dark { --input-bg: #111827; }
+  .glass-panel, .ui-subtle-panel, .account-menu-surface {
+    background: var(--surface-1) !important;
+    backdrop-filter: none !important;
+  }
+  [class*='backdrop-blur'] {
+    backdrop-filter: none !important;
+  }
+  .confirm-modal-overlay {
+    background: rgba(0, 0, 0, 0.65) !important;
+    backdrop-filter: none !important;
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --surface-border: #475569;
+    --muted-text: #334155;
+  }
+  .dark {
+    --surface-border: #cbd5e1;
+    --muted-text: #e2e8f0;
+  }
+  .glass-panel, .ui-card, .ui-card-elevated, .base-input,
+  .base-textarea, .base-select-trigger, .confirm-modal {
+    border: 1px solid var(--surface-border) !important;
+  }
+}
+
+@media (prefers-contrast: more) {
+  .text-gray-400, .text-gray-500 { color: var(--muted-text) !important; }
+}
+
+/* Keep transient controls legible and reachable without adding decorative motion. */
+.base-button[aria-disabled='true'] {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+.account-menu-surface button, .account-menu-surface a {
+  min-height: 2.75rem;
+}
+:where(h1, h2, h3) {
+  line-height: 1.25;
+  font-optical-sizing: auto;
+}
+
+/* Dashboard Background */
+.dashboard-container {
+  position: relative;
+}
+
+/*
+ * 背景保持清晰，模糊只发生在卡片覆盖的区域（由 .bg-white 的 backdrop-filter 完成）。
+ * 这里是备选「极简模式」（?glass=flat）才整体柔化背景、卡片改用纯 alpha。
+ */
+.dashboard-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #b9e0f5;
+  background-image: url('/backgrounds/pc-dashboard-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* 极简模式：背景整体轻度柔化，卡片不再单独取样 */
+html.glass-flat .dashboard-bg {
+  filter: blur(4px);
+  transform: scale(1.02);
+}
+
+/* Mobile Dashboard Background Override */
+@media (max-width: 768px) {
+  .dashboard-bg {
+    background-image: url('/backgrounds/mobile-dashboard-bg.jpg');
+  }
+}
+
+/* Dark mode: 降低背景亮度，保证前景可读 */
+.dark .dashboard-bg {
+  opacity: 0.35;
+}
+
+/* Glass Card Style for Dashboard */
+.glass-card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.12);
+}
+
+/*
+ * 全局毛玻璃卡片：所有使用 bg-white 的实底卡片/容器统一为
+ * 渐变半透明 + 背景模糊，透出页面背景（PC / 移动端一致）。
+ *
+ * 模糊本身不写在这里，而是由 .glass-on 提供（见下方）。该 class 由
+ * viewport-glass.ts 按视口可见性挂载，屏幕外的卡片不带它，也就不建
+ * backdrop root。模糊半径 10px：backdrop-filter 的采样范围随半径平方增长，
+ * 24px 在 DPR 3 的移动端要读取远超元素边界的像素，最容易把纹理缓存挤爆。
+ */
+.bg-white {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0) 38%),
+    linear-gradient(165deg, rgba(255, 255, 255, 0.62) 0%, rgba(255, 255, 255, 0.34) 100%) !important;
+}
+
+/*
+ * 视口内才生效的毛玻璃。
+ * 好友页一屏 8 张卡片、整页 23 张，全挂上去就是 23 个 backdrop root 同时
+ * 逐帧采样；只挂视口附近的，数量降到一屏的量，压力少一档，观感完全没有差别。
+ */
+.glass-on {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* 暗色模式下使用深色半透明玻璃，保持暗色主题一致性 */
+.dark .bg-white {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0) 38%),
+    linear-gradient(165deg, rgba(31, 41, 55, 0.72) 0%, rgba(31, 41, 55, 0.45) 100%) !important;
+}
+
+/* 极简模式（?glass=flat）：完全不建 backdrop root，卡片靠不透明度撑住可读性 */
+html.glass-flat .glass-on,
+html.glass-flat .bg-white {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+html.glass-flat .bg-white {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0) 38%),
+    linear-gradient(165deg, rgba(255, 255, 255, 0.74) 0%, rgba(255, 255, 255, 0.5) 100%) !important;
+}
+
+html.glass-flat .dark .bg-white {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0) 38%),
+    linear-gradient(165deg, rgba(31, 41, 55, 0.72) 0%, rgba(31, 41, 55, 0.45) 100%) !important;
+}
+
+/* 例外：表格吸附列必须不透明，否则横向滚动时会透出下层内容 */
+.bg-white.sticky {
+  background: #fff !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.dark .bg-white.sticky {
+  background: #1f2937 !important;
+}
+
+/*
+ * 全站卡片统一为概览页同款：磨砂玻璃 + 大圆角 + 白色半透明描边。
+ * 命中带阴影（含 hover 阴影）的实底卡片与 ui-card 容器；
+ * 输入框、开关、rounded-full 小圆片、表格吸附列等组件不受影响。
+ */
+.bg-white:is(.shadow, .shadow-sm, .shadow-md, .shadow-lg, .shadow-xl, .shadow-2xl):not(.rounded-full):not(.sticky),
+.bg-white.hover\:shadow-md:not(.rounded-full),
+.ui-card,
+.ui-card-elevated {
+  border-radius: 20px !important;
+  border: 1px solid rgba(255, 255, 255, 0.5) !important;
+  box-shadow: 0 10px 30px rgba(31, 38, 80, 0.1) !important;
+}
+
+.dark .bg-white:is(.shadow, .shadow-sm, .shadow-md, .shadow-lg, .shadow-xl, .shadow-2xl):not(.rounded-full):not(.sticky),
+.dark .bg-white.hover\:shadow-md:not(.rounded-full),
+.dark .ui-card,
+.dark .ui-card-elevated {
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35) !important;
+}
+
+/*
+ * 弹窗专用毛玻璃：透明度比普通卡片高，保证弹窗内容在
+ * 主题背景为 transparent 时（如田园绿主题）也清晰可读。
+ */
+.modal-glass {
+  background: linear-gradient(165deg, rgba(255, 255, 255, 0.94) 0%, rgba(255, 255, 255, 0.86) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(28px) saturate(1.3);
+  -webkit-backdrop-filter: blur(28px) saturate(1.3);
+}
+
+.dark .modal-glass {
+  background: linear-gradient(165deg, rgba(31, 41, 55, 0.95) 0%, rgba(31, 41, 55, 0.88) 100%) !important;
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+/* 顶栏圆形图标按钮（主题切换、活动通知） */
+.icon-btn {
+  height: 40px;
+  width: 40px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.75);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.icon-btn:hover {
+  background: #fff;
+}
+
+.dark .icon-btn {
+  border-color: rgba(255, 255, 255, 0.16);
+  background: rgba(31, 41, 55, 0.6);
+}
+
+.dark .icon-btn:hover {
+  background: rgba(31, 41, 55, 0.85);
+}
+
+/*
+ * 画布兜底背景：主界面背景图由 .dashboard-bg 提供，登录/续费页自带背景。
+ * 这里给 html 一层田园色渐变，避免主题背景为 transparent 时出现纯白底。
+ */
+html {
+  background: var(--app-canvas, #eff8df);
+}

@@ -1,0 +1,107 @@
+{
+  "evidence": "official-encoder-reconstruction",
+  "client": "1112386029_3_1efa44fff40eff75c3d571572a7a1d6b",
+  "gameJsSha256": "337b4d86a7163572eabde26f8fe3c6205fbfdcac53e93820ca2ad73eb4de1600",
+  "vectors": {
+    "LandUpgradeCondition": {
+      "object": {
+        "preceeding_lands_count_need": 24,
+        "level_need": 125,
+        "items_need": [
+          {
+            "id": 1001,
+            "count": 100000000
+          },
+          {
+            "id": 1005,
+            "count": 11350
+          }
+        ]
+      },
+      "hex": "0818107d1a0808e9071080c2d72f1a0608ed0710d658"
+    },
+    "LandUnlockCondition": {
+      "object": {
+        "preceeding_land_id": 6,
+        "level_need": 5,
+        "gold_need": 5000,
+        "items_need": [
+          {
+            "id": 1005,
+            "count": 3
+          }
+        ],
+        "need_color_count": [
+          {
+            "level": 5,
+            "count": 6
+          }
+        ]
+      },
+      "hex": "08061005188827220508ed0710032a0408051006"
+    },
+    "LandInfo": {
+      "object": {
+        "id": 1,
+        "unlocked": true,
+        "level": 6,
+        "max_level": 6,
+        "upgrade_condition": {
+          "level_need": 125
+        },
+        "buff": {
+          "plant_yield_bonus": 40000,
+          "planting_time_reduction": 2000,
+          "plant_exp_bonus": 3000,
+          "plant_mutant_bonus": 12500,
+          "bp_exp_bonus": 5000,
+          "plant_mutant_exp_bonus": 3000
+        },
+        "plant": {
+          "id": 1020008,
+          "mutant_config_ids": [
+            18
+          ],
+          "mutant_infos": [
+            {
+              "mutant_time": 1793584800,
+              "mutant_config_id": 18,
+              "forced_src": 4,
+              "collection_series_id": 1,
+              "collection_item_id": 710001
+            }
+          ]
+        }
+      },
+      "hex": "08011001180620064202107d4a1308c0b80210d00f18b81720d46128882730b817521b08e8a03ea2010112ca021008a0dd9fd70610123004380140f1aa2b"
+    },
+    "MutantInfo": {
+      "object": {
+        "mutant_time": 1,
+        "mutant_config_id": 18,
+        "mutant_plant_id": 2,
+        "forced_src": 4,
+        "collection_series_id": 1,
+        "collection_item_id": 710001
+      },
+      "hex": "0801101228023004380140f1aa2b"
+    },
+    "HarvestReply": {
+      "object": {
+        "items": [
+          {
+            "id": 49001,
+            "count": 4
+          }
+        ],
+        "extra_items": [
+          {
+            "id": 710001,
+            "count": 1
+          }
+        ]
+      },
+      "hex": "120608e9fe021004320608f1aa2b1001"
+    }
+  }
+}

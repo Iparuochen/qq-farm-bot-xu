@@ -1,0 +1,51 @@
+const friendApi = require('./friend-api');
+const { getOperationLimits } = require('./friend-operation-limits');
+const {
+  getFriendsList,
+  getFriendLandsDetail,
+  getFriendDogInfo,
+  batchGetFriendDogInfo,
+  fetchFriendsDogInfo,
+  syncFriendDogInfoRound,
+} = require('./friend-land-analyzer');
+const { doFriendOperation } = require('./friend-visit');
+const { runGoldenBugPlacement } = require('./golden-bug-service');
+const {
+  checkFriends,
+  runScheduledStealCheck,
+  startFriendCheckLoop,
+  stopFriendCheckLoop,
+  refreshFriendCheckLoop,
+  runBadOnceOnStartup,
+  runBadIfRemaining,
+  isHelpExpLimitReached,
+  clearFriendsListCache,
+  syncFriendsFromGids,
+} = require('./friend-orchestrator');
+
+module.exports = {
+  checkFriends,
+  runScheduledStealCheck,
+  startFriendCheckLoop,
+  stopFriendCheckLoop,
+  refreshFriendCheckLoop,
+  runBadOnceOnStartup,
+  runBadIfRemaining,
+  runGoldenBugPlacement,
+  isHelpExpLimitReached,
+  getOperationLimits,
+  getFriendsList,
+  getFriendLandsDetail,
+  doFriendOperation,
+  clearFriendsListCache,
+  getFriendDogInfo,
+  batchGetFriendDogInfo,
+  syncFriendsFromGids,
+  bootstrapQqFriendGids: friendApi.bootstrapQqFriendGids,
+  probeQqSyncAllEmpty: friendApi.probeQqSyncAllEmpty,
+  fetchFriendsDogInfo,
+  syncFriendDogInfoRound,
+  delFriend: friendApi.delFriend,
+  inFriendQuietHours: friendApi.inFriendQuietHours,
+  getFriendQuietHoursRemainingSec: friendApi.getFriendQuietHoursRemainingSec,
+};

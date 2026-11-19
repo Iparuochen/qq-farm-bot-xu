@@ -1,0 +1,626 @@
+<script setup lang="ts">
+import type { Account } from '@/stores/account'
+import { storeToRefs } from 'pinia'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, useId, useTemplateRef } from 'vue'
+import { useRouter } from 'vue-router'
+import api from '@/api'
+import AccountCareerModal from '@/components/AccountCareerModal.vue'
+import AccountModal from '@/components/AccountModal.vue'
+import PasswordModal from '@/components/PasswordModal.vue'
+import RemarkModal from '@/components/RemarkModal.vue'
+import { getPlatformClass, getPlatformLabel, useAccountStore } from '@/stores/account'
+import { useStatusStore } from '@/stores/status'
+import { useUserStore } from '@/stores/user'
+
+// 非概览页需要在右上角显示当前账号头像，概览页自身面板已有头像，故由布局层传入开关
+const props = withDefaults(defineProps<{ showAvatar?: boolean }>(), { showAvatar: false })
+
+const router = useRouter()
+const accountStore = useAccountStore()
+const statusStore = useStatusStore()
+const userStore = useUserStore()
+const { visibleAccounts, currentAccount } = storeToRefs(accountStore)
+const { currentStatusReady, status } = storeToRefs(statusStore)
+
+const showAccountDropdown = ref(false)
+const showAccountModal = ref(false)
+const showRemarkModal = ref(false)
+const showCareerModal = ref(false)
+const showPasswordModal = ref(false)
+const careerLoading = ref(false)
+const careerError = ref('')
+const careerItems = ref<any[]>([])
+const careerProfile = ref<Record<string, any>>({})
+const accountToEdit = ref<any>(null)
+const failedAvatars = ref(new Set<string>())
+
+const dropdownId = useId()
+const menuSurface = ref<HTMLElement | null>(null)
+const triggerRef = useTemplateRef<HTMLElement>('trigger')
+const dropdownPos = ref({ top: 0, left: 0, width: 320, maxHeight: 420 })
+
+function onScroll() {
+  if (showAccountDropdown.value) {
+    updateDropdownPos()
+  }
+}
+
+function onResize() {
+  if (showAccountDropdown.value) {
+    updateDropdownPos()
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('scroll', onScroll, true)
+  window.addEventListener('resize', onResize)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('scroll', onScroll, true)
+  window.removeEventListener('resize', onResize)
+})
+
+function cleanText(value: unknown) {
+  return String(value || '').trim()
+}
+
+function liveAccountName() {
+  if (!currentStatusReady.value)
+    return ''
+  const name = cleanText(status.value?.status?.name)
+  return name && name !== '未登录' ? name : ''
+}
+
+function liveAccountAvatar() {
+  if (!currentStatusReady.value)
+    return ''
+  return cleanText(
+    status.value?.status?.avatar
+    || status.value?.status?.avatarUrl
+    || status.value?.status?.avatar_url,
+  )
+}
+
+function accountDisplayName(acc?: Account | null) {
+  if (!acc)
+    return '选择账号'
+
+  const liveName = currentAccount.value?.id === acc.id ? liveAccountName() : ''
+  const nick = cleanText(liveName || acc.nick)
+  const remark = cleanText(acc.name)
+  if (nick && remark && nick !== remark)
+    return `${nick} (${remark})`
+  if (nick)
+    return nick
+  if (remark)
+    return remark
+  return cleanText(acc.uin || acc.qq || acc.id) || '选择账号'
+}
+
+function accountSubtitle(acc?: Account | null) {
+  if (!acc)
+    return ''
+  return cleanText(acc.uin || acc.qq || acc.id)
+}
+
+function accountLevel(acc?: Account | null) {
+  if (!acc)
+    return 0
+  // 当前账号优先用实时 status 里的 level
+  if (currentAccount.value?.id === acc.id && currentStatusReady.value) {
+    const lv = Number(status.value?.status?.level)
+    if (lv > 0)
+      return lv
+  }
+  return Number(acc.level) || 0
+}
+
+function shouldShowLevel(acc?: Account | null) {
+  if (!acc)
+    return false
+  // 在线且有等级的显示；离线也显示 Lv.0
+  return true
+}
+
+function isLevelValid(acc?: Account | null) {
+  if (!acc || !isAccountOnline(acc))
+    return false
+  return accountLevel(acc) > 0
+}
+
+function avatarSource(acc?: Account | null) {
+  if (!acc)
+    return ''
+  const explicit = currentAccount.value?.id === acc.id
+    ? cleanText(liveAccountAvatar() || acc.avatar)
+    : cleanText(acc.avatar)
+  if (explicit)
+    return explicit
+  const qq = cleanText(acc.uin || acc.qq)
+  if (qq && /^\d+$/.test(qq))
+    return `https://q1.qlogo.cn/g?b=qq&nk=${qq}&s=100`
+  return ''
+}
+
+function avatarKey(acc?: Account | null) {
+  return cleanText(acc?.id || acc?.uin || acc?.qq || acc?.wxid || '')
+}
+
+function shouldShowAvatar(acc?: Account | null) {
+  const key = avatarKey(acc)
+  return !!avatarSource(acc) && !!key && !failedAvatars.value.has(key)
+}
+
+function markAvatarFailed(acc?: Account | null) {
+  const key = avatarKey(acc)
+  if (!key)
+    return
+  const next = new Set(failedAvatars.value)
+  next.add(key)
+  failedAvatars.value = next
+}
+
+function avatarInitial(acc?: Account | null) {
+  return accountDisplayName(acc).replace(/[()（）\s]/g, '').slice(0, 1) || '账'
+}
+
+/**
+ * 账号在线状态：
+ * - 非当前账号只能拿到后端 worker 运行标记 running
+ * - 当前账号在实时状态就绪时，若游戏内名称为「未登录」（掉线/登录失败）视为离线
+ */
+function isAccountOnline(acc?: Account | null) {
+  if (!acc || !acc.running)
+    return false
+  if (currentAccount.value?.id === acc.id && currentStatusReady.value) {
+    const liveName = cleanText(status.value?.status?.name)
+    if (liveName === '未登录')
+      return false
+  }
+  return true
+}
+
+async function loadCareer() {
+  const accountId = cleanText(currentAccount.value?.id)
+  if (!accountId)
+    return
+  careerLoading.value = true
+  careerError.value = ''
+  try {
+    const { data } = await api.get('/api/career', {
+      headers: { 'x-account-id': accountId },
+    })
+    if (!data?.ok)
+      throw new Error(data?.error || '生涯记录读取失败')
+    careerProfile.value = data.data || {}
+    careerItems.value = data.data?.items || []
+  }
+  catch (error: any) {
+    careerError.value = error?.response?.data?.error || error?.message || '生涯记录读取失败'
+  }
+  finally {
+    careerLoading.value = false
+  }
+}
+
+function openCareer() {
+  if (!currentAccount.value)
+    return
+  closeDropdown()
+  showCareerModal.value = true
+  loadCareer()
+}
+
+const displayName = computed(() => accountDisplayName(currentAccount.value))
+
+// 触发器头像：仅在非概览页展示，取值规则与下拉列表保持一致
+const triggerAvatar = computed(() => {
+  if (!props.showAvatar || !currentAccount.value)
+    return ''
+  return avatarSource(currentAccount.value)
+})
+const triggerShowAvatar = computed(() =>
+  !!triggerAvatar.value
+  && shouldShowAvatar(currentAccount.value),
+)
+
+async function openDropdown() {
+  updateDropdownPos()
+  showAccountDropdown.value = true
+  await nextTick()
+  updateDropdownPos()
+  menuSurface.value?.querySelector<HTMLElement>('button')?.focus()
+}
+
+function closeDropdown() {
+  showAccountDropdown.value = false
+  triggerRef.value?.focus()
+}
+
+function toggleDropdown() {
+  if (showAccountDropdown.value) {
+    closeDropdown()
+    return
+  }
+  openDropdown()
+}
+
+function updateDropdownPos() {
+  const el = triggerRef.value
+  if (!el)
+    return
+
+  const rect = el.getBoundingClientRect()
+  const viewportGap = 8
+  const width = Math.min(320, window.innerWidth - viewportGap * 2)
+  const left = Math.min(
+    Math.max(viewportGap, rect.right - width),
+    window.innerWidth - width - viewportGap,
+  )
+
+  const top = Math.min(rect.bottom + viewportGap, Math.max(viewportGap, window.innerHeight - 160))
+  dropdownPos.value = {
+    top,
+    maxHeight: Math.max(0, window.innerHeight - top - viewportGap),
+    left,
+    width,
+  }
+}
+
+function onMenuFocusout(event: FocusEvent) {
+  const next = event.relatedTarget as Node | null
+  // iOS Safari 点击按钮不会让按钮获得焦点，relatedTarget 为 null。
+  // 若此时关闭，click 还没落到账号按钮上菜单就被卸载，表现为「点不动、切不了账号」。
+  // 点击菜单外区域由下层透明遮罩的 @click 负责关闭。
+  if (!next)
+    return
+  if (!menuSurface.value?.contains(next) && !triggerRef.value?.contains(next))
+    showAccountDropdown.value = false
+}
+
+function selectAccount(acc: any) {
+  accountStore.setCurrentAccount(acc)
+  closeDropdown()
+}
+
+function openAddAccount() {
+  accountToEdit.value = null
+  showAccountModal.value = true
+  closeDropdown()
+}
+
+function openRemarkModal(acc: any) {
+  accountToEdit.value = acc
+  showRemarkModal.value = true
+  closeDropdown()
+}
+
+async function handleAccountSaved() {
+  await accountStore.fetchAccounts()
+  showAccountModal.value = false
+  showRemarkModal.value = false
+  accountToEdit.value = null
+}
+
+// 管理员入口（「设置公告」）与「退出登录」融合进本下拉菜单
+function navigateToSystemSettings() {
+  closeDropdown()
+  router.push('/admin?tab=system')
+}
+
+function openPasswordModal() {
+  closeDropdown()
+  showPasswordModal.value = true
+}
+
+async function handleLogout() {
+  closeDropdown()
+  try {
+    await userStore.logout()
+  }
+  catch {
+    // 即使请求失败也清除本地状态并跳转
+  }
+  router.push('/login')
+}
+</script>
+
+<template>
+  <div class="relative">
+    <button
+      ref="trigger"
+      type="button"
+      :aria-expanded="showAccountDropdown"
+      :aria-controls="dropdownId"
+      aria-label="选择和管理账号"
+      :title="displayName"
+      @keydown.escape="closeDropdown"
+      class="account-trigger"
+      :class="{ 'account-trigger--avatar': showAvatar && currentAccount }"
+      @click="toggleDropdown"
+    >
+      <span v-if="showAvatar && currentAccount" class="account-trigger-avatar">
+        <img
+          v-if="triggerShowAvatar"
+          :src="triggerAvatar"
+          :alt="displayName"
+          class="account-trigger-avatar-img"
+          @error="markAvatarFailed(currentAccount)"
+        >
+        <span v-else class="account-trigger-initial">{{ avatarInitial(currentAccount) }}</span>
+        <span
+          class="account-trigger-dot"
+          :class="isAccountOnline(currentAccount) ? 'bg-green-500' : 'bg-red-500'"
+        />
+      </span>
+      <span
+        class="account-trigger-arrow i-carbon-chevron-down"
+        :class="{ 'rotate-180': showAccountDropdown }"
+      />
+    </button>
+
+    <Teleport to="body">
+      <div
+        v-if="showAccountDropdown"
+        class="fixed inset-0 z-[9998] bg-transparent"
+        @click="closeDropdown"
+      />
+
+      <div
+        v-if="showAccountDropdown"
+        :id="dropdownId"
+        ref="menuSurface"
+        role="region"
+        aria-label="账号列表与管理"
+        @keydown.escape.stop.prevent="closeDropdown"
+        @focusout="onMenuFocusout"
+        class="account-menu-surface fixed z-[9999] overflow-y-auto border border-gray-200/70 rounded-xl bg-white/95 py-1 shadow-xl backdrop-blur-sm dark:border-gray-700/70 dark:bg-gray-900/95"
+        :style="{ top: `${dropdownPos.top}px`, left: `${dropdownPos.left}px`, width: `${dropdownPos.width}px`, maxHeight: `${dropdownPos.maxHeight}px` }"
+      >
+        <div class="custom-scrollbar max-h-72 overflow-y-auto px-1">
+          <template v-if="visibleAccounts.length > 0">
+            <div
+              v-for="acc in visibleAccounts"
+              :key="acc.id || acc.uin"
+              class="w-full flex items-center gap-3 px-4 py-2 transition-colors hover:bg-gray-100/60 dark:hover:bg-gray-700/50"
+              :style="{ backgroundColor: currentAccount?.id === acc.id ? 'color-mix(in srgb, var(--theme-primary) 10%, transparent)' : undefined }"
+            >
+              <button type="button" class="min-w-0 flex flex-1 items-center gap-3 text-left" :aria-label="`选择账号 ${accountDisplayName(acc)}`" :aria-pressed="currentAccount?.id === acc.id" @click="selectAccount(acc)">
+                <div class="relative h-7 w-7 flex shrink-0 items-center justify-center overflow-visible rounded-full bg-gray-200 dark:bg-gray-600">
+                  <img
+                    v-if="shouldShowAvatar(acc)"
+                    :src="avatarSource(acc)"
+                    :alt="accountDisplayName(acc)"
+                    class="h-full w-full rounded-full object-cover"
+                    @error="markAvatarFailed(acc)"
+                  >
+                  <span v-else class="text-xs text-gray-500 font-semibold dark:text-gray-300">
+                    {{ avatarInitial(acc) }}
+                  </span>
+                  <span
+                    class="absolute -right-0.5 -bottom-0.5 h-2 w-2 rounded-full ring-2 ring-white dark:ring-gray-900"
+                    :class="isAccountOnline(acc) ? 'bg-green-500' : 'bg-red-500'"
+                    :title="isAccountOnline(acc) ? '在线' : '离线'"
+                  />
+                </div>
+                <div class="min-w-0 flex flex-1 flex-col items-start">
+                  <div class="w-full flex items-center gap-1.5">
+                    <span class="min-w-0 flex-1 truncate text-left text-sm font-medium">
+                      {{ accountDisplayName(acc) }}
+                    </span>
+                    <span
+                      v-if="shouldShowLevel(acc)"
+                      class="shrink-0 rounded-full px-1.5 py-0.5 text-[10px] font-semibold leading-none"
+                      :class="isLevelValid(acc)
+                        ? 'text-amber-700 bg-amber-100 dark:text-amber-300 dark:bg-amber-900/40'
+                        : 'text-gray-500 bg-gray-200/70 dark:text-gray-400 dark:bg-gray-700/50'"
+                      :title="isLevelValid(acc) ? `农场等级 Lv.${accountLevel(acc)}` : '未登录'"
+                    >
+                      Lv.{{ accountLevel(acc) }}
+                    </span>
+                  </div>
+                  <div class="flex items-center gap-1.5">
+                    <span
+                      v-if="getPlatformLabel(acc.platform)"
+                      class="rounded px-1 py-0.2 text-xs font-medium leading-tight"
+                      :class="getPlatformClass(acc.platform)"
+                    >
+                      {{ getPlatformLabel(acc.platform) }}
+                    </span>
+                    <span v-if="accountSubtitle(acc)" class="text-xs text-gray-500 dark:text-gray-300">{{ accountSubtitle(acc) }}</span>
+                  </div>
+                </div>
+              </button>
+              <button
+                type="button"
+                :aria-label="`修改 ${accountDisplayName(acc)} 的备注`"
+                class="rounded-full p-1 text-gray-400 transition-colors hover:bg-blue-50/50 hover:text-blue-500 dark:hover:bg-blue-900/20"
+                title="修改备注"
+                @click.stop="openRemarkModal(acc)"
+              >
+                <div class="i-carbon-edit" />
+              </button>
+              <div v-if="currentAccount?.id === acc.id" class="i-carbon-checkmark shrink-0" :style="{ color: 'var(--theme-primary)' }" />
+            </div>
+          </template>
+          <div v-else class="px-4 py-3 text-center text-sm text-gray-400">
+            暂无账号
+          </div>
+        </div>
+        <button v-if="currentAccount" type="button" class="min-h-11 w-full flex items-center gap-2 px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700" @click="openCareer">
+          <span class="i-carbon-user-profile" aria-hidden="true" />
+          查看角色生涯
+        </button>
+        <div class="mt-1 border-t border-gray-100 pt-1 dark:border-gray-700">
+          <button
+            class="w-full flex items-center gap-2 px-4 py-2 text-sm transition-colors hover:bg-gray-100/50 dark:hover:bg-gray-700/50"
+            :style="{ color: 'var(--theme-primary)' }"
+            @click="openAddAccount"
+          >
+            <div class="i-carbon-add" />
+            <span>添加账号</span>
+          </button>
+          <router-link
+            to="/settings"
+            class="w-full flex items-center gap-2 px-4 py-2 text-sm transition-colors hover:bg-gray-100/50 dark:hover:bg-gray-700/50"
+            :style="{ color: 'var(--theme-primary)' }"
+            @click="closeDropdown"
+          >
+            <div class="i-carbon-add-alt" />
+            <span>管理账号</span>
+          </router-link>
+        </div>
+        <div class="mt-1 border-t border-gray-100 pt-1 dark:border-gray-700">
+          <button
+            v-if="userStore.isAdmin"
+            type="button"
+            class="w-full flex items-center gap-2 px-4 py-2 text-sm transition-colors hover:bg-gray-100/50 dark:hover:bg-gray-700/50"
+            :style="{ color: 'var(--theme-primary)' }"
+            @click="navigateToSystemSettings"
+          >
+            <div class="i-carbon-notification" />
+            <span>设置公告</span>
+          </button>
+          <button
+            type="button"
+            class="w-full flex items-center gap-2 px-4 py-2 text-sm transition-colors hover:bg-gray-100/50 dark:hover:bg-gray-700/50"
+            :style="{ color: 'var(--theme-primary)' }"
+            @click="openPasswordModal"
+          >
+            <div class="i-carbon-password" />
+            <span>修改密码</span>
+          </button>
+          <button
+            type="button"
+            class="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-500 transition-colors hover:bg-red-50 dark:hover:bg-red-900/20"
+            @click="handleLogout"
+          >
+            <div class="i-carbon-logout" />
+            <span>退出登录</span>
+          </button>
+        </div>
+      </div>
+    </Teleport>
+
+    <Teleport to="body">
+      <AccountModal
+        :show="showAccountModal"
+        :edit-data="accountToEdit"
+        @close="showAccountModal = false; accountToEdit = null"
+        @saved="handleAccountSaved"
+      />
+
+      <RemarkModal
+        :show="showRemarkModal"
+        :account="accountToEdit"
+        @close="showRemarkModal = false"
+        @saved="handleAccountSaved"
+      />
+
+      <AccountCareerModal
+        :show="showCareerModal"
+        :account="currentAccount"
+        :profile="careerProfile"
+        :items="careerItems"
+        :loading="careerLoading"
+        :error="careerError"
+        @close="showCareerModal = false"
+        @refresh="loadCareer"
+      />
+
+      <PasswordModal
+        :show="showPasswordModal"
+        @close="showPasswordModal = false"
+      />
+    </Teleport>
+  </div>
+</template>
+
+<style scoped>
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(156, 163, 175, 0.3);
+  border-radius: 2px;
+}
+.custom-scrollbar:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(156, 163, 175, 0.5);
+}
+
+/* 右上角账号菜单触发按钮：与左上角导航菜单按钮同款，只放下箭头图标 */
+.account-trigger {
+  display: flex;
+  height: 44px;
+  width: 44px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.32);
+  box-shadow: 0 10px 30px rgba(31, 38, 80, 0.1);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  color: #4b5563;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.account-trigger:hover {
+  background: rgba(255, 255, 255, 0.55);
+  box-shadow: 0 10px 30px rgba(31, 38, 80, 0.16);
+}
+
+/* 带头像时改为胶囊按钮，容纳头像 + 下箭头 */
+.account-trigger--avatar {
+  width: auto;
+  gap: 4px;
+  padding: 0 10px 0 6px;
+}
+
+.account-trigger-avatar {
+  position: relative;
+  display: flex;
+  height: 32px;
+  width: 32px;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.6);
+  overflow: visible;
+}
+
+.account-trigger-avatar-img {
+  height: 100%;
+  width: 100%;
+  border-radius: 9999px;
+  object-fit: cover;
+}
+
+.account-trigger-initial {
+  font-size: 13px;
+  font-weight: 600;
+  color: #6b7280;
+}
+
+.account-trigger-dot {
+  position: absolute;
+  right: -1px;
+  bottom: -1px;
+  height: 9px;
+  width: 9px;
+  border-radius: 9999px;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.9);
+}
+
+.account-trigger-arrow {
+  font-size: 20px;
+  transition: transform 0.2s ease;
+}
+</style>
