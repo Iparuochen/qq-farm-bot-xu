@@ -24,7 +24,7 @@
 - 🌻 **认识每株作物**：作物图鉴、土地状态和变异效果展示
 - 🧩 **活动即插即用**：限时活动做成插件，管理面板上传 zip 即装即用、卸载即停，无需重启或重新构建
 - 📱 **轻松添加账号**：支持内置微信扫码、手机抓包登录和 QQ 好友同步
-- 📲 **免抓包自动抓码**：Quantumult X 重写脚本（[Asunxu/qq-farm-qx](https://github.com/Asunxu/qq-farm-qx)），打开农场即自动上传 Code 登录
+- 📲 **QX 自动抓码**：Quantumult X 重写脚本（[Asunxu/qq-farm-qx](https://github.com/Asunxu/qq-farm-qx)），打开农场即自动上传 Code 登录
 - 🖼️ **桌面看农场**：iPhone 桌面小组件（[Asunxu/qq-farm-widget](https://github.com/Asunxu/qq-farm-widget)），不出 App 也能盯账号状态
 - 📦 **多种方式开工**：支持源码、Docker 和桌面二进制构建
 
@@ -190,7 +190,7 @@ CAPTURE_ADVERTISE_IPS=192.168.1.100,100.64.0.2
 
 ### Quantumult X 自动抓码（iOS，可选）
 
-不想在手机上装证书做抓包代理？配套项目 [Asunxu/qq-farm-qx](https://github.com/Asunxu/qq-farm-qx) 提供另一条路：在 Quantumult X 里添加一条远程重写，手机 QQ 打开「QQ经典农场」时自动抓下一次性登录 Code，并上传到面板让账号自动上线。
+不想部署面板的抓包代理？配套项目 [Asunxu/qq-farm-qx](https://github.com/Asunxu/qq-farm-qx) 提供另一条路：在 Quantumult X 里添加一条远程重写，手机 QQ 打开「QQ经典农场」时自动抓下一次性登录 Code，并上传到面板让账号自动上线。注意：抓 HTTPS 仍需安装并信任 QX 的 MITM 证书（生成安装一条龙，比面板抓包代理的 CA 配置省事）。
 
 - **只读旁路**：不改请求、不改响应，关掉抓包开关后脚本直接放行，对 QQ 零影响
 - **全自动**：抓到 Code → 登录面板 → 按 openId/GID/QQ 号精确匹配已有账号 → 写入并自动启动，全程弹通知留日志
