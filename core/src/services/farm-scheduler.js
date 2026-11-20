@@ -55,7 +55,9 @@ function stopFertilizerBuyCheckTimer() {
 async function checkFertilizerBuyOnce() {
   const currentAccountId = process.env.FARM_ACCOUNT_ID || '';
   if (currentAccountId) {
-    checkAndAutoPet(currentAccountId).catch(() => null);
+    // 必须在场景租约内等它跑完：fire-and-forget 会让租约先关闭，
+    // 宠物巡查的 RPC 全部被 SCENE_CANCELLED 打掉（2026-11-20 排查实证）。
+    await checkAndAutoPet(currentAccountId).catch(() => null);
   }
   if (!isAutomationOn('fertilizer_buy_organic') && !isAutomationOn('fertilizer_buy_normal')) return;
 

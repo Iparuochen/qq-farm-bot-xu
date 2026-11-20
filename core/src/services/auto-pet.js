@@ -1,34 +1,42 @@
 const { createModuleLogger } = require('./logger');
 const logger = createModuleLogger('pet');
 
-const CHECK_INTERVAL_MS = 12 * 60 * 60 * 1000; // 12小时检测一次
-const lastCheckMap = new Map(); // accountId -> timestamp
+const CHECK_INTERVAL_MS = 12 * 60 * 60 * 1000; // 正常 12 小时检测一次
+const RETRY_INTERVAL_MS = 10 * 60 * 1000; // 失败（断线/场景取消等）10 分钟后重试
+const lastCheckMap = new Map(); // accountId -> { at, failed }
 
 // 狗粮 ID：1天(90004)、3天(90005)、5天(90006)，优先喂时长短的
 const FOOD_PRIORITY = [90004, 90005, 90006];
 const DOG_FOOD_GOODS_ID = 1006; // 商城狗粮礼包
 
+let nowFn = () => Date.now(); // 可注入时钟，仅供测试
+
 async function checkAndAutoPet(accountId) {
   if (!accountId) return;
-  const now = Date.now();
-  const lastCheck = lastCheckMap.get(accountId) || 0;
-  if (now - lastCheck < CHECK_INTERVAL_MS) {
+  const now = nowFn();
+  const state = lastCheckMap.get(accountId) || { at: 0, failed: false };
+  const interval = state.failed ? RETRY_INTERVAL_MS : CHECK_INTERVAL_MS;
+  if (now - state.at < interval) {
     return;
   }
-  lastCheckMap.set(accountId, now);
+
+  const store = require('../models/store');
+  const autoCfg = store.getAutomation(accountId) || {};
+  const autoBuyFood = autoCfg.auto_buy_dog_food === true;
+  const autoFeedDog = autoCfg.auto_feed_dog === true;
+
+  // 开关没开：不占用检查窗口。这样打开开关后，下一轮定时器（最长 30 分钟）就会生效，
+  // 而不是等上一个 12 小时窗口走完。
+  if (!autoBuyFood && !autoFeedDog) return;
+
+  const pets = require('./pets');
+  const markDone = () => lastCheckMap.set(accountId, { at: nowFn(), failed: false });
 
   try {
-    const store = require('../models/store');
-    const autoCfg = store.getAutomation(accountId) || {};
-    const autoBuyFood = autoCfg.auto_buy_dog_food === true;
-    const autoFeedDog = autoCfg.auto_feed_dog === true;
-
-    if (!autoBuyFood && !autoFeedDog) return;
-
-    const pets = require('./pets');
     const overview = await pets.getPetOverview();
     if (!overview || !overview.deployedId) {
       logger.info('宠物未派出守护，跳过自动喂食/买粮检查');
+      markDone();
       return;
     }
 
@@ -66,12 +74,16 @@ async function checkAndAutoPet(accountId) {
         }
       }
     }
+    markDone();
   } catch (err) {
-    logger.warn(`12小时宠物守护巡查异常: ${err.message}`);
+    // 巡查失败（断线、场景取消等）：10 分钟后重试，不让一次失败把喂食拖后 12 小时
+    lastCheckMap.set(accountId, { at: nowFn(), failed: true });
+    logger.warn(`宠物守护巡查异常: ${err.message}`);
   }
 }
 
 module.exports = {
   checkAndAutoPet,
-  resetPetPacing: (id) => lastCheckMap.delete(id)
+  resetPetPacing: (id) => lastCheckMap.delete(id),
+  _setNowProvider: (fn) => { nowFn = typeof fn === 'function' ? fn : () => Date.now(); }
 };
