@@ -33,7 +33,9 @@ function fixture(options = {}) {
 
 test('status works immediately without scene login; settings remain strict opt-in', async () => {
     const f = fixture();
-    assert.equal((await f.service.getStatus()).sceneReady, true);
+    const state = await f.service.getStatus();
+    assert.equal(state.sceneReady, true);
+    assert.deepEqual(state.feedShop, { unitPrice: 60, currencyId: 1007 });
     assert.equal(f.calls.some(c => c.method === 'PlayerSceneLogin'), false);
     assert.equal(normalizeSettings({ ranch_auto_collect: 1, ranch_auto_clean: true }).autoClean, true);
     assert.equal(Object.entries(normalizeSettings({ ranch_auto_collect: 1, ranch_auto_clean: true })).filter(([key, value]) => key !== 'autoClean' && value).length, 0);

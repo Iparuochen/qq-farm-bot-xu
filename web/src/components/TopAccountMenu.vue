@@ -34,6 +34,35 @@ const careerProfile = ref<Record<string, any>>({})
 const accountToEdit = ref<any>(null)
 const failedAvatars = ref(new Set<string>())
 
+// 牧场等级：读 /api/ranch/status 的面板快照（peekPanel 缓存，命中不进场景、不排队），
+// 与小组件同源。前端按账号缓存会话级结果，缺失时才发起请求。
+const ranchLevels = ref<Record<string, number>>({})
+const ranchLevelPending = new Set<string>()
+
+async function refreshRanchLevels() {
+  const candidates = visibleAccounts.value.filter(acc => isAccountOnline(acc) && !ranchLevelPending.has(String(acc.id)))
+  for (const acc of candidates) {
+    const id = String(acc.id)
+    if ((ranchLevels.value[id] || 0) > 0)
+      continue
+    ranchLevelPending.add(id)
+    void api.get('/api/ranch/status', { headers: { 'x-account-id': id }, timeout: 120000 })
+      .then(({ data }) => {
+        const lv = Number(data?.data?.ranchLevel) || 0
+        if (lv > 0)
+          ranchLevels.value = { ...ranchLevels.value, [id]: lv }
+      })
+      .catch(() => {
+        // 牧场未连接/无快照时拿不到等级，静默跳过，徽标只显示农场等级
+      })
+      .finally(() => ranchLevelPending.delete(id))
+  }
+}
+
+function ranchLevelOf(acc?: any) {
+  return Number(ranchLevels.value[String(acc?.id)]) || 0
+}
+
 const dropdownId = useId()
 const menuSurface = ref<HTMLElement | null>(null)
 const triggerRef = useTemplateRef<HTMLElement>('trigger')
@@ -231,6 +260,7 @@ async function openDropdown() {
   await nextTick()
   updateDropdownPos()
   menuSurface.value?.querySelector<HTMLElement>('button')?.focus()
+  void refreshRanchLevels()
 }
 
 function closeDropdown() {
@@ -405,22 +435,25 @@ async function handleLogout() {
                   />
                 </div>
                 <div class="min-w-0 flex flex-1 flex-col items-start">
-                  <div class="w-full flex items-center gap-1.5">
-                    <span class="min-w-0 flex-1 truncate text-left text-sm font-medium">
-                      {{ accountDisplayName(acc) }}
-                    </span>
-                    <span
-                      v-if="shouldShowLevel(acc)"
-                      class="shrink-0 rounded-full px-1.5 py-0.5 text-[10px] font-semibold leading-none"
-                      :class="isLevelValid(acc)
-                        ? 'text-amber-700 bg-amber-100 dark:text-amber-300 dark:bg-amber-900/40'
-                        : 'text-gray-500 bg-gray-200/70 dark:text-gray-400 dark:bg-gray-700/50'"
-                      :title="isLevelValid(acc) ? `农场等级 Lv.${accountLevel(acc)}` : '未登录'"
-                    >
-                      Lv.{{ accountLevel(acc) }}
-                    </span>
-                  </div>
-                  <div class="flex items-center gap-1.5">
+                <div class="grid w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-x-1.5 gap-y-0.5">
+                  <span class="min-w-0 truncate text-left text-sm font-medium">
+                    {{ accountDisplayName(acc) }}
+                  </span>
+                  <span
+                    v-if="shouldShowLevel(acc) && !isLevelValid(acc)"
+                    class="justify-self-start shrink-0 rounded-full px-1.5 py-0.5 text-[10px] font-semibold leading-none text-gray-500 bg-gray-200/70 dark:text-gray-400 dark:bg-gray-700/50"
+                    title="未登录"
+                  >
+                    Lv.{{ accountLevel(acc) }}
+                  </span>
+                  <span
+                    v-else-if="shouldShowLevel(acc)"
+                    class="justify-self-start shrink-0 rounded-full px-1.5 py-0.5 text-[10px] font-semibold leading-none text-amber-700 bg-amber-100 dark:text-amber-300 dark:bg-amber-900/40"
+                    :title="`农场等级 Lv.${accountLevel(acc)}`"
+                  >
+                    农场Lv.{{ accountLevel(acc) }}
+                  </span>
+                  <div class="flex min-w-0 items-center gap-1.5">
                     <span
                       v-if="getPlatformLabel(acc.platform)"
                       class="rounded px-1 py-0.2 text-xs font-medium leading-tight"
@@ -430,6 +463,14 @@ async function handleLogout() {
                     </span>
                     <span v-if="accountSubtitle(acc)" class="text-xs text-gray-500 dark:text-gray-300">{{ accountSubtitle(acc) }}</span>
                   </div>
+                  <span
+                    v-if="shouldShowLevel(acc) && isLevelValid(acc) && ranchLevelOf(acc) > 0"
+                    class="justify-self-start shrink-0 rounded-full px-1.5 py-0.5 text-[10px] font-semibold leading-none text-emerald-700 bg-emerald-100 dark:text-emerald-300 dark:bg-emerald-900/40"
+                    :title="`牧场等级 Lv.${ranchLevelOf(acc)}`"
+                  >
+                    牧场Lv.{{ ranchLevelOf(acc) }}
+                  </span>
+                </div>
                 </div>
               </button>
               <button

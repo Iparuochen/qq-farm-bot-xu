@@ -1,6 +1,7 @@
 import { useStorage } from '@vueuse/core'
 import axios from 'axios'
 import { useToastStore } from '@/stores/toast'
+import { responseErrorMessage } from '@/utils/api-error'
 
 const tokenRef = useStorage('admin_token', '')
 const accountIdRef = useStorage('current_account_id', '')
@@ -25,7 +26,7 @@ api.interceptors.request.use((config) => {
     config.headers['x-admin-token'] = token
   }
   const accountId = accountIdRef.value
-  if (accountId) {
+  if (accountId && !config.headers['x-account-id']) {
     config.headers['x-account-id'] = accountId
   }
   return config
@@ -55,10 +56,10 @@ api.interceptors.response.use((response) => {
       if (backendError === '账号未运行' || backendError === 'API Timeout' || backendError === 'Request Timeout') {
         return Promise.reject(error)
       }
-      toast.error(`服务器错误 ${error.response.status} ${error.response.statusText}`)
+      toast.error(responseErrorMessage(error))
     }
     else {
-      toast.error('请求失败，请联系管理员')
+      toast.error(responseErrorMessage(error))
     }
   }
   else if (error.request) {

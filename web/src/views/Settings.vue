@@ -5,6 +5,7 @@ import api from '@/api'
 import ConfirmModal from '@/components/ConfirmModal.vue'
 import AccountFeatureSettings from '@/components/settings/AccountFeatureSettings.vue'
 import AccountSettingsTab from '@/components/settings/AccountSettingsTab.vue'
+import FriendImportTab from '@/components/settings/FriendImportTab.vue'
 import RanchSettings from '@/components/settings/RanchSettings.vue'
 import OfflineReminderCard from '@/components/settings/OfflineReminderCard.vue'
 import BaseButton from '@/components/ui/BaseButton.vue'
@@ -21,9 +22,9 @@ const userStore = useUserStore()
 const sceneStore = useSceneStore()
 const route = useRoute()
 
-type SettingsTabKey = 'account' | 'account-config' | 'notification'
+type SettingsTabKey = 'account' | 'account-config' | 'notification' | 'friend-import'
 
-const SETTINGS_TAB_KEYS: SettingsTabKey[] = ['account', 'account-config', 'notification']
+const SETTINGS_TAB_KEYS: SettingsTabKey[] = ['account', 'account-config', 'notification', 'friend-import']
 const LEGACY_SETTINGS_TABS: Record<string, SettingsTabKey> = {
   'strategy': 'account-config',
   'automation': 'account-config',
@@ -31,6 +32,8 @@ const LEGACY_SETTINGS_TABS: Record<string, SettingsTabKey> = {
   'user': 'notification',
   'system': 'account-config',
   'capture': 'account-config',
+  'friend': 'friend-import',
+  'invite': 'friend-import',
 }
 
 function getInitialSettingsTab(): SettingsTabKey {
@@ -65,6 +68,7 @@ const tabs = [
   { key: 'account', label: '账号管理', icon: 'i-carbon-user-settings' },
   { key: 'account-config', label: '账号设置', icon: 'i-carbon-settings-adjust' },
   { key: 'notification', label: '通知设置', icon: 'i-carbon-notification' },
+  { key: 'friend-import', label: '批量加好友', icon: 'i-carbon-user-follow' },
 ] as const
 
 const modalVisible = ref(false)
@@ -417,6 +421,8 @@ onMounted(async () => {
             @test="handleTestOffline"
           />
         </div>
+
+        <FriendImportTab v-else-if="activeTab === 'friend-import'" />
       </div>
     </div>
 

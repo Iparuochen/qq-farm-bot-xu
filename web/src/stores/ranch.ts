@@ -76,8 +76,15 @@ export const useRanchStore = defineStore('ranch', () => {
   }
 
   async function mutate(path: string, payload: any) {
-    if (!account.currentAccountId || busy.value || loading.value)
+    if (!account.currentAccountId || busy.value || (loading.value && !data.value))
       return
+    // User actions take priority over background reads. Invalidate the read before
+    // aborting so a late response cannot overwrite the action result.
+    if (loading.value) {
+      generation++
+      controller?.abort()
+      loading.value = false
+    }
     const version = generation
     let actionError = ''
     let snapshotApplied = false

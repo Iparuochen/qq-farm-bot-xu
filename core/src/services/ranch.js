@@ -92,7 +92,7 @@ function normalizeSnapshot({ cells, ranches, bag, tabs, order, orderError, serve
         const value = camelize(raw);
         const facility = facilities.find(f => String(f.ranch?.ranchInstId) === String(value.ranchInstId));
         return { ...value, availableCubs: config.MCAnimalConfig.filter(a => a.enable_flag === true && (value.husbandryType === 1 ? a.husbandry_type === '窝' : value.husbandryType === 2 ? a.husbandry_type === '棚' : false)).map(a => ({ itemId: a.cub_item_id, animalId: a.id, name: a.name, count: String(unlockedCount(a.cub_item_id)) })), name: facility?.name || `窝棚 ${value.ranchInstId}`,
-            animals: (value.animals || []).map(a => ({ ...a, image: animalIcons[String(a.animalId)]?.[a.stage === 1 ? 1 : 4] || '', phaseDurationMs: Number(animalMap.get(String(a.animalId))?.[ANIMAL_PHASE_DURATION_FIELDS[a.stage]] || 0) * 1000, visual: getAnimalVisual(a.animalId, a.stage, a.mutation), stageLabel: ANIMAL_STAGE_LABELS[a.stage] || '未知', canTriggerProduce: a.stage === 3 && !a.producing && a.canDeliver === true, name: animalMap.get(String(a.animalId))?.name || `动物 ${a.animalId}` })),
+            animals: (value.animals || []).map(a => ({ ...a, image: animalIcons[String(a.animalId)]?.[a.stage === 1 ? 1 : 4] || '', phaseDurationMs: Number(animalMap.get(String(a.animalId))?.[ANIMAL_PHASE_DURATION_FIELDS[a.stage]] || 0) * 1000, visual: getAnimalVisual(a.animalId, a.stage, a.mutation), statusConfig: (() => { const row = animalMap.get(String(a.animalId)); const cub = itemMap.get(String(row?.cub_item_id)); return row ? { infantSec: row.infant_sec, growSec: row.grow_sec, matureSec: row.mature_sec, roundSec: row.product_round_sec, dropSec: row.product_drop_sec, maxProduceCount: row.max_produce_count, productCount: row.product_item?.count, byproductCount: row.byproduct_item?.count, quality: cub?.layer, icon: animalIcons[String(a.animalId)]?.[4] || '' } : null; })(), stageLabel: ANIMAL_STAGE_LABELS[a.stage] || '未知', canTriggerProduce: a.stage === 3 && !a.producing && a.canDeliver === true, name: animalMap.get(String(a.animalId))?.name || `动物 ${a.animalId}` })),
             shelves: (value.shelves || []).map(s => ({ ...s, lots: (s.lots || []).map(lot => ({ ...lot, name: itemMap.get(String(lot.itemId))?.name || `物品 ${lot.itemId}` })) })),
         };
     });
@@ -103,6 +103,7 @@ function normalizeSnapshot({ cells, ranches, bag, tabs, order, orderError, serve
         // 单账号只有一条连接，农场/牧场是互斥场景（同一时刻只驻留一个），不存在并行会话。
         sceneReady: true, sessionState: 'exclusive', serverTime, syncedAt: Date.now(), settings, capabilities: CAPABILITIES,
         grid: { width: cells.grid_width, height: cells.grid_height }, ranches: normalizedRanches,
+        feedShop: (() => { const row = shopConfig.MCGoods.find(g => g.shop_id === 6 && g.item_id === 7001); return row ? { unitPrice: Math.floor(row.price_count / Math.max(1, row.item_count)), currencyId: row.price_id } : null; })(),
         facilities, buildingItems: (cells.building_items || []).map(raw => ({ ...camelize(raw), name: facilityMap.get(String(raw.facility_id))?.name || `建筑 ${raw.facility_id}` })),
         items, tabs: (tabs.tabs || []).map(tab => ({ id: tab.tab_id, name: tab.tab_name, count: tab.item_count })),
         currencies: [1007, 1008].map(id => ({ id, name: itemMap.get(String(id))?.name, count: items.find(i => String(i.id) === String(id))?.count ?? '0' })),

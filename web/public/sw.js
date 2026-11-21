@@ -5,7 +5,7 @@
  *  - 静态资源：stale-while-revalidate（先用缓存秒开，后台更新）
  *  - API / WebSocket 请求：完全不拦截，直接走网络
  */
-const CACHE = 'qqfarm-shell-v1';
+const CACHE = 'qqfarm-shell-v2';
 const SHELL = ['/', '/index.html', '/icon.svg', '/manifest.webmanifest'];
 
 self.addEventListener('install', (e) => {
@@ -36,7 +36,8 @@ self.addEventListener('fetch', (e) => {
 
   if (req.mode === 'navigate') {
     e.respondWith(
-      fetch(req)
+      // cache:'reload' 绕过 HTTP 缓存，确保发新版后页面立即拿到最新 index.html
+      fetch(req, { cache: 'reload' })
         .then((res) => {
           const copy = res.clone();
           caches.open(CACHE).then((c) => c.put('/index.html', copy)).catch(() => {});

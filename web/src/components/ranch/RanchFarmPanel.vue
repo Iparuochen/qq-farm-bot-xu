@@ -10,6 +10,7 @@ import { ranchDate } from '@/utils/ranch-display'
 import { positiveRanchCount } from '@/utils/ranch-input'
 import { ranchPanelActions, runRanchPanelActions } from '@/utils/ranch-panel'
 import RanchAnimalBubble from './RanchAnimalBubble.vue'
+import RanchFeedDialog from './RanchFeedDialog.vue'
 import RanchScene from './RanchScene.vue'
 
 defineEmits<{ confirm: [title: string, message: string, payload: any] }>()
@@ -32,7 +33,7 @@ onMounted(() => document.addEventListener('visibilitychange', tick))
 let generation = 0
 let mounted = true
 const ranches = computed<any[]>(() => store.data?.ranches || [])
-const animalCards = computed(() => ranches.value.map(ranch => ({ ...ranch, animals: (ranch.animals || []).map((animal: any) => ({ ...animal, progress: ranchAnimalProgress(animal, ranchSnapshotNow(store.data, localNow.value)) })) })))
+const animalCards = computed(() => ranches.value.map(ranch => ({ ...ranch, animals: (ranch.animals || []).map((animal: any) => ({ ...animal, statusShelf: (ranch.shelves || []).find((s: any) => s.slotIndex === animal.slotIndex), progress: ranchAnimalProgress(animal, ranchSnapshotNow(store.data, localNow.value)) })) })))
 const selectedRanchId = ref('')
 const selectedAnimalId = ref('')
 const animalAnchor = ref<HTMLElement | null>(null)
@@ -52,7 +53,7 @@ const facilityLevels = computed(() => facilities.value.filter(f =>
   f.ranch || f.feedMachine || f.facilityKind === 'MODULE_TYPE_RANCH_SHED',
 ))
 const feedMachines = computed<any[]>(() => (store.data?.facilities || []).filter((f: any) => f.feedMachine))
-const disabled = computed(() => running.value || store.busy || store.loading)
+const disabled = computed(() => running.value || store.busy || (store.loading && !store.data))
 const targets = computed(() => dialog.value === 'feed' ? feedMachines.value : ranches.value)
 const target = computed(() => targets.value.find(t => String(t.ranchInstId ?? t.instId) === targetId.value))
 const canSubmit = computed(() => dialog.value === 'harvest'
@@ -66,12 +67,7 @@ const operations = [
   { action: 'clean', label: '清理灾害', icon: 'i-carbon-clean', color: 'bg-teal-600 hover:bg-teal-700' },
   { action: 'harvest', label: '收获动物', icon: 'i-carbon-checkmark', color: 'bg-orange-600 hover:bg-orange-700' },
 ] as const
-const summary = computed(() => [
-  { label: '可收集窝棚', count: ranchPanelActions(store.data, 'collect').length, color: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400' },
-  { label: '生产中动物', count: ranches.value.flatMap(r => r.animals || []).filter(a => a.producing).length, color: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' },
-  { label: '窝棚', count: ranches.value.length, color: 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300' },
-  { label: '待清理窝棚', count: ranchPanelActions(store.data, 'clean').length, color: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' },
-])
+
 function reset() {
   generation++
   selectedRanchId.value = ''
@@ -105,6 +101,20 @@ function open(value: 'harvest' | 'place' | 'feed') {
   targetId.value = ''
   cubId.value = ''
   feedCount.value = ''
+}
+function openFeed(id?: string) {
+  if (!store.data?.capabilities?.addFeed || disabled.value)
+    return
+  open('feed')
+  targetId.value = id || String(feedMachines.value[0]?.instId || '')
+}
+async function submitFeed(count: number) {
+  if (disabled.value || !target.value)
+    return
+  const version = generation
+  await store.mutate('/api/ranch/action', { action: 'addFeed', facilityInstId: target.value.instId, count })
+  if (version === generation && !store.error)
+    dialog.value = ''
 }
 function requestOperation(action: RanchPanelAction) {
   if (disabled.value)
@@ -164,8 +174,8 @@ function targetsFor(action: string) {
 </script>
 
 <template>
-  <div class="overflow-hidden rounded-lg bg-white shadow dark:bg-gray-800">
-    <div class="flex flex-col items-stretch justify-between gap-3 border-b border-gray-100 p-4 sm:flex-row sm:items-center dark:border-gray-700">
+  <div class="h-full min-h-0 flex flex-col overflow-hidden rounded-lg bg-white shadow dark:bg-gray-800">
+    <div class="ranch-toolbar flex flex-col items-stretch justify-between gap-3 border-b border-gray-100 p-4 sm:flex-row sm:items-center dark:border-gray-700">
       <div class="min-w-0 flex flex-wrap items-baseline gap-x-3 gap-y-1">
         <h2 class="flex shrink-0 items-center gap-2 text-lg font-bold">
           <span class="i-carbon-grid self-center text-xl" />牧场详情
@@ -174,14 +184,14 @@ function targetsFor(action: string) {
           {{ label(facility) }} Lv.{{ facility.level ?? '—' }}
         </span>
       </div>
-      <div class="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:justify-end">
+      <div class="ranch-actions grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:justify-end">
         <button v-for="op in operations" :key="op.action" class="flex items-center justify-center gap-1.5 rounded px-3 py-2 text-sm text-white transition disabled:cursor-not-allowed disabled:opacity-50" :class="op.color" :disabled="disabled" @click="requestOperation(op.action)">
           <span :class="op.icon" />{{ op.label }}
         </button>
         <button v-if="store.data?.capabilities?.place" class="flex items-center justify-center gap-1.5 rounded bg-purple-600 px-3 py-2 text-sm text-white hover:bg-purple-700 disabled:opacity-50" :disabled="disabled || !ranches.some(r => r.availableCubs?.length)" @click="open('place')">
           <span class="i-carbon-add" />幼崽入栏
         </button>
-        <button v-if="store.data?.capabilities?.addFeed" class="flex items-center justify-center gap-1.5 rounded bg-teal-600 px-3 py-2 text-sm text-white hover:bg-teal-700 disabled:opacity-50" :disabled="disabled || !feedMachines.length" @click="open('feed')">
+        <button v-if="store.data?.capabilities?.addFeed" class="flex items-center justify-center gap-1.5 rounded bg-teal-600 px-3 py-2 text-sm text-white hover:bg-teal-700 disabled:opacity-50" :disabled="disabled || !feedMachines.length" @click="openFeed()">
           <span class="i-carbon-sprout" />补充牧草
         </button>
       </div>
@@ -189,18 +199,15 @@ function targetsFor(action: string) {
     <p v-if="actionNotice" role="status" class="px-4 py-2 text-sm text-amber-600">
       {{ actionNotice }}
     </p>
-    <div class="grid grid-cols-2 gap-2 border-b border-gray-100 bg-gray-50 p-3 text-xs sm:flex sm:flex-wrap sm:gap-4 dark:border-gray-700 dark:bg-gray-900/50 sm:p-4 sm:text-sm">
-      <span v-for="stat in summary" :key="stat.label" class="rounded-full px-3 py-1 font-medium" :class="stat.color">{{ stat.label }}: {{ stat.count }}</span>
-    </div>
-    <div class="p-2 space-y-4 sm:p-4">
+    <div class="min-h-0 flex flex-1 flex-col overflow-hidden">
       <p v-if="store.data?.sectionErrors?.warehouse" class="text-sm text-amber-600" role="alert">
         库存读取失败：{{ store.data.sectionErrors.warehouse }}
       </p>
       <p v-if="store.data?.sectionErrors?.buildings" class="text-sm text-red-500" role="alert">
         设施读取失败：{{ store.data.sectionErrors.buildings }}
       </p>
-      <RanchScene :ranches="animalCards" :facilities="facilities" :selected-id="selectedRanchId" @select="selectedRanchId = $event; selectedAnimalId = ''" @animal="selectAnimal" />
-      <div v-if="!ranches.length" class="py-12 text-center text-gray-500">
+      <RanchScene world :server-time="store.data?.serverTime" :synced-at="store.data?.syncedAt" :ranches="animalCards" :facilities="facilities" :selected-id="selectedRanchId" @select="selectedRanchId = $event; selectedAnimalId = ''" @animal="selectAnimal" @feed="openFeed" />
+      <div v-if="!ranches.length" class="shrink-0 py-2 text-center text-gray-500">
         当前没有窝棚数据
       </div>
       <section v-for="ranch in selectedRanches.filter(() => !selectedAnimalId)" :key="ranch.ranchInstId" class="fixed inset-0 z-50 flex items-end justify-center bg-black/30 p-3 sm:items-center" @click.self="selectedRanchId = ''" @keydown.esc="selectedRanchId = ''">
@@ -270,8 +277,9 @@ function targetsFor(action: string) {
         </div>
       </section>
     </div>
-    <RanchAnimalBubble v-if="selectedAnimal && animalAnchor" :animal="selectedAnimal" :anchor="animalAnchor" :ranch-name="selectedRanches[0]?.name || '窝棚'" @close="selectedRanchId = ''; selectedAnimalId = ''" />
-    <ConfirmModal :show="!!dialog" :title="dialog === 'harvest' ? '收获动物' : dialog === 'feed' ? '补充牧草' : '金券购买幼崽并入栏'" :message="dialog === 'harvest' ? `确认收获当前可收获的 ${ranchPanelActions(store.data, 'harvest').length} 只动物？动物将离栏回收，此操作不同于收集货架产物。` : dialog === 'place' ? '使用金券购买所选幼崽并入栏，消耗和容量由服务端校验。' : '仅补充库存牧草，不购买额外道具。'" :loading="disabled" :confirm-disabled="!canSubmit" @confirm="submit" @cancel="dialog = ''" @close="dialog = ''">
+    <RanchAnimalBubble v-if="selectedAnimal && animalAnchor" :server-time="store.data?.serverTime" :synced-at="store.data?.syncedAt" :animal="selectedAnimal" :anchor="animalAnchor" :ranch-name="selectedRanches[0]?.name || '窝棚'" @close="selectedRanchId = ''; selectedAnimalId = ''" />
+    <RanchFeedDialog v-if="dialog === 'feed' && target" :machine="target" :items="store.data?.items || []" :shop="store.data?.feedShop" :busy="disabled" :error="store.error" :unavailable="!!store.data?.sectionErrors?.warehouse" @close="dialog = ''" @submit="submitFeed" />
+    <ConfirmModal :show="!!dialog && dialog !== 'feed'" :title="dialog === 'harvest' ? '收获动物' : dialog === 'feed' ? '补充牧草' : '金券购买幼崽并入栏'" :message="dialog === 'harvest' ? `确认收获当前可收获的 ${ranchPanelActions(store.data, 'harvest').length} 只动物？动物将离栏回收，此操作不同于收集货架产物。` : dialog === 'place' ? '使用金券购买所选幼崽并入栏，消耗和容量由服务端校验。' : '优先使用库存牧草，不足时使用货币补足，消耗由服务端校验。'" :loading="disabled" :confirm-disabled="!canSubmit" @confirm="submit" @cancel="dialog = ''" @close="dialog = ''">
       <div v-if="dialog !== 'harvest'" class="mt-4 text-left space-y-3">
         <label class="block text-sm">{{ dialog === 'feed' ? '牧草机' : '窝棚' }}<select v-model="targetId" class="mt-1 w-full border rounded-lg bg-transparent p-2"><option value="" disabled>请选择</option><option v-for="item in targets" :key="item.ranchInstId ?? item.instId" :value="String(item.ranchInstId ?? item.instId)">{{ label(item) }}</option></select></label>
         <label v-if="dialog === 'place'" class="block text-sm">幼崽<select v-model="cubId" class="mt-1 w-full border rounded-lg bg-transparent p-2" :disabled="!target"><option value="" disabled>请选择幼崽</option><option v-for="cub in target?.availableCubs || []" :key="cub.itemId" :value="String(cub.itemId)">{{ cub.name }}</option></select></label>
@@ -280,3 +288,32 @@ function targetsFor(action: string) {
     </ConfirmModal>
   </div>
 </template>
+
+<style scoped>
+/* Mobile only: preserve desktop toolbar layout and all existing action validation. */
+@media (max-width: 639px) {
+  .ranch-toolbar {
+    padding: 8px;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  .ranch-toolbar h2 {
+    font-size: 15px;
+    line-height: 22px;
+  }
+  .ranch-toolbar > div:first-child {
+    gap: 4px 8px;
+  }
+  .ranch-actions {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+  }
+  .ranch-actions button {
+    min-height: 36px;
+    padding: 6px 3px;
+    font-size: 12px;
+    gap: 3px;
+    white-space: nowrap;
+  }
+}
+</style>

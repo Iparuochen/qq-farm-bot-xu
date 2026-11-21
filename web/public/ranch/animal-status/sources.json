@@ -1,0 +1,70 @@
+{
+  "files": [
+    {
+      "file": "animalstateprocess.png",
+      "assetPath": "gui/texture/animalDetails/animalstateprocess",
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/native/06/06b39797-07fe-4609-b05b-077ab0777f07.cdf4d.png",
+      "sha256": "7e7793786767a93211aeb779db30b66d7aabd695dff64458bb6f222fb3e83811"
+    },
+    {
+      "file": "tuditanchuang.png",
+      "assetPath": "gui/texture/animalDetails/tuditanchuang",
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/native/52/526c9163-47ea-4200-bb77-46d260c828c4.21af7.png",
+      "sha256": "c0142c34a87068066c9c614120685e2c0652daf28b070f1d223327fc91a87e30"
+    },
+    {
+      "file": "animalstatebg.png",
+      "assetPath": "gui/texture/animalDetails/animalstatebg",
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/native/5e/5e01939f-5277-4aa6-9635-fc7aa51a0ff9.dd5dd.png",
+      "sha256": "cb0e0b42ef5fa6507c6f241264de9cacf21e9cf2db0c74805dfa2f248322d03c"
+    },
+    {
+      "file": "sell.png",
+      "assetPath": "gui/texture/animalDetails/sell",
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/native/6a/6ad04ad6-c381-44b9-8f7f-d403a27d3e9a.91187.png",
+      "sha256": "91db9c0ac151a3ad96dd52a84c004a6dda8d9c232c195492c02f51d3a4b33e0b"
+    },
+    {
+      "file": "animalstatedsfenge.png",
+      "assetPath": "gui/texture/animalDetails/animalstatedsfenge",
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/native/8a/8a3795df-494a-4187-bb20-bd6075f9b397.a55c4.png",
+      "sha256": "7ba06d25601b453b6ad69cb2996761d362966aa7164e1700d629e2a1712673d2"
+    },
+    {
+      "file": "img_cropInfo_txtBg.png",
+      "assetPath": "gui/texture/plantinteractive/img_cropInfo_txtBg",
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/extraRes/native/c9/c93de328-cca4-48ff-8c3f-eb3163349f0e.996a6.png",
+      "sha256": "89bbbfa28b432b56085bbf30e06e0c3738952e0f3fd7e5981b28aa02da92abc0"
+    },
+    {
+      "file": "img_plantinteractive_line.png",
+      "assetPath": "gui/texture/plantinteractive/img_plantinteractive_line",
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/extraRes/native/15/15c56c71-9913-4b39-8782-299c22648f4b.c473e.png",
+      "sha256": "0848edc4ee4caafd89e8659f7dc6c540d253a8a5e0e83514c3ab66d3ce2bd54e"
+    },
+    {
+      "file": "seed_bg_1_1.png",
+      "assetPath": "gui/texture/plantinteractive/seed_bg_1_1",
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/extraRes/native/ef/ef6d9a69-f4d7-4b96-ac68-236a6e2f0015.7859f.png",
+      "sha256": "9398e157dceff6d9d058a056b670a3157de3a1fc2687d3108b2fd14229931db7"
+    },
+    {
+      "file": "level_bg.png",
+      "assetPath": "gui/texture/plantinteractive/level_bg",
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/extraRes/native/9e/9eaf8be0-69e4-401d-8073-84fd57798543.adc11.png",
+      "sha256": "3fa9dbe4f1c54ee023e1b4f87e599e47c119706dc0497f1ddde9af48134c2c5d"
+    },
+    {
+      "file": "img_plantinteractive_col.png",
+      "assetPath": "gui/texture/plantinteractive/img_plantinteractive_col",
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/extraRes/native/8b/8b1ae351-5682-4930-9b87-9015c3533795.131e2.png",
+      "sha256": "736d8f78eb88f6054c1041e13e0706b817b81a0ba31e97884bc98e1bfda572f4"
+    },
+    {
+      "file": "img_plantinteractive_bg.png",
+      "assetPath": "gui/texture/plantinteractive/img_plantinteractive_bg",
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/extraRes/native/16/16c51263-1b22-4518-a93c-4f7dd5cc16f3.9f9cf.png",
+      "sha256": "a970553b53ae75655f62cd89981e752643c457edb1e6fda29d8af299a5a7a519"
+    }
+  ]
+}

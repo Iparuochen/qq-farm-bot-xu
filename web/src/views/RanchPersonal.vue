@@ -40,9 +40,9 @@ function label(item: any) {
 </script>
 
 <template>
-  <section class="h-full flex flex-col p-4">
+  <section class="ranch-personal h-full min-h-0 flex flex-col overflow-hidden p-4">
     <SceneTabs v-model="section" :tabs="tabs" class="mb-4" />
-    <div class="flex-1 overflow-hidden overflow-y-auto space-y-4">
+    <div class="min-h-0 flex-1" :class="section === 'farm' ? 'overflow-hidden' : 'overflow-y-auto space-y-4'">
       <div v-if="!account.currentAccountId" class="rounded-lg bg-white p-8 text-center text-gray-500 shadow dark:bg-gray-800">
         请选择账号后查看牧场
       </div>
@@ -137,3 +137,27 @@ function label(item: any) {
     <ConfirmModal :show="!!confirmation" :title="confirmation?.title" :message="confirmation?.message" :loading="store.busy" @confirm="confirmAction" @cancel="confirmation = null" @close="confirmation = null" />
   </section>
 </template>
+
+<style scoped>
+@media (max-width: 639px) {
+  .ranch-personal {
+    padding: 6px;
+  }
+  .ranch-personal :deep(nav[aria-label='页面分区']) {
+    flex-wrap: nowrap;
+    flex-shrink: 0;
+    gap: 2px;
+    padding-bottom: 6px;
+    margin-bottom: 6px;
+  }
+  .ranch-personal :deep(nav[aria-label='页面分区'] > button) {
+    min-width: 0;
+    flex: 1;
+    justify-content: center;
+    padding: 6px 2px;
+    font-size: 12px;
+    gap: 3px;
+    white-space: nowrap;
+  }
+}
+</style>

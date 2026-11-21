@@ -115,27 +115,27 @@ watch(() => status.value?.wsError, (wsError: any) => {
       <header class="relative z-30 flex shrink-0 items-center justify-between gap-4 px-4 pt-4 sm:px-6 lg:px-8 lg:pt-5">
         <NavMenuButton class="lg:hidden" />
 
-        <div class="ml-auto flex items-center gap-2 sm:gap-4">
-          <!-- 移动端：农牧场场景切换（PC 端在左侧栏顶部，两处共用 scene store） -->
-          <div
-            class="scene-pill flex items-center lg:hidden"
-            role="group"
-            aria-label="农牧场切换"
+        <!-- 移动端：农牧场场景切换，顶部居中（绝对定位保证视觉正中，不受两侧按钮宽度影响） -->
+        <div
+          class="scene-pill absolute left-1/2 top-4 flex -translate-x-1/2 items-center lg:hidden"
+          role="group"
+          aria-label="农牧场切换"
+        >
+          <button
+            v-for="option in (['farm', 'ranch'] as const)"
+            :key="option"
+            class="h-8 rounded-full px-3 text-[13px] font-medium transition-colors"
+            :aria-pressed="sceneStore.scene === option"
+            :style="sceneStore.scene === option
+              ? { background: 'var(--theme-gradient)', color: '#fff' }
+              : { color: 'var(--theme-text)' }"
+            @click="sceneStore.select(option)"
           >
-            <button
-              v-for="option in (['farm', 'ranch'] as const)"
-              :key="option"
-              class="h-8 rounded-full px-3 text-[13px] font-medium transition-colors"
-              :aria-pressed="sceneStore.scene === option"
-              :style="sceneStore.scene === option
-                ? { background: 'var(--theme-gradient)', color: '#fff' }
-                : { color: 'var(--theme-text)' }"
-              @click="sceneStore.select(option)"
-            >
-              {{ option === 'farm' ? '农场' : '牧场' }}
-            </button>
-          </div>
+            {{ option === 'farm' ? '农场' : '牧场' }}
+          </button>
+        </div>
 
+        <div class="ml-auto flex items-center gap-2 sm:gap-4">
           <ThemeToggle />
 
           <TopAccountMenu :show-avatar="showAccountAvatar" />

@@ -35,6 +35,8 @@ function parseLogTimestamp(input: any) {
 
 function inferLevel(input: any): RuntimeLogLevel {
   const explicit = String(input?.level || '').toLowerCase()
+  if (input?.meta?.result === 'error')
+    return 'error'
   if (explicit === 'error' || explicit === 'warn' || explicit === 'info')
     return explicit
   if (String(input?.tag || '') === '错误' || ERROR_ACTION_RE.test(String(input?.action || '')))
@@ -47,6 +49,8 @@ function inferLevel(input: any): RuntimeLogLevel {
 function inferSource(input: any, isAccountLog: boolean): RuntimeLogSource {
   if (isAccountLog)
     return 'account'
+  if (input?.meta?.module && input.meta.module !== 'system')
+    return 'business'
   if (input?.source === 'system' || input?.meta?.module === 'system' || ['系统', '错误'].includes(String(input?.tag || '')))
     return 'system'
   return 'business'
@@ -59,7 +63,10 @@ export function normalizeRuntimeLog(input: any, isAccountLog = false): RuntimeLo
   const source = inferSource(raw, isAccountLog)
   const meta = raw.meta && typeof raw.meta === 'object' ? raw.meta : {}
   const action = String(raw.action || '')
-  const tag = isAccountLog
+  const moduleLabels: Record<string, string> = { farm: '农场', ranch: '牧场', friend: '好友', warehouse: '仓库', shop: '商城', task: '任务', activity: '活动', pet: '宠物', scene: '场景调度', system: '系统' }
+  const tag = !isAccountLog && moduleLabels[meta.module]
+    ? moduleLabels[meta.module]
+    : isAccountLog
     ? (level === 'error' ? '错误' : level === 'warn' ? '警告' : '系统')
     : String(raw.tag || (level === 'error' ? '错误' : '系统'))
   const msg = String(raw.reason && !String(raw.msg || '').includes(String(raw.reason))
@@ -90,7 +97,7 @@ export function matchesRuntimeLog(log: RuntimeLogEntry, filter: {
   level?: string
 }) {
   if (filter.module) {
-    const isSystem = log.source === 'system' || log.source === 'account'
+    const isSystem = log.module === 'system' || (!log.module && (log.source === 'system' || log.source === 'account'))
     if (filter.module === 'system' ? !isSystem : log.module !== filter.module)
       return false
   }

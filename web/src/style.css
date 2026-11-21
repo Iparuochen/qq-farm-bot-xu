@@ -128,9 +128,10 @@ body {
 }
 
 /* Shared interaction and accessibility defaults. */
+/* 用户偏好：不显示浏览器焦点描边框——触摸端 Safari 点按按钮也会命中 :focus-visible，
+   PC 端脚本 focus()（如关闭菜单后焦点还回触发按钮）同样命中，都会画出主题色绿框。全局取消。 */
 :where(button, a, input, select, textarea, [tabindex]):focus-visible {
-  outline: 2px solid var(--theme-primary);
-  outline-offset: 3px;
+  outline: none;
 }
 
 .base-button {

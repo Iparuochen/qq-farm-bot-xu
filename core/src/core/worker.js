@@ -309,7 +309,7 @@ function startDailyRoutineTimer() {
 
     // 每 60 秒检查一次日期是否变化
     workerScheduler.setIntervalTask('daily_routine_interval', 60000, () => {
-        if (!loginReady) return;
+        if (!loginReady || friendSyncPaused) return;
         const today = getLocalDateKey();
         if (today === lastDailyRunDate) {
             // 分享资格在服务端日切后可能延迟刷新；服务内部有 10 分钟冷却，
@@ -968,7 +968,7 @@ function stopMysteryShopAutoBuyTimer() {
 }
 
 function runMysteryShopAutoBuy() {
-    if (!loginReady || getAutomation().mystery_shop_auto_buy !== true) return Promise.resolve();
+    if (!loginReady || friendSyncPaused || getAutomation().mystery_shop_auto_buy !== true) return Promise.resolve();
     const { checkAndAutoBuyMysteryShop } = require('../services/mystery-shop');
     return checkAndAutoBuyMysteryShop();
 }
@@ -1297,7 +1297,10 @@ function scheduleUnifiedNextTick() {
         Number(nextHelpRunAt) || now + 30000,
         Number(nextStealRunAt) || now + 25000
     );
-    const waitMs = Math.max(100, nearest - now);
+    // 暂停期间（好友同步 / 批量加好友）不要 100ms 空转，统一 1s 轮询，恢复后最多晚 1s
+    const waitMs = friendSyncPaused
+        ? 1000
+        : Math.max(100, nearest - now);
 
     workerScheduler.setTimeoutTask('unified_next_tick', waitMs, async () => {
         try { await runUnifiedTick(); } finally { scheduleUnifiedNextTick(); }
@@ -1425,7 +1428,7 @@ function applyRuntimeConfig(config, syncStatusAfter = false) {
             const fertChanged = prevFert !== newFert;
             if (fertChanged && (newFert === 'both' || newFert === 'organic' || newFert === 'smart' || newFert === 'smart_only' || newFert === 'smart_normal' || newFert === 'final_normal' || newFert === 'final_organic')) {
                 workerScheduler.setTimeoutTask('fertilizer_immediate_after_save', 1000, async () => {
-                    if (!loginReady) return;
+                    if (!loginReady || friendSyncPaused) return;
                     try {
                         await runFertilizerByConfig([], { skipNormal: true });
                     } catch (err) {
@@ -1441,7 +1444,7 @@ function applyRuntimeConfig(config, syncStatusAfter = false) {
             const newBad = !!(newAuto && newAuto.friend_bad);
             if (!prevBad && newBad) {
                 workerScheduler.setTimeoutTask('friend_bad_immediate', 3000, async () => {
-                    if (!loginReady) return;
+                    if (!loginReady || friendSyncPaused) return;
                     try {
                         await runBadOnceOnStartup(true);
                     } catch (err) {
@@ -1456,7 +1459,7 @@ function applyRuntimeConfig(config, syncStatusAfter = false) {
             const newGoldenBug = !!(newAuto && newAuto.friend_golden_bug);
             if (!prevGoldenBug && newGoldenBug) {
                 workerScheduler.setTimeoutTask('friend_golden_bug_immediate', 3000, async () => {
-                    if (!loginReady) return;
+                    if (!loginReady || friendSyncPaused) return;
                     await runGoldenBugPlacement({ force: true });
                 });
             }
@@ -1758,7 +1761,7 @@ async function startBot(config) {
         return candidates.length ? Math.min(...candidates) : Infinity;
     };
     workerScheduler.setIntervalTask('ranch_automation', 1000, async () => {
-        if (!loginReady || Date.now() < nextRanchHealthCheckAt) return;
+        if (!loginReady || friendSyncPaused || Date.now() < nextRanchHealthCheckAt) return;
         const deferMs = getBusinessDeferMs('ranch');
         if (deferMs > 0) { nextRanchHealthCheckAt = Date.now() + deferMs; return; }
         try {
@@ -1776,6 +1779,10 @@ async function stopBot() {
     isRunning = false;
     loginReady = false;
     friendSyncPaused = false;
+    if (friendSyncResumeTimer) {
+        clearTimeout(friendSyncResumeTimer);
+        friendSyncResumeTimer = null;
+    }
 
     stopUnifiedScheduler();
     stopMysteryShopAutoBuyTimer();
@@ -1874,6 +1881,23 @@ async function handleApiCall(msg) {
             } catch { /* 服务不可用时退回正常场景读 */ }
         }
     }
+    // 批量加好友：在进入场景租约之前先暂停并等待其他自动化收尾。
+    // 必须放在租约外——若持有农场租约再等，正在跑的自动化反而拿不到租约，
+    // 只会互相卡到超时（leaseTimeoutMs=180s）。
+    const isBatchInvite = msg.method === 'applyFriendInvites';
+    if (isBatchInvite) {
+        holdFriendSyncPause();
+        log('系统', '批量加好友开始，已暂停其他自动化进程', {
+            module: 'system', event: '批量加好友暂停', method: msg.method
+        });
+        const { idle, waitedMs } = await waitForAutomationIdle();
+        log('邀请', idle
+            ? `其他自动化已全部让出（等待 ${waitedMs}ms），开始批量加好友`
+            : `等待自动化收尾超时（${waitedMs}ms），仍开始批量加好友`, {
+            module: 'friend', event: '批量加好友独占', result: idle ? 'idle' : 'timeout'
+        });
+    }
+
     const enter = msg.method.startsWith('ranch') ? ranchSession.inRanch : ranchSession.inFarm;
     const isRead = /^(get|query)|^ranch(Status|Resource|Connect|Disconnect)$/.test(msg.method);
     try {
@@ -1886,7 +1910,53 @@ async function handleApiCall(msg) {
     } catch (err) {
         // 场景切换被拒或事务取消时也要回包，否则前端会一直等。
         sendToMaster({ type: 'api_response', id: msg.id, result: null, error: err.message });
+    } finally {
+        if (isBatchInvite)
+            scheduleFriendSyncResume();
     }
+}
+
+// 批量加好友期间需要独占发包：先把正在跑的自动化任务等收尾，再开始逐条发申请
+const AUTOMATION_BUSY_TIMEOUT_MS = 60000;
+// 前端按 10 条一批提交，批与批之间会恢复一次；留一段宽限期，
+// 避免下一批刚进来又要等一轮农场 tick（宽限期内来新批次会自动续上）。
+const BATCH_INVITE_RESUME_GRACE_MS = 10000;
+let friendSyncResumeTimer = null;
+
+function holdFriendSyncPause() {
+    if (friendSyncResumeTimer) {
+        clearTimeout(friendSyncResumeTimer);
+        friendSyncResumeTimer = null;
+    }
+    friendSyncPaused = true;
+}
+
+function scheduleFriendSyncResume(reason = '批量加好友') {
+    if (friendSyncResumeTimer) clearTimeout(friendSyncResumeTimer);
+    friendSyncResumeTimer = setTimeout(() => {
+        friendSyncResumeTimer = null;
+        friendSyncPaused = false;
+        log('系统', `${reason}结束，已恢复自动化进程`, {
+            module: 'system', event: '批量加好友恢复'
+        });
+    }, BATCH_INVITE_RESUME_GRACE_MS);
+    if (friendSyncResumeTimer.unref) friendSyncResumeTimer.unref();
+}
+
+function isAutomationBusy() {
+    return farmTaskRunning || helpTaskRunning || stealTaskRunning
+        || dogSyncRunning || harvestSellRunning || starActivityClaimRunning;
+}
+
+async function waitForAutomationIdle(timeoutMs = AUTOMATION_BUSY_TIMEOUT_MS) {
+    const startedAt = Date.now();
+    while (isAutomationBusy() && Date.now() - startedAt < timeoutMs) {
+        await new Promise((resolve) => setTimeout(resolve, 500));
+    }
+    return {
+        idle: !isAutomationBusy(),
+        waitedMs: Date.now() - startedAt,
+    };
 }
 
 async function handleApiCallInScene(msg) {
@@ -1894,7 +1964,7 @@ async function handleApiCallInScene(msg) {
     let result = null;
     let error = null;
 
-    // 好友同步操作期间暂停自动化
+    // 好友同步 / 批量加好友期间暂停自动化
     const isFriendSync = method === 'getFriends' && args[0] === true
         || method === 'fetchFriendsDogInfo'
         || method === 'syncFriendsFromGids';
@@ -1969,6 +2039,10 @@ async function handleApiCallInScene(msg) {
                 break;
             case 'delFriend':
                 result = await delFriend(args[0]);
+                break;
+            case 'applyFriendInvites':
+                // 手动批量加好友：逐条调用 ReportArkClick，返回每条结果（不碰 share.txt）
+                result = await require('../services/invite').applyInviteList(args[0], args[1] || {});
                 break;
             case 'getSeeds':
                 result = await getAvailableSeeds();

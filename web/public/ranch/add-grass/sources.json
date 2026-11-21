@@ -1,0 +1,554 @@
+{
+  "files": [
+    {
+      "file": "background.png",
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/native/04/0491561b-2cfe-4e67-89c6-9044e2be8f0d.95a99.png",
+      "assetPath": "gui/texture/bg/img_popup_middle_bg_v2",
+      "sha256": "0138eb763a5e4cf2d093309430be451defd3d1ef0bb6eff64d8b345d7dd1eb97"
+    },
+    {
+      "file": "machine3.png",
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/native/a5/a5ee3d9a-510b-40b1-891f-0c4e2e5e9960.44257.png",
+      "assetPath": "gui/texture/building/icon/7001003",
+      "sha256": "dcb9c9dd3c4d8693d3195025c7b98730c799b2d0e8314774bdb0b46f75a0eb2e"
+    },
+    {
+      "file": "machine2.png",
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/native/dd/ddbf2539-b3a6-4d07-ad32-d89aff7765ce.44257.png",
+      "assetPath": "gui/texture/building/icon/7001002",
+      "sha256": "dcb9c9dd3c4d8693d3195025c7b98730c799b2d0e8314774bdb0b46f75a0eb2e"
+    },
+    {
+      "file": "machine1.png",
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/native/f3/f3201e0d-7193-4d10-85f7-73d3fb423692.44257.png",
+      "assetPath": "gui/texture/building/icon/7001001",
+      "sha256": "dcb9c9dd3c4d8693d3195025c7b98730c799b2d0e8314774bdb0b46f75a0eb2e"
+    },
+    {
+      "file": "machine4.png",
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/native/27/27ceb29c-8af0-4ba8-810e-c5fc9501034f.44257.png",
+      "assetPath": "gui/texture/building/icon/7001004",
+      "sha256": "dcb9c9dd3c4d8693d3195025c7b98730c799b2d0e8314774bdb0b46f75a0eb2e"
+    },
+    {
+      "file": "machine5.png",
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/native/c2/c2d49881-9d21-4436-b182-8983d83fd00f.44257.png",
+      "assetPath": "gui/texture/building/icon/7001005",
+      "sha256": "dcb9c9dd3c4d8693d3195025c7b98730c799b2d0e8314774bdb0b46f75a0eb2e"
+    },
+    {
+      "file": "machine6.png",
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/native/0f/0fa4193a-d384-4763-bf34-5a2f9c42fd08.44257.png",
+      "assetPath": "gui/texture/building/icon/7001006",
+      "sha256": "dcb9c9dd3c4d8693d3195025c7b98730c799b2d0e8314774bdb0b46f75a0eb2e"
+    },
+    {
+      "file": "machine7.png",
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/native/31/310300a0-7dbc-4396-88a3-9a6f9eb71f0b.44257.png",
+      "assetPath": "gui/texture/building/icon/7001007",
+      "sha256": "dcb9c9dd3c4d8693d3195025c7b98730c799b2d0e8314774bdb0b46f75a0eb2e"
+    },
+    {
+      "file": "machine8.png",
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/native/05/0563747a-4de9-4354-b10b-8e3ba2563116.44257.png",
+      "assetPath": "gui/texture/building/icon/7001008",
+      "sha256": "dcb9c9dd3c4d8693d3195025c7b98730c799b2d0e8314774bdb0b46f75a0eb2e"
+    },
+    {
+      "file": "machine-bg.png",
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/native/4e/4eda30da-d884-4c0b-8f07-830899a0d5bc.415dd.png",
+      "assetPath": "gui/texture/addGrass/img/img_addGrass_item_bg",
+      "sha256": "5a0bc27aa1f9a6dcbb0a9b648fd83076fe10d014492d52376374d61a2f013101"
+    },
+    {
+      "file": "plus.png",
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/native/1f/1fb7e0701.e52e9.png",
+      "assetPath": "gui/texture/shop/btn_add/spriteFrame",
+      "sprite": {
+        "name": "btn_add",
+        "rect": {
+          "x": 161,
+          "y": 524,
+          "width": 71,
+          "height": 73
+        },
+        "offset": {
+          "x": 0,
+          "y": 0
+        },
+        "originalSize": {
+          "width": 71,
+          "height": 73
+        },
+        "rotated": true,
+        "capInsets": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "packable": true,
+        "pixelsToUnit": 100,
+        "pivot": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "meshType": 0
+      },
+      "sha256": "366cec9308d3668b4f110cc13bd655c58e11539ba48c2b0d4760259529b7a6b9"
+    },
+    {
+      "file": "minus.png",
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/native/1f/1fb7e0701.e52e9.png",
+      "assetPath": "gui/texture/shop/btn_sub/spriteFrame",
+      "sprite": {
+        "name": "btn_sub",
+        "rect": {
+          "x": 161,
+          "y": 678,
+          "width": 71,
+          "height": 73
+        },
+        "offset": {
+          "x": 0,
+          "y": 0
+        },
+        "originalSize": {
+          "width": 71,
+          "height": 73
+        },
+        "rotated": true,
+        "capInsets": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "packable": true,
+        "pixelsToUnit": 100,
+        "pivot": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "meshType": 0
+      },
+      "sha256": "a6ebe67dfe21ad955841720b4c4cf68684c4689bcbd001ec249b1a905a724fae"
+    },
+    {
+      "file": "max.png",
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/native/1f/1fb7e0701.e52e9.png",
+      "assetPath": "gui/texture/shop/btn_max/spriteFrame",
+      "sprite": {
+        "name": "btn_max",
+        "rect": {
+          "x": 161,
+          "y": 601,
+          "width": 71,
+          "height": 73
+        },
+        "offset": {
+          "x": 0,
+          "y": 0
+        },
+        "originalSize": {
+          "width": 71,
+          "height": 73
+        },
+        "rotated": true,
+        "capInsets": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "packable": true,
+        "pixelsToUnit": 100,
+        "pivot": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "meshType": 0
+      },
+      "sha256": "cbe835df57d03485bf33de3c2fbd7c7e752fbf43766dabfeced57f606fd9b383"
+    },
+    {
+      "file": "controls.png",
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/native/1f/1fb7e0701.e52e9.png",
+      "assetPath": "gui/texture/shop/img_num_change_di_v2/spriteFrame",
+      "sprite": {
+        "name": "img_num_change_di_v2",
+        "rect": {
+          "x": 3,
+          "y": 3,
+          "width": 521,
+          "height": 98
+        },
+        "offset": {
+          "x": 0,
+          "y": 0
+        },
+        "originalSize": {
+          "width": 521,
+          "height": 98
+        },
+        "rotated": true,
+        "capInsets": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "packable": true,
+        "pixelsToUnit": 100,
+        "pivot": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "meshType": 0
+      },
+      "sha256": "d55edbfc57cd31088137135232b36da5b169e5b7ddc4ce33cde8391bf80c495c"
+    },
+    {
+      "file": "handle.png",
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/native/1f/1fb7e0701.e52e9.png",
+      "assetPath": "gui/texture/shop/img_slider_v2/spriteFrame",
+      "sprite": {
+        "name": "img_slider_v2",
+        "rect": {
+          "x": 3,
+          "y": 971,
+          "width": 55,
+          "height": 60
+        },
+        "offset": {
+          "x": 0,
+          "y": 0
+        },
+        "originalSize": {
+          "width": 55,
+          "height": 60
+        },
+        "rotated": false,
+        "capInsets": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "packable": true,
+        "pixelsToUnit": 100,
+        "pivot": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "meshType": 0
+      },
+      "sha256": "7012c659c550d999f12ecc474cbabc80fc4a97d00a3eb2c64db341b3c9f7c6a0"
+    },
+    {
+      "file": "slider-bar.png",
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/native/1f/1fb7e0701.e52e9.png",
+      "assetPath": "gui/texture/shop/img_progress_bar/spriteFrame",
+      "sprite": {
+        "name": "img_progress_bar",
+        "rect": {
+          "x": 207,
+          "y": 194,
+          "width": 177,
+          "height": 25
+        },
+        "offset": {
+          "x": 0,
+          "y": 0
+        },
+        "originalSize": {
+          "width": 177,
+          "height": 25
+        },
+        "rotated": true,
+        "capInsets": [
+          17,
+          8,
+          17,
+          5
+        ],
+        "packable": true,
+        "pixelsToUnit": 100,
+        "pivot": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "meshType": 0
+      },
+      "sha256": "0a81aa7db83ec287b1a5c86b4d3be9379310d9d08a04f491ec5e1348342380c9"
+    },
+    {
+      "file": "slider-bg.png",
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/native/1f/1fb7e0701.e52e9.png",
+      "assetPath": "gui/texture/shop/img_progress_bg_v2/spriteFrame",
+      "sprite": {
+        "name": "img_progress_bg_v2",
+        "rect": {
+          "x": 207,
+          "y": 3,
+          "width": 185,
+          "height": 33
+        },
+        "offset": {
+          "x": 0,
+          "y": 0
+        },
+        "originalSize": {
+          "width": 185,
+          "height": 33
+        },
+        "rotated": true,
+        "capInsets": [
+          80,
+          0,
+          80,
+          0
+        ],
+        "packable": true,
+        "pixelsToUnit": 100,
+        "pivot": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "meshType": 0
+      },
+      "sha256": "78c5434050ce96abfa975bac2ef29a3e9948669bcb060ac27d083329a0295041"
+    },
+    {
+      "file": "submit.png",
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/native/17/178518b65.9c2a9.png",
+      "assetPath": "gui/texture/common/btn_common_middle_green/spriteFrame",
+      "sprite": {
+        "name": "btn_common_middle_green",
+        "rect": {
+          "x": 3,
+          "y": 925,
+          "width": 254,
+          "height": 92
+        },
+        "offset": {
+          "x": 0,
+          "y": 0
+        },
+        "originalSize": {
+          "width": 254,
+          "height": 92
+        },
+        "rotated": false,
+        "capInsets": [
+          62,
+          27,
+          57,
+          40
+        ],
+        "packable": true,
+        "pixelsToUnit": 100,
+        "pivot": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "meshType": 0
+      },
+      "sha256": "47264d072551d70dcf867bcce454556f5c8977571680af74efdc2d420b90d23d"
+    },
+    {
+      "file": "item-bg.png",
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/native/17/178518b65.9c2a9.png",
+      "assetPath": "gui/texture/common/img_common_cost_bg/spriteFrame",
+      "sprite": {
+        "name": "img_common_cost_bg",
+        "rect": {
+          "x": 3,
+          "y": 2004,
+          "width": 30,
+          "height": 35
+        },
+        "offset": {
+          "x": 0,
+          "y": 0
+        },
+        "originalSize": {
+          "width": 30,
+          "height": 35
+        },
+        "rotated": false,
+        "capInsets": [
+          12,
+          12,
+          12,
+          15
+        ],
+        "packable": true,
+        "pixelsToUnit": 100,
+        "pivot": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "meshType": 0
+      },
+      "sha256": "4c3b1ab91a783310a7eea28e860404ca61310e7a611b236fc4258b86408d216a"
+    },
+    {
+      "file": "close.png",
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/native/17/178518b65.9c2a9.png",
+      "assetPath": "gui/texture/common/common_close/spriteFrame",
+      "sprite": {
+        "name": "common_close",
+        "rect": {
+          "x": 263,
+          "y": 1108,
+          "width": 86,
+          "height": 86
+        },
+        "offset": {
+          "x": 0,
+          "y": 0
+        },
+        "originalSize": {
+          "width": 86,
+          "height": 86
+        },
+        "rotated": false,
+        "capInsets": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "packable": true,
+        "pixelsToUnit": 100,
+        "pivot": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "meshType": 0
+      },
+      "sha256": "777b7f4a404d6816448eb7ccb93a07544c933216cf4661b7ad97b9cf807ce358"
+    },
+    {
+      "file": "line.png",
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/native/1f/1fb7e0701.e52e9.png",
+      "assetPath": "gui/texture/shop/img_xian1/spriteFrame",
+      "sprite": {
+        "name": "img_xian1",
+        "rect": {
+          "x": 240,
+          "y": 524,
+          "width": 518,
+          "height": 4
+        },
+        "offset": {
+          "x": 0,
+          "y": 0
+        },
+        "originalSize": {
+          "width": 518,
+          "height": 4
+        },
+        "rotated": true,
+        "capInsets": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "packable": true,
+        "pixelsToUnit": 100,
+        "pivot": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "meshType": 0
+      },
+      "sha256": "4c1988ddc2eddd11ad90bc51874f8563f86d7d500ae9f7ea1223b8054a3265b6"
+    },
+    {
+      "file": "capacity.png",
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/native/17/178518b65.9c2a9.png",
+      "assetPath": "gui/texture/common/img_operate_progress_bar/spriteFrame",
+      "sprite": {
+        "name": "img_operate_progress_bar",
+        "rect": {
+          "x": 3,
+          "y": 1140,
+          "width": 208,
+          "height": 23
+        },
+        "offset": {
+          "x": 0,
+          "y": 0
+        },
+        "originalSize": {
+          "width": 208,
+          "height": 23
+        },
+        "rotated": false,
+        "capInsets": [
+          15,
+          11,
+          15,
+          11
+        ],
+        "packable": true,
+        "pixelsToUnit": 100,
+        "pivot": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "meshType": 0
+      },
+      "sha256": "378762dc3e460a85b8ac9d4084e87e1dbef2e5c1ad25cb91215feb2df78ce2c2"
+    },
+    {
+      "file": "capacity-bg.png",
+      "url": "https://cdn-resource.nqf.qq.com/release/remote/mcRes/native/17/178518b65.9c2a9.png",
+      "assetPath": "gui/texture/common/img_progress_bg/spriteFrame",
+      "sprite": {
+        "name": "img_progress_bg",
+        "rect": {
+          "x": 3,
+          "y": 3,
+          "width": 336,
+          "height": 38
+        },
+        "offset": {
+          "x": 0,
+          "y": 0
+        },
+        "originalSize": {
+          "width": 336,
+          "height": 38
+        },
+        "rotated": false,
+        "capInsets": [
+          34,
+          0,
+          24,
+          0
+        ],
+        "packable": true,
+        "pixelsToUnit": 100,
+        "pivot": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "meshType": 0
+      },
+      "sha256": "55696656b8c3d10589d054a4507ff6534e8b17589214f2f6298631f0c9c24d4f"
+    }
+  ],
+  "generated": [
+    {
+      "file": "dialog-background.png",
+      "source": "background.png",
+      "sourceSha256": "0138eb763a5e4cf2d093309430be451defd3d1ef0bb6eff64d8b345d7dd1eb97",
+      "method": "650x800 RGBA; full-width bands y=0:102,102:143,143:215 mapped to y=0:102,102:728,728:800; bicubic resize. Flattened to avoid browser border-image seams.",
+      "sha256": "8d62b9fbfc57a5302b707ded653d8aa892890e23d59ef07e6b45b832b1bbaefc"
+    }
+  ]
+}
