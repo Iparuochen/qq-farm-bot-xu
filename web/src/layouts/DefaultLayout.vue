@@ -35,7 +35,25 @@ const accountStore = useAccountStore()
 const statusStore = useStatusStore()
 const userStore = useUserStore()
 const { currentAccount } = storeToRefs(accountStore)
-const { status, realtimeConnected } = storeToRefs(statusStore)
+const { status, realtimeConnected, currentStatusReady } = storeToRefs(statusStore)
+
+// 调度器当前运行场景：取自 worker 的 ranchSession 快照（status.sceneScheduler.scene），
+// 实时反映 worker 此刻占用连接在跑农场还是牧场。与用户手动选择的浏览场景（sceneStore）
+// 是两套概念——这里只做只读展示，不影响导航与路由。
+const sceneIndicator = computed(() => {
+  const hasAccount = !!currentAccount.value
+  const connected = !!status.value?.connection?.connected
+  if (!hasAccount)
+    return { text: '未连接', dot: 'bg-gray-400', title: '未选择账号' }
+  if (!currentStatusReady.value || !connected)
+    return { text: '离线', dot: 'bg-gray-400', title: '调度器未连接' }
+  const scene = status.value?.sceneScheduler?.scene
+  if (scene === 'farm')
+    return { text: '调度·农场', dot: 'bg-green-500', title: '调度器当前运行场景：农场' }
+  if (scene === 'ranch')
+    return { text: '调度·牧场', dot: 'bg-teal-500', title: '调度器当前运行场景：牧场' }
+  return { text: '待命', dot: 'bg-gray-400', title: '调度器空闲，无任务执行' }
+})
 
 // 概览页的面板里已有头像，其他页面才在右上角账号菜单显示当前账号头像（农场/牧场概览一致）
 const showAccountAvatar = computed(() => route.name !== 'dashboard' && !(route.name === 'ranch' && !route.params.section))
@@ -115,6 +133,12 @@ watch(() => status.value?.wsError, (wsError: any) => {
       <header class="relative z-30 flex shrink-0 items-center justify-between gap-4 px-4 pt-4 sm:px-6 lg:px-8 lg:pt-5">
         <NavMenuButton class="lg:hidden" />
 
+        <!-- 调度器当前运行场景指示器（全局常驻，PC/移动端均可见） -->
+        <div class="scene-indicator" :title="sceneIndicator.title">
+          <span class="scene-indicator-dot" :class="sceneIndicator.dot" />
+          <span class="scene-indicator-text">{{ sceneIndicator.text }}</span>
+        </div>
+
         <!-- 移动端：农牧场场景切换，顶部居中（绝对定位保证视觉正中，不受两侧按钮宽度影响） -->
         <div
           class="scene-pill absolute left-1/2 top-4 flex -translate-x-1/2 items-center lg:hidden"
@@ -182,6 +206,42 @@ watch(() => status.value?.wsError, (wsError: any) => {
 .dark .scene-pill {
   border-color: rgba(255, 255, 255, 0.16);
   background: rgba(31, 41, 55, 0.6);
+}
+
+/* 顶栏左侧：调度器当前运行场景指示器，与顶栏毛玻璃按钮同一套视觉 */
+.scene-indicator {
+  display: inline-flex;
+  height: 36px;
+  align-items: center;
+  gap: 6px;
+  padding: 0 12px;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.32);
+  box-shadow: 0 10px 30px rgba(31, 38, 80, 0.1);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  color: #4b5563;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.dark .scene-indicator {
+  border-color: rgba(255, 255, 255, 0.16);
+  background: rgba(31, 41, 55, 0.6);
+  color: #e5e7eb;
+}
+
+.scene-indicator-dot {
+  height: 8px;
+  width: 8px;
+  border-radius: 9999px;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.6);
+}
+
+.scene-indicator-text {
+  line-height: 1;
 }
 
 /* Dashboard Layout */
