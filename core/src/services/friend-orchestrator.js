@@ -268,6 +268,8 @@ async function checkFriends(options = {}) {
     }
     const expLimitEnabled = !!isAutomationOn('friend_help_exp_limit');
     const helpExpReached = expLimitEnabled && !getCanGetHelpExp();
+    // 「经验满也停止帮护主犬」：经验满后连护主犬也一起停，整段帮助直接跳过
+    const helpFullyStopped = helpExpReached && !!isAutomationOn('friend_help_exp_full_stop');
 
     // ---- Build target lists ----
     const stealTargets = [];
@@ -422,7 +424,15 @@ async function checkFriends(options = {}) {
     }
 
     // Help
-    if (combinedVisitPlan.length === 0 && helpTargets.length > 0 && doHelp) {
+    if (helpFullyStopped && doHelp) {
+      log('好友', '今日帮助经验已满，按「经验满也停止帮护主犬」跳过本轮全部帮助', {
+        module: 'friend',
+        event: '经验满停止帮助',
+        result: 'skip',
+        helpTargets: helpTargets.length,
+      });
+    }
+    if (combinedVisitPlan.length === 0 && helpTargets.length > 0 && doHelp && !helpFullyStopped) {
       const visitBatch = selectFriendVisitBatch(helpTargets, { accountId, mode: 'help' });
       for (const target of visitBatch) {
         try {

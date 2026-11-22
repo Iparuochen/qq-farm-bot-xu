@@ -238,6 +238,12 @@ async function loadProto() {
     types.BriefDogInfo = root.lookupType('gamepb.visitpb.BriefDogInfo');
     types.ApplyFriendRequest = root.lookupType('gamepb.friendpb.ApplyFriendRequest');
     types.ApplyFriendReply = root.lookupType('gamepb.friendpb.ApplyFriendReply');
+    // 用户设置（好友拜访开关）
+    types.GetUserSettingsRequest = root.lookupType('gamepb.userpb.GetUserSettingsRequest');
+    types.GetUserSettingsReply = root.lookupType('gamepb.userpb.GetUserSettingsReply');
+    types.UserSettings = root.lookupType('gamepb.userpb.UserSettings');
+    types.SetUserSettingsRequest = root.lookupType('gamepb.userpb.SetUserSettingsRequest');
+    types.SetUserSettingsReply = root.lookupType('gamepb.userpb.SetUserSettingsReply');
     types.GetDogInfoRequest = root.lookupType('gamepb.dogpb.GetDogInfoRequest');
     types.GetDogInfoReply = root.lookupType('gamepb.dogpb.GetDogInfoReply');
     types.ClaimSkillGiftsRequest = root.lookupType('gamepb.dogpb.ClaimSkillGiftsRequest');

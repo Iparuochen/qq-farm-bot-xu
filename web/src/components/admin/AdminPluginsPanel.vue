@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import BaseButton from '@/components/ui/BaseButton.vue'
 import { getPluginCategory, usePluginsStore } from '@/stores/plugins'
 import type { PluginCategory, PluginInfo } from '@/stores/plugins'
@@ -16,7 +16,12 @@ const userStore = useUserStore()
 const fileInput = ref<HTMLInputElement | null>(null)
 const uploading = ref(false)
 const pendingAction = ref('')
-const confirmText = ref('')
+// 每个插件一行确认输入：key 为插件 id，避免多行输入框互相串值
+const confirmTexts = reactive<Record<string, string>>({})
+
+function uninstallArmed(id: string): boolean {
+  return (confirmTexts[id] || '').trim() === `卸载 ${id}`
+}
 
 const statusLabels: Record<string, string> = {
   active: '运行中',
@@ -84,14 +89,14 @@ async function onFileChange(event: Event) {
 }
 
 async function runAction(id: string, action: 'enable' | 'disable' | 'uninstall' | 'rollback') {
-  if (action === 'uninstall' && confirmText.value !== `卸载 ${id}`)
+  if (action === 'uninstall' && !uninstallArmed(id))
     return
   pendingAction.value = `${id}:${action}`
   try {
     await pluginsStore.pluginAction(id, action)
     const labels: Record<string, string> = { enable: '已启用', disable: '已停用', uninstall: '已卸载', rollback: '已回滚' }
     toast.success(`插件 ${id} ${labels[action]}`)
-    confirmText.value = ''
+    confirmTexts[id] = ''
   }
   catch (error: any) {
     toast.error(error?.response?.data?.error || error?.message || '操作失败')
@@ -188,12 +193,12 @@ onMounted(() => {
             </BaseButton>
             <div class="flex items-center gap-1.5">
               <input
-                v-model="confirmText"
+                v-model="confirmTexts[plugin.id]"
                 :placeholder="`输入「卸载 ${plugin.id}」`"
                 class="w-40 rounded border border-gray-300 px-2 py-1.5 text-xs dark:border-gray-600 dark:bg-gray-900"
                 :aria-label="`确认卸载 ${plugin.id}`"
               >
-              <BaseButton variant="danger" :disabled="confirmText !== `卸载 ${plugin.id}`" :loading="pendingAction === `${plugin.id}:uninstall`" @click="runAction(plugin.id, 'uninstall')">
+              <BaseButton variant="danger" :disabled="!uninstallArmed(plugin.id)" :loading="pendingAction === `${plugin.id}:uninstall`" @click="runAction(plugin.id, 'uninstall')">
                 卸载
               </BaseButton>
             </div>

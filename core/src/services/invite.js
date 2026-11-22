@@ -13,6 +13,7 @@ const { sendMsgAsync } = require('../utils/network');
 const { types } = require('../utils/proto');
 const { toLong, log, logWarn, sleep } = require('../utils/utils');
 const { readTextFile, writeTextFileAtomic } = require('./json-db');
+const friendPool = require('./friend-pool');
 
 // 每次申请间隔：2秒
 const INVITE_REQUEST_DELAY = 2000;
@@ -23,6 +24,98 @@ const ENTER_REASON_FROM_SHARE = 5;
 // 等级缓存：同一 uid 在 TTL 内不重复进农场查询
 const LEVEL_CACHE_TTL_MS = 30 * 60 * 1000;
 const levelCache = new Map();
+
+// 每日好友申请上限的错误特征（抓包实证：code=1005027 今日发出的好友申请已达上限）
+const DAILY_LIMIT_PATTERN = /1005027|好友申请已达上限|申请已达上限|达到上限|已达上限/;
+
+function isDailyLimitError(message) {
+  return DAILY_LIMIT_PATTERN.test(String(message || ''));
+}
+
+// 未开启「好友功能 · 点击分享链接可拜访好友」的错误特征
+// 抓包实证 2026-11-22：该开关关闭时 Enter(reason=5, share_key) 直接返回
+// code=1002007 未打开拜访好友开关，且不会返回 apply_token，因此无法加好友。
+// 这是账号级设置，不是单条链接的问题，碰到就该整批停下让用户去打开开关。
+const VISIT_SWITCH_PATTERN = /1002007|未打开拜访好友开关|拜访好友开关/;
+
+function isVisitSwitchError(message) {
+  return VISIT_SWITCH_PATTERN.test(String(message || ''));
+}
+
+const VISIT_SWITCH_HINT = '未开启「好友功能 · 点击分享链接可拜访好友」：请到游戏 设置 → 好友功能 里打开该开关后再试';
+
+// 开关状态缓存：前端按 10 条一批提交，不缓存的话每批都要多读一次设置
+const VISIT_SWITCH_TTL_MS = 5 * 60 * 1000;
+let visitSwitchCache = { value: null, ts: 0 };
+
+/**
+ * 读取当前账号的「点击分享链接可拜访好友」开关状态
+ *
+ * 抓包实证：GetUserSettings 回包顶层 field 1 是设置结构，内层 field 6 = 1 为开启。
+ *
+ * @param {boolean} [forceRefresh]
+ * @returns {Promise<boolean|null>} true=开启 false=关闭 null=读不到（不影响主流程）
+ */
+async function readVisitSwitchEnabled(forceRefresh = false) {
+  if (!forceRefresh && visitSwitchCache.value !== null && Date.now() - visitSwitchCache.ts < VISIT_SWITCH_TTL_MS) {
+    return visitSwitchCache.value;
+  }
+  try {
+    if (!types.GetUserSettingsRequest || !types.GetUserSettingsReply) return null;
+    const body = types.GetUserSettingsRequest.encode(types.GetUserSettingsRequest.create({})).finish();
+    const { body: replyBody } = await sendMsgAsync('gamepb.userpb.UserService', 'GetUserSettings', body);
+    const reply = types.GetUserSettingsReply.decode(replyBody || Buffer.alloc(0));
+    const settings = (reply && reply.settings) || {};
+    const enabled = Number(settings.visit_by_share_key || 0) === 1;
+    visitSwitchCache = { value: enabled, ts: Date.now() };
+    return enabled;
+  } catch (err) {
+    logWarn('邀请', `读取好友拜访开关失败（不影响本次申请）: ${err.message}`);
+    return null;
+  }
+}
+
+/**
+ * 自动打开「好友功能 · 点击分享链接可拜访好友」
+ *
+ * 抓包实证（2026-11-22）：在游戏设置里打开该开关时客户端发的就是
+ * SetUserSettings{ field 6 = 1 }，回包为空。写完再读一次确认。
+ *
+ * @returns {Promise<boolean>} 是否已确认开启
+ */
+async function enableVisitSwitch() {
+  visitSwitchCache = { value: null, ts: 0 };
+  try {
+    if (!types.SetUserSettingsRequest) return false;
+    const body = types.SetUserSettingsRequest.encode(
+      types.SetUserSettingsRequest.create({ visit_by_share_key: 1 })
+    ).finish();
+    await sendMsgAsync('gamepb.userpb.UserService', 'SetUserSettings', body);
+  } catch (err) {
+    logWarn('邀请', `自动打开拜访好友开关失败: ${err.message}`);
+    return false;
+  }
+  const confirmed = await readVisitSwitchEnabled(true);
+  return confirmed === true;
+}
+
+/**
+ * 确保拜访好友开关是开着的：没开就自动打开
+ * @returns {Promise<boolean|null>} true=已开启 false=尝试后仍未开启 null=读不到状态
+ */
+async function ensureVisitSwitch() {
+  const state = await readVisitSwitchEnabled();
+  if (state !== false) return state;
+  log('邀请', '检测到「点击分享链接可拜访好友」未开启，自动打开...');
+  const opened = await enableVisitSwitch();
+  if (opened) log('邀请', '已自动开启拜访好友开关，继续加好友');
+  return opened;
+}
+
+/** 当前 worker 所属账号 id（号池按账号隔离） */
+function currentAccountId() {
+  return String(process.env.FARM_ACCOUNT_ID || '') || 'default';
+}
 
 // 好友 gid 集合缓存：批量加好友前比对，已是好友直接跳过
 const FRIEND_SET_TTL_MS = 60 * 1000;
@@ -230,6 +323,13 @@ async function sendFriendRequestToSharer(item, opts = {}) {
   try {
     info = await enterSharer(uid, shareKey);
   } catch (err) {
+    // 拜访好友开关没开：不是链接问题，也不是等级问题，明确告诉用户去开开关
+    if (isVisitSwitchError(err.message)) {
+      return {
+        uid, openid, ok: false, skipped: false, switchBlocked: true, level: null,
+        error: VISIT_SWITCH_HINT,
+      };
+    }
     levelCache.set(String(uid), { level: 0, name: '', gid: String(uid), ts: Date.now() });
     return {
       uid, openid, ok: false, skipped: minLevel > 0 && !allowUnknownLevel, level: null,
@@ -300,42 +400,208 @@ async function applyInviteList(items, options = {}) {
     : 0;
   const allowUnknownLevel = options.allowUnknownLevel === true;
   const skipExistingFriends = options.skipExistingFriends !== false;
+  const accountId = currentAccountId();
 
-  // 先拉一次好友列表用于比对；拉取失败不影响主流程（退化为不跳过）
-  let friendSet = null;
+  // 本次导入的链接先合并进号池（链接库全账号共享，同 uid 只留一条，卡片以最新为准）
+  try {
+    const merged = friendPool.upsertInviteItems(list);
+    if (merged.added || merged.updated) {
+      log('邀请', `号池已收录 ${list.length} 条链接（新增 ${merged.added}，合并 ${merged.updated}）`);
+    }
+  } catch (err) {
+    logWarn('邀请', `号池写入失败（不影响本次申请）: ${err.message}`);
+  }
+
+  // 今天已经撞过上限：本账号当天再发起只会继续被拒（还会白跑一次 Enter），直接整批跳过。
+  // 链接仍会先并入号池（上面已做），明天点「开始添加」就能继续用。
+  const todayLimit = (() => {
+    try {
+      return friendPool.getDailyLimitState(accountId);
+    } catch (_) {
+      return { blocked: false, dateKey: '', at: null, error: '' };
+    }
+  })();
+  if (todayLimit.blocked) {
+    logWarn('邀请', `本账号今日好友申请已达上限（${todayLimit.dateKey} 已记录），本批 ${list.length} 条直接跳过，不再发起请求`);
+    const blockedRows = list.map((item) => {
+      const uid = String((item && item.uid) == null ? '' : item.uid).trim();
+      const openId = String((item && (item.openid || item.openId)) || '').trim();
+      return {
+        uid,
+        openid: openId,
+        ok: false,
+        skipped: true,
+        limitReached: true,
+        error: '今日申请已达上限（当天已记录），明天再试',
+      };
+    });
+    return {
+      total: blockedRows.length,
+      success: 0,
+      failed: 0,
+      skipped: blockedRows.length,
+      existing: 0,
+      poolSkipped: 0,
+      limitReached: true,
+      switchBlocked: false,
+      minLevel,
+      results: blockedRows,
+    };
+  }
+
+  // 先拉一次好友列表用于比对；拉取失败不影响主流程（退化为不跳过）  let friendSet = null;
   if (skipExistingFriends && list.length > 0) {
     try {
       friendSet = await loadFriendGidSet();
       log('邀请', `已加载好友列表 ${friendSet.size} 人，用于跳过已是好友的分享链接`);
+      // 回填号池：已经通过的好友要标成 friend，否则号池会把他们当「24h 未通过」误判成不可加
+      try {
+        const fixed = friendPool.markFriends(accountId, Array.from(friendSet));
+        if (fixed > 0) log('邀请', `号池回填：${fixed} 条链接已是好友`);
+      } catch (_) {
+        // 号池回填失败不影响本次申请
+      }
     } catch (err) {
       logWarn('邀请', `获取好友列表失败，本次不跳过已是好友: ${err.message}`);
     }
   }
 
+  // 一次性读出该账号所有条目的状态：逐条 peekStatus 会反复读号池文件，
+  // 号池上千条时非常慢（用户 2026-11-22 反馈）
+  let poolStatusMap = null;
+  try {
+    poolStatusMap = friendPool.getStatusMap(accountId);
+  } catch (err) {
+    logWarn('邀请', `读取号池状态失败（退化为逐条查询）: ${err.message}`);
+  }
+
   const results = [];
+  let limitReached = false;
+  let switchBlocked = false;
+
+  // 账号级开关预检：没开「点击分享链接可拜访好友」时 Enter 必定 1002007。
+  // 先自动打开（抓包实证 SetUserSettings field6=1），能打开就直接继续加好友。
+  const switchReady = await ensureVisitSwitch();
+  if (switchReady === false) {
+    logWarn('邀请', VISIT_SWITCH_HINT);
+    const blocked = list.map((item) => {
+      const uid = String((item && item.uid) == null ? '' : item.uid).trim();
+      const openId = String((item && (item.openid || item.openId)) || '').trim();
+      return { uid, openid: openId, ok: false, skipped: false, switchBlocked: true, error: VISIT_SWITCH_HINT };
+    });
+    return {
+      total: blocked.length,
+      success: 0,
+      failed: blocked.length,
+      skipped: 0,
+      existing: 0,
+      poolSkipped: 0,
+      limitReached: false,
+      switchBlocked: true,
+      minLevel,
+      results: blocked,
+    };
+  }
+
+  // 本条目是否真的发起了网络请求：只有发过请求才需要按间隔限速，
+  // 已是好友 / 已申请等待中 / 不可加 的跳过不该占用等待时间
+  let attempted = false;
   for (let i = 0; i < list.length; i++) {
+    attempted = false;
     const item = list[i] || {};
     const uid = String(item.uid == null ? '' : item.uid).trim();
     const openId = String(item.openid || item.openId || '').trim();
     const shareKey = String(item.shareKey || item.share_key || '').trim();
 
+    if (limitReached || switchBlocked) {
+      // 已达每日申请上限 / 开关没开：剩余条目原样跳过，不做任何网络请求
+      results.push({
+        uid, openid: openId, ok: false, skipped: true,
+        ...(limitReached
+          ? { limitReached: true, error: '今日申请已达上限，本批已停止' }
+          : { switchBlocked: true, error: '拜访好友开关未开启，本批已停止' }),
+      });
+      continue;
+    }
+
     if (!uid || !openId) {
       results.push({ uid, openid: openId, ok: false, error: '缺少 uid 或 openid' });
     } else if (friendSet && friendSet.has(uid)) {
       // 已是好友：不再发申请，也不浪费一次 Enter 查等级
+      // （好友列表在循环前已用 markFriends 批量回填号池，这里不必逐条落盘）
       results.push({ uid, openid: openId, ok: false, skipped: true, existing: true, error: '已是好友，已跳过' });
     } else {
-      // 完整流程交给 sendFriendRequestToSharer：
-      // Enter（等级 + 申请令牌）→ 等级筛选 → ReportArkClick → ApplyFriend
-      results.push(await sendFriendRequestToSharer({
-        uid,
-        openid: openId,
-        shareKey,
-        shareSource: item.shareSource != null ? item.shareSource : item.share_source,
-      }, { minLevel, allowUnknownLevel }));
+      const poolStatus = poolStatusMap
+        ? poolStatusMap.get(uid)
+        : friendPool.peekStatus(accountId, uid);
+      if (poolStatus === 'friend') {
+        // 号池已记录为好友（本次好友列表没拉到也能跳过）
+        results.push({ uid, openid: openId, ok: false, skipped: true, existing: true, error: '已是好友，已跳过' });
+      } else if (poolStatus === 'dead') {
+        // 之前申请过、超过 24 小时仍未通过：不再浪费每日次数
+        results.push({
+          uid, openid: openId, ok: false, skipped: true, poolSkipped: true,
+          error: '号池标记不可加：上次申请超过 24 小时未通过',
+        });
+      } else if (poolStatus === 'pending') {
+        // 24 小时内已申请过，等待通过即可，不重复发
+        results.push({
+          uid, openid: openId, ok: false, skipped: true, poolSkipped: true,
+          error: '已申请，等待通过中（24 小时内不重复申请）',
+        });
+      } else {
+        // 完整流程交给 sendFriendRequestToSharer：
+        // Enter（等级 + 申请令牌）→ 等级筛选 → ReportArkClick → ApplyFriend
+        attempted = true;
+        const requestItem = {
+          uid,
+          openid: openId,
+          shareKey,
+          shareSource: item.shareSource != null ? item.shareSource : item.share_source,
+        };
+        let row = await sendFriendRequestToSharer(requestItem, { minLevel, allowUnknownLevel });
+
+        // 开关被关掉了（1002007）：自动打开后立刻重试本条，用户不必手动去设置里点
+        if (!row.ok && (row.switchBlocked || isVisitSwitchError(row.error))) {
+          const reopened = await enableVisitSwitch();
+          if (reopened) {
+            log('邀请', '已自动打开「点击分享链接可拜访好友」，重试本条');
+            row = await sendFriendRequestToSharer(requestItem, { minLevel, allowUnknownLevel });
+          }
+        }
+
+        if (row.ok) {
+          try {
+            friendPool.markApplied(accountId, uid, {
+              openid: openId, shareKey, name: row.name, level: row.level,
+            });
+          } catch (_) {
+            // 号池写入失败不影响申请结果
+          }
+          // 同一批里若重复出现同一 uid，后续按「已申请」跳过
+          if (poolStatusMap) poolStatusMap.set(uid, 'pending');
+        } else if (isDailyLimitError(row.error)) {
+          limitReached = true;
+          row.limitReached = true;
+          // 记到号池：今天后续批次（重新点按钮、定时任务）直接跳过，不再白跑请求
+          try {
+            friendPool.markDailyLimit(accountId, row.error);
+          } catch (_) {
+            // 号池写入失败不影响「本批已停止」这个结论
+          }
+          logWarn('邀请', `今日好友申请已达上限，本批停止（已处理 ${i + 1}/${list.length}）: ${row.error}`);
+        } else if (row.switchBlocked || isVisitSwitchError(row.error)) {
+          // 开关是账号级的：出现一次就整批停下，避免后面每一条都白跑一遍
+          switchBlocked = true;
+          row.switchBlocked = true;
+          logWarn('邀请', `${VISIT_SWITCH_HINT}（已处理 ${i + 1}/${list.length}）`);
+        }
+        results.push(row);
+      }
     }
 
-    if (i < list.length - 1 && delayMs > 0) {
+    // 只有真的发起了申请才按间隔限速；跳过（已是好友 / 已申请 / 不可加）立即处理下一个
+    if (attempted && delayMs > 0 && i < list.length - 1) {
       await sleep(delayMs);
     }
   }
@@ -343,12 +609,16 @@ async function applyInviteList(items, options = {}) {
   const success = results.filter((item) => item.ok).length;
   const skipped = results.filter((item) => item.skipped).length;
   const existing = results.filter((item) => item.existing).length;
+  const poolSkipped = results.filter((item) => item.poolSkipped).length;
   return {
     total: results.length,
     success,
     failed: results.length - success - skipped,
     skipped,
     existing,
+    poolSkipped,
+    limitReached,
+    switchBlocked,
     minLevel,
     results,
   };
@@ -370,20 +640,122 @@ async function processInviteCodes() {
 
   log('邀请', `读取到 ${codes.length} 个邀请码（已去重），开始逐个处理...`);
 
+  const accountId = currentAccountId();
+  try {
+    friendPool.upsertInviteItems(codes);
+  } catch (_) {
+    // 号池写入失败不影响主流程
+  }
+
+  // 今天已撞过上限：保留 share.txt 原样等明天，不要清空（否则这些链接就丢了）
+  let todayLimitBlocked = false;
+  try {
+    todayLimitBlocked = friendPool.getDailyLimitState(accountId).blocked;
+  } catch (_) {
+    // 读不到就按未上限处理，正常继续
+  }
+  if (todayLimitBlocked) {
+    logWarn('邀请', `本账号今日好友申请已达上限，保留 share.txt 中 ${codes.length} 个邀请码待明天处理`);
+    return;
+  }
+
   let success = 0;
   let failed = 0;
+  let skipped = 0;
+  let friendSet = null;
+  try {
+    friendSet = await loadFriendGidSet();
+    // 回填号池：已是好友的条目置为 friend，避免被当成「超 24h 未通过」
+    if (friendSet && friendSet.size > 0) {
+      try {
+        friendPool.markFriends(accountId, Array.from(friendSet));
+      } catch (_) {
+        // ignore
+      }
+    }
+  } catch (_) {
+    // 拉不到好友列表就退化为不跳过
+  }
+
+  let poolStatusMap = null;
+  try {
+    poolStatusMap = friendPool.getStatusMap(accountId);
+  } catch (_) {
+    poolStatusMap = null;
+  }
+
+  // 账号级开关预检：没开就自动打开，避免每条 Enter 都撞 1002007
+  await ensureVisitSwitch();
+
+  // 中途停止（上限/开关）时从这里记录位置，剩下的邀请码写回 share.txt 留到下次
+  let stoppedAt = -1;
 
   for (let i = 0; i < codes.length; i++) {
     const code = codes[i];
-    const row = await sendFriendRequestToSharer({
-      uid: String(code.uid),
+    const uid = String(code.uid || '');
+
+    // 已是好友 / 号池判定：不再浪费每日申请次数
+    if (friendSet && friendSet.has(uid)) {
+      skipped++;
+      log('邀请', `[${i + 1}/${codes.length}] uid=${uid} 已是好友，跳过`);
+      continue;
+    }
+    const poolStatus = poolStatusMap
+      ? poolStatusMap.get(uid)
+      : friendPool.peekStatus(accountId, uid);
+    if (poolStatus === 'dead') {
+      skipped++;
+      log('邀请', `[${i + 1}/${codes.length}] uid=${uid} 号池标记不可加（超 24h 未通过），跳过`);
+      continue;
+    }
+    if (poolStatus === 'pending') {
+      skipped++;
+      log('邀请', `[${i + 1}/${codes.length}] uid=${uid} 已申请等待通过，跳过`);
+      continue;
+    }
+
+    const requestItem = {
+      uid,
       openid: String(code.openid || ''),
       shareKey: String(code.shareKey || ''),
       shareSource: code.shareSource,
-    }, { minLevel: 0, allowUnknownLevel: true });
+    };
+    let row = await sendFriendRequestToSharer(requestItem, { minLevel: 0, allowUnknownLevel: true });
+
+    // 开关没开：自动打开后重试一次
+    if (!row.ok && (row.switchBlocked || isVisitSwitchError(row.error))) {
+      const reopened = await enableVisitSwitch();
+      if (reopened) {
+        log('邀请', '已自动打开「点击分享链接可拜访好友」，重试本条');
+        row = await sendFriendRequestToSharer(requestItem, { minLevel: 0, allowUnknownLevel: true });
+      }
+    }
+
     if (row.ok) {
       success++;
+      try {
+        friendPool.markApplied(accountId, uid, { openid: String(code.openid || ''), shareKey: String(code.shareKey || '') });
+      } catch (_) {
+        // ignore
+      }
       log('邀请', `[${i + 1}/${codes.length}] 已向 uid=${code.uid} 发送好友申请`);
+    } else if (isDailyLimitError(row.error)) {
+      failed++;
+      // 记到号池：今天剩下的定时任务/批次都直接跳过，不再逐条试
+      try {
+        friendPool.markDailyLimit(accountId, row.error);
+      } catch (_) {
+        // ignore
+      }
+      logWarn('邀请', `今日好友申请已达上限，停止自动流程（已处理 ${i + 1}/${codes.length}）: ${row.error}`);
+      stoppedAt = i + 1;
+      break;
+    } else if (row.switchBlocked || isVisitSwitchError(row.error)) {
+      // 自动打开也失败：整批停下，避免剩下的每条都白跑
+      failed++;
+      logWarn('邀请', `${VISIT_SWITCH_HINT}（已处理 ${i + 1}/${codes.length}）`);
+      stoppedAt = i + 1;
+      break;
     } else {
       failed++;
       logWarn('邀请', `[${i + 1}/${codes.length}] 向 uid=${code.uid} 发送申请失败: ${row.error}`);
@@ -395,8 +767,44 @@ async function processInviteCodes() {
     }
   }
 
-  log('邀请', `处理完成: 成功 ${success}, 失败 ${failed}`);
-  clearShareFile();
+  log('邀请', `处理完成: 成功 ${success}, 失败 ${failed}, 跳过 ${skipped}`);
+  if (stoppedAt >= 0) {
+    // 中途停下：已处理的部分不再保留，剩下的写回 share.txt 等下次继续
+    writeRemainingShareCodes(codes.slice(stoppedAt));
+  } else {
+    clearShareFile();
+  }
+}
+
+/**
+ * 把解析后的邀请码还原成 share.txt 的行格式
+ */
+function formatShareCode(code) {
+  const params = new URLSearchParams();
+  params.set('uid', String((code && code.uid) || ''));
+  if (code && code.openid) params.set('openid', String(code.openid));
+  if (code && code.shareSource != null && code.shareSource !== '') params.set('share_source', String(code.shareSource));
+  if (code && code.docId != null && code.docId !== '') params.set('doc_id', String(code.docId));
+  if (code && code.shareKey) params.set('share_key', String(code.shareKey));
+  return `?${params.toString()}`;
+}
+
+/**
+ * 把还没处理的邀请码写回 share.txt
+ * 中途停下（今日上限/开关未开）时必须走这里，不能直接清空文件，否则这些链接就丢了
+ */
+function writeRemainingShareCodes(codes) {
+  const filePath = getShareFilePath();
+  const text = (Array.isArray(codes) ? codes : [])
+    .map(formatShareCode)
+    .filter((line) => line.includes('openid='))
+    .join('\n');
+  try {
+    writeTextFileAtomic(filePath, text ? `${text}\n` : '');
+    if (text) log('邀请', `share.txt 已保留 ${codes.length} 个未处理邀请码，下次继续`);
+  } catch (err) {
+    logWarn('邀请', `写回 share.txt 失败: ${err.message}`);
+  }
 }
 
 /**
@@ -423,4 +831,7 @@ module.exports = {
   applyInviteList,
   processInviteCodes,
   clearShareFile,
+  readVisitSwitchEnabled,
+  enableVisitSwitch,
+  ensureVisitSwitch,
 };

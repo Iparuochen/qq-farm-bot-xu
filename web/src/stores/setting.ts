@@ -78,6 +78,7 @@ export interface AutomationConfig {
   friend_bad?: boolean
   friend_golden_bug?: boolean
   friend_help_exp_limit?: boolean
+  friend_help_exp_full_stop?: boolean
   golden_bug_clear?: boolean
   skip_own_weed_bug?: boolean
 }

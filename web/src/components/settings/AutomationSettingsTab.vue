@@ -21,6 +21,7 @@ interface AutomationSettings {
     friend_bad: boolean
     friend_golden_bug: boolean
     friend_help_exp_limit: boolean
+    friend_help_exp_full_stop: boolean
     star_passport_claim: boolean
     star_record_claim: boolean
     qingmei_seed_claim: boolean
@@ -457,6 +458,11 @@ watch(() => props.currentAccountId, loadQixiFriends)
         <BaseSwitch v-model="settings.automation.friend_auto_accept" label="自动通过好友申请" />
         <BaseSwitch v-model="settings.automation.friend_golden_bug" label="自动放黄金虫" />
         <BaseSwitch v-model="settings.automation.friend_help_exp_limit" label="经验满只帮护主犬" />
+        <BaseSwitch
+          v-if="settings.automation.friend_help_exp_limit"
+          v-model="settings.automation.friend_help_exp_full_stop"
+          label="经验满也停止帮护主犬（互斥）"
+        />
       </div>
 
       <div v-if="settings.automation.friend && settings.automation.friend_golden_bug" class="grid grid-cols-1 gap-3 rounded bg-amber-50 p-3 text-sm md:grid-cols-2 dark:bg-amber-900/20">

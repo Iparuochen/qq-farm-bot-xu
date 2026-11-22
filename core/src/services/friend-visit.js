@@ -680,19 +680,44 @@ async function visitFriendForSteal(friend, tally, myGid, accountId, opts = {}) {
 // ===== Visit friend for help only =====
 
 /**
+ * 帮助阶段是否因经验上限跳过（纯函数，便于单测）
+ *
+ * - 没开经验上限（或本次忽略上限）：不跳过
+ * - 经验没满：不跳过
+ * - 经验已满：护主犬破例继续帮；开启「经验满也停止帮护主犬」后连护主犬也跳过
+ */
+function shouldSkipHelpForExp({ checkExpLimit, expReached, hasGuardDog, stopAllAtExpFull }) {
+  if (!checkExpLimit || !expReached) return false;
+  return stopAllAtExpFull === true || hasGuardDog !== true;
+}
+
+/**
  * Visit a friend specifically to help (water/weed/bug).
- * Honors experience limit. Guard dog friends bypass the limit.
+ * Honors experience limit. Guard dog friends bypass the limit,
+ * unless `friend_help_exp_full_stop` is on (then exp-full stops every help).
  */
 async function visitFriendForHelp(friend, tally, myGid, accountId, ignoreExpLimit = false, expLimitMode = false) {
   const { gid, name } = friend;
   const expLimitEnabled = !!isAutomationOn('friend_help_exp_limit');
+  // 与「经验满只帮护主犬」互斥：开启后经验满就彻底停止帮助，护主犬好友也不再破例
+  const stopAllAtExpFull = !!isAutomationOn('friend_help_exp_full_stop');
   const checkExpLimit = expLimitEnabled && !ignoreExpLimit;
   const hasGuardDog = !!friend.hasGuardDog;
+  const bypassByGuardDog = hasGuardDog && !stopAllAtExpFull;
 
   if (!checkExpLimit) setCanGetHelpExp(true);
+  const expReached = checkExpLimit ? !getCanGetHelpExp() : false;
 
-  // Skip if exp limit reached and no guard dog
-  if (checkExpLimit && !getCanGetHelpExp() && !hasGuardDog) {
+  // Skip if exp limit reached and this friend gets no guard-dog exemption
+  if (shouldSkipHelpForExp({ checkExpLimit, expReached, hasGuardDog, stopAllAtExpFull })) {
+    if (hasGuardDog && stopAllAtExpFull) {
+      log('好友', `经验已满，已停止帮助（含护主犬好友），跳过 ${name}`, {
+        module: 'friend',
+        event: '经验满停止帮助',
+        friendName: name,
+        friendGid: gid,
+      });
+    }
     return { acted: false, entered: false };
   }
 
@@ -755,13 +780,13 @@ async function visitFriendForHelp(friend, tally, myGid, accountId, ignoreExpLimi
 
   for (const opt of helpOptions) {
     const canGetExp = !checkExpLimit ||
-      hasGuardDog ||
+      bypassByGuardDog ||
       (canGetExpByCandidates(opt.expIds) && getCanGetHelpExp());
 
     if (opt.list.length > 0 && canGetExp) {
       const canOp = await checkCanOperateRemote(gid, opt.id);
       if (canOp.canOperate) {
-        const useExpCheck = hasGuardDog ? false : checkExpLimit;
+        const useExpCheck = bypassByGuardDog ? false : checkExpLimit;
         const okCount = await runBatchWithFallback(
           opt.list,
           ids => opt.fn(gid, ids, useExpCheck),
@@ -772,7 +797,7 @@ async function visitFriendForHelp(friend, tally, myGid, accountId, ignoreExpLimi
           tally[opt.key] += okCount;
           recordOperation(opt.record, okCount);
 
-          if (expLimitMode && hasGuardDog) {
+          if (expLimitMode && bypassByGuardDog) {
             log('好友', `[护主犬好友] ✅ ${name}: 除${opt.name}${okCount}`, {
               module: 'friend',
               event: '护主犬好友帮助成功',
@@ -806,6 +831,7 @@ async function visitFriendForHelp(friend, tally, myGid, accountId, ignoreExpLimi
 module.exports = {
   runBatchWithFallback,
   isExplicitBatchShapeError,
+  shouldSkipHelpForExp,
   doFriendOperation,
   visitFriend,
   visitFriendForSteal,

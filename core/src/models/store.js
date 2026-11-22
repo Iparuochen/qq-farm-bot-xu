@@ -285,6 +285,8 @@ const DEFAULT_AUTOMATION = {
     friend: true,
     friend_auto_accept: true,
     friend_help_exp_limit: true,
+    // 与 friend_help_exp_limit 互斥的行为开关：经验满时连护主犬好友也不再帮助
+    friend_help_exp_full_stop: false,
     friend_steal: true,
     friend_steal_golden_only: false,
     friend_help: true,

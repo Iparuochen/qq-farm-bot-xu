@@ -130,8 +130,13 @@ function main() {
     const eventPlantsCount = fs.existsSync(eventPlantsPath)
         ? JSON.parse(fs.readFileSync(eventPlantsPath, 'utf8').replace(/^\uFEFF/, '')).length
         : 0;
+    const itemInfoPath = path.join(baseGameConfig, 'ItemInfo.json');
+    const itemInfoCount = fs.existsSync(itemInfoPath)
+        ? JSON.parse(fs.readFileSync(itemInfoPath, 'utf8').replace(/^\uFEFF/, '')).length
+        : 0;
 
     console.log(`[素材插件] catalog/EventPlants.json: ${eventPlantsCount} 条`);
+    console.log(`[素材插件] catalog/ItemInfo.json: ${itemInfoCount} 条`);
     console.log(`[素材插件] assets/plant_images/: ${plantImagesCount} 个文件`);
     console.log(`[素材插件] assets/seed_images_named/: ${seedImagesCount} 个文件`);
     console.log(`[素材插件] assets/effect_images/: ${effectImagesCount} 个文件`);
@@ -195,10 +200,14 @@ module.exports = {
     fs.mkdirSync(path.join(outDir, 'backend'), { recursive: true });
     fs.writeFileSync(path.join(outDir, 'backend', 'index.js'), backendStub, 'utf8');
 
-    // 写 catalog/EventPlants.json
+    // 写 catalog/EventPlants.json 与 catalog/ItemInfo.json（宿主合并时只补缺不覆盖）
     if (fs.existsSync(eventPlantsPath)) {
         fs.mkdirSync(path.join(outDir, 'catalog'), { recursive: true });
         fs.copyFileSync(eventPlantsPath, path.join(outDir, 'catalog', 'EventPlants.json'));
+    }
+    if (fs.existsSync(itemInfoPath)) {
+        fs.mkdirSync(path.join(outDir, 'catalog'), { recursive: true });
+        fs.copyFileSync(itemInfoPath, path.join(outDir, 'catalog', 'ItemInfo.json'));
     }
 
     // 复制本次收集到的素材
@@ -212,7 +221,7 @@ module.exports = {
     // 把旧包里本次没产出的素材原样搬回（增量超集）
     let preservedCount = 0;
     if (preservedDir) {
-        const regenerated = new Set(['manifest.json', 'backend/index.js', 'catalog/EventPlants.json', 'assets/assets-map.json']);
+        const regenerated = new Set(['manifest.json', 'backend/index.js', 'catalog/EventPlants.json', 'catalog/ItemInfo.json', 'assets/assets-map.json']);
         (function walk(current, relative) {
             for (const entry of fs.readdirSync(current, { withFileTypes: true })) {
                 const full = path.join(current, entry.name);

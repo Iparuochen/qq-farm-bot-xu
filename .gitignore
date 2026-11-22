@@ -38,6 +38,9 @@ __pycache__/
 # Trae 临时分享包
 .trae-html-share-packages/
 
+# 微信群分享卡片导出产物（含他人 uid/openid/share_key，不进仓库）
+exports/
+
 # 本地工具目录（解密/渲染/CDN 等本地副本，不提交）
 tools/
 

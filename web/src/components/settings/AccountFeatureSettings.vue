@@ -531,6 +531,11 @@ watch(() => props.currentAccountId, () => {
                   <BaseSwitch v-model="automation.automation.friend_bad" label="好友捣乱" />
                   <BaseSwitch v-model="automation.automation.friend_golden_bug" label="放黄金虫" />
                   <BaseSwitch v-model="automation.automation.friend_help_exp_limit" label="经验满只帮护主犬" />
+                  <BaseSwitch
+                    v-if="automation.automation.friend_help_exp_limit"
+                    v-model="automation.automation.friend_help_exp_full_stop"
+                    label="经验满也停止帮护主犬（互斥）"
+                  />
                 </div>
               </section>
 

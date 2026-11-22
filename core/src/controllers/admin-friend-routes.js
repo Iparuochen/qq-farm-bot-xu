@@ -429,6 +429,65 @@ function registerAdminFriendRoutes({
       sendProviderError(res, error);
     }
   });
+
+  // ========== 好友号池 ==========
+  // 号池记录所有导入过的加好友链接与申请状态，超过 24h 未通过标记为不可加
+  app.get("/api/friends/pool", (req, res) => {
+    const accountId = getAccountOrRespond(req, res, access);
+    if (!accountId) return;
+
+    try {
+      const friendPool = require("../services/friend-pool");
+      const status = String((req.query && req.query.status) || "").toLowerCase();
+      const { summary, entries } = friendPool.getPoolSnapshot(accountId);
+      const list = status && status !== "all"
+        ? entries.filter((item) => item.status === status)
+        : entries;
+      // 该账号当天是否已撞过好友申请上限：前端据此直接拦住「开始添加」
+      const dailyLimit = friendPool.getDailyLimitState(accountId);
+      res.json({ ok: true, data: { summary, entries: list, dailyLimit } });
+    } catch (error) {
+      sendProviderError(res, error);
+    }
+  });
+
+  // 恢复某条为可申请（人工解除误判）
+  app.post("/api/friends/pool/reset", (req, res) => {
+    const accountId = getAccountOrRespond(req, res, access);
+    if (!accountId) return;
+
+    const uid = String((req.body || {}).uid || "").trim();
+    if (!uid) {
+      return res.status(400).json({ ok: false, error: "Missing uid" });
+    }
+    try {
+      const friendPool = require("../services/friend-pool");
+      const found = friendPool.resetEntry(accountId, uid);
+      const { summary, entries } = friendPool.getPoolSnapshot(accountId);
+      res.json({ ok: true, data: { found, summary, entries } });
+    } catch (error) {
+      sendProviderError(res, error);
+    }
+  });
+
+  // 从号池删除一条（共享链接库，所有账号都不再使用这条）
+  app.post("/api/friends/pool/remove", (req, res) => {
+    const accountId = getAccountOrRespond(req, res, access);
+    if (!accountId) return;
+
+    const uid = String((req.body || {}).uid || "").trim();
+    if (!uid) {
+      return res.status(400).json({ ok: false, error: "Missing uid" });
+    }
+    try {
+      const friendPool = require("../services/friend-pool");
+      const found = friendPool.removeEntry(uid);
+      const { summary, entries } = friendPool.getPoolSnapshot(accountId);
+      res.json({ ok: true, data: { found, summary, entries } });
+    } catch (error) {
+      sendProviderError(res, error);
+    }
+  });
 }
 
 module.exports = { registerAdminFriendRoutes };

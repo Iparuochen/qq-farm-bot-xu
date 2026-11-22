@@ -7,6 +7,9 @@ export interface InviteResultRow {
   ok: boolean
   skipped?: boolean
   existing?: boolean
+  poolSkipped?: boolean
+  limitReached?: boolean
+  switchBlocked?: boolean
   level?: number | null
   name?: string
   error?: string
@@ -27,3 +30,10 @@ export const running = ref(false)
 export const cancelled = ref(false)
 export const progress = ref({ done: 0, total: 0 })
 export const results = ref<InviteResultRow[]>([])
+
+/** 当前账号今天是否已撞过好友申请上限（后端号池记录，跨天自动失效） */
+export const poolDailyLimit = ref<{ blocked: boolean, dateKey: string, at: number | null }>({
+  blocked: false,
+  dateKey: '',
+  at: null,
+})

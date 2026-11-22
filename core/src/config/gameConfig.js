@@ -356,6 +356,32 @@ function loadConfigs() {
             }
             itemInfoConfig = Array.from(itemInfoMap.values());
         }
+
+        // 外部 provider（素材插件）的物品增量：只补宿主缺失的物品，不覆盖已有行。
+        // 官方 ItemInfo 更新往往晚于新作物上线（黄金果实等），插件携带最新表补裸 ID。
+        for (const provider of externalGameConfigProviders) {
+            const p = path.join(provider.dir, 'catalog', 'ItemInfo.json');
+            if (!fs.existsSync(p)) continue;
+            try {
+                const rows = JSON.parse(fs.readFileSync(p, 'utf8'));
+                if (!Array.isArray(rows)) continue;
+                let added = 0;
+                for (const item of rows) {
+                    const itemId = Number(item && item.id) || 0;
+                    if (itemId <= 0 || isInvalidSeedId(itemId)) continue;
+                    if (itemInfoMap.has(itemId)) continue;
+                    itemInfoMap.set(itemId, item);
+                    if (Number(item.type) === 5) seedItemMap.set(itemId, item);
+                    added += 1;
+                }
+                if (added > 0) {
+                    itemInfoConfig = Array.from(itemInfoMap.values());
+                    console.warn(`[配置] 已合并插件物品增量 (${added} 项)`);
+                }
+            } catch (err) {
+                console.warn('[配置] 合并插件物品增量失败:', err.message);
+            }
+        }
     } catch (err) {
         console.warn('[配置] 加载 ItemInfo.json 失败:', err.message);
     }

@@ -1013,6 +1013,10 @@ function runFriendDogSyncRound() {
     if (automation.friend_help !== true || automation.friend_help_exp_limit !== true) {
         return Promise.resolve();
     }
+    // 「经验满也停止帮护主犬」开启后不再按护主犬破例，狗缓存没有消费方，省掉这批 RPC
+    if (automation.friend_help_exp_full_stop === true) {
+        return Promise.resolve();
+    }
     if (inFriendQuietHours()) return Promise.resolve();
 
     dogSyncRunning = true;

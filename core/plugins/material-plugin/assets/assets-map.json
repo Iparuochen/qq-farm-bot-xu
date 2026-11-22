@@ -10266,563 +10266,563 @@
   },
   {
     "file": "ranch_visuals/animals/60001/1.png",
-    "sha256": "a6abb7fa208ab9f8aeba9403f3ead6187e7689c029d92ef2e265bcfe183477e5",
-    "size": 32866
+    "sha256": "caf8952880564e2425f42e8766fb310d62ef969a6d33ea2282932dec7665d189",
+    "size": 33939
   },
   {
     "file": "ranch_visuals/animals/60001/2.png",
-    "sha256": "4ed1604ccd2bf6cad3354077f168267f933f5815ce4e37144def2e4cdf4be158",
-    "size": 43648
+    "sha256": "631337b6b1fb74a97c1d99061af0237517ddafef1c4f98b2e3bbc7add6388c3e",
+    "size": 45168
   },
   {
     "file": "ranch_visuals/animals/60001/3.png",
-    "sha256": "1e17f1d5e7c5788d98b888818611fecebea136e65eb4c5b279cf605a61e40a0d",
-    "size": 58328
+    "sha256": "7717d3878f2d53827dbaa747fb710169aff7b32b4732fc07712668f73167792e",
+    "size": 61777
   },
   {
     "file": "ranch_visuals/animals/60001/4.png",
-    "sha256": "e9e9194292b51bbd3ba402dc7fadaefededf1981d52bcbc42ee7b151972a5c76",
-    "size": 64158
+    "sha256": "5955b03daa9f5bc4cf5ae290188d220fce54929253122bd02370f487fe388d12",
+    "size": 67503
   },
   {
     "file": "ranch_visuals/animals/60002/1.png",
-    "sha256": "3e3afec957b8dbe3a4bb0a2ac2180aba322efa4405d904a5a14455f2f46e6510",
-    "size": 35193
+    "sha256": "ed4d6ce21c3a7e86a3611e5b7ec03748e908512de4786de320ccf73dd3207e9a",
+    "size": 36886
   },
   {
     "file": "ranch_visuals/animals/60002/2.png",
-    "sha256": "2c8592b34aefaed943a348848b1dcbdd3cb418f52551d6ba79ec15c29f85bb53",
-    "size": 46637
+    "sha256": "4c5a1f96ce28eafb5b67f6ce078adf5bf341b9575e4beac8f1c2d548fa6dfe4d",
+    "size": 49088
   },
   {
     "file": "ranch_visuals/animals/60002/3.png",
-    "sha256": "9f8e0517ab06ea30d4a87174e500f9e76a5ed38d6d5f2acf1c15450576eb9150",
-    "size": 61302
+    "sha256": "a07b71c26e87f4b88673a8d692b43dea1c29fa25cafc3984617a03a0f1cf6330",
+    "size": 66713
   },
   {
     "file": "ranch_visuals/animals/60002/4.png",
-    "sha256": "ee4dfd9bfafb1c132e538a863ae68fe6fe6eb4bddd4910a9499bf4331fccad59",
-    "size": 66244
+    "sha256": "62561e67c447a9f641cb8a2d82955e25af6b67b43e3e495e974166692b72c7cc",
+    "size": 70204
   },
   {
     "file": "ranch_visuals/animals/60003/1.png",
-    "sha256": "2d3c8eab5949016557e030b0e2f0406a80cc6a75565e4f304dfe63d1bf633d19",
-    "size": 31022
+    "sha256": "095425762bf4d95ee4f797e0bf02a4927dad367a9b9925502a04cff22e091ebe",
+    "size": 32519
   },
   {
     "file": "ranch_visuals/animals/60003/2.png",
-    "sha256": "ae95be95b0163722350b9542fbd331158bd56a93ede60da7ac9d7fef2888bb6f",
-    "size": 45891
+    "sha256": "dda41ae9ade36949f673a898a612a0c9403fb9941124a8ce7dbd171047c17bc4",
+    "size": 50544
   },
   {
     "file": "ranch_visuals/animals/60003/3.png",
-    "sha256": "d725811c0afee89db41ceaf4316b805a08696ae8ac5c6f8e2baf8ec4e990c11f",
-    "size": 65349
+    "sha256": "619d9c84e49223b3599c9cb86fbc4ebd9ebee87d8a4370fcf78bfb2558469952",
+    "size": 68731
   },
   {
     "file": "ranch_visuals/animals/60003/4.png",
-    "sha256": "9e82ba2e54f9f5677f59812ef0383272dfa50870afb08f61b9fe21e45b088a6f",
-    "size": 70054
+    "sha256": "96ab865261daf5eecc703ab07223029aaae2a46dffbf4276119cdecb479d1f83",
+    "size": 75479
   },
   {
     "file": "ranch_visuals/animals/60004/1.png",
-    "sha256": "d53381ac97be7422dee39f0ca8825d5985f2bf1b1ef1c3618c9b9ef1de2b0bd3",
-    "size": 51482
+    "sha256": "7a2f42227398f51807f7fd070e11746f26ddcebcdb2cdb44efd679c122d88fc9",
+    "size": 49790
   },
   {
     "file": "ranch_visuals/animals/60004/2.png",
-    "sha256": "57eb0a6ee89229e0e7fb7d739a5709f0c6ca74c49c71441423c8ce61f8a65e34",
-    "size": 69513
+    "sha256": "fa09508372255b3ae8cad93ca12ea9c848d9f23f810ed83c3f22b1861fd7e7e7",
+    "size": 68042
   },
   {
     "file": "ranch_visuals/animals/60004/3.png",
-    "sha256": "b591fe5242614b10d59411294e7228d03042cbceafb23c4a7f6c17c86c92bd02",
-    "size": 82221
+    "sha256": "9ec4347f7930dd2517785495e6f17f30d91ef2e1e27e724633e27d46fdcaa020",
+    "size": 85952
   },
   {
     "file": "ranch_visuals/animals/60004/4.png",
-    "sha256": "71c71dae13a1898230e97a5afb7bab95b9f66b34714787c73117d510f670d996",
-    "size": 83989
+    "sha256": "6f3beef536594d136d2b19d5f2bc96547df614c861d2f30f75930e4feb5f6685",
+    "size": 90260
   },
   {
     "file": "ranch_visuals/animals/60005/1.png",
-    "sha256": "3143aefea560933345677d6b6a8c8c464a50edb30194c796d39641af92aeaf7b",
-    "size": 45164
+    "sha256": "8b798aa2c972380ff593c42746df20b56f3ee558d64d6f21e96cdc42e4d73ddc",
+    "size": 45822
   },
   {
     "file": "ranch_visuals/animals/60005/2.png",
-    "sha256": "36ead6c7a57634279beb45f3b2759e99cbe588c2be9cdbf639ed4ef04601cf39",
-    "size": 70949
+    "sha256": "5cd8e0bd112d19beeae16646b62f2a8a5872e94746fa33194426e3c20d931033",
+    "size": 76930
   },
   {
     "file": "ranch_visuals/animals/60005/3.png",
-    "sha256": "7f16382086c1bc06922cf163a0e358b09bedb32e6c42d739132ee8a4a36b5c45",
-    "size": 99205
+    "sha256": "90ce52e8269f0dbca750234a8c248471115785ee1647951e776feb9897b6822e",
+    "size": 107510
   },
   {
     "file": "ranch_visuals/animals/60005/4.png",
-    "sha256": "17ca80e38e140b777e165d93f7e3e6ca91e91b32ba2ec247e50cbc98ef382c59",
-    "size": 105684
+    "sha256": "ebfaeeae0237a6960cfca56552a18f936c4da226c5fe336fe89ce3f437af03ca",
+    "size": 113549
   },
   {
     "file": "ranch_visuals/animals/60006/1.png",
-    "sha256": "25e1578a193a3dff23d90cb0f34f7c90df81ef00cd1dc0fbc44ed1d21b1d12a4",
-    "size": 30825
+    "sha256": "bf6da6cc2f5886fa19933ff4ed8d2ee20a054ec9a23f7ea5e34c714edc4b978e",
+    "size": 31788
   },
   {
     "file": "ranch_visuals/animals/60006/2.png",
-    "sha256": "c984fe58ba9cf0d7e352b06661d090149cc00a911f7dd86ecf391efaa01dbc1a",
-    "size": 60691
+    "sha256": "380cf4bef8138ab3ddf6d237d6e306f1e9ff6f7489d82fe801514eff0d462e5a",
+    "size": 64565
   },
   {
     "file": "ranch_visuals/animals/60006/3.png",
-    "sha256": "f7ae8f19a4a8785cd89bfe8016e4a42a12ec1c6521c653d85f11f1c5d98bbd59",
-    "size": 90696
+    "sha256": "86aec66f022bd03c9a7e84e3e17f27a3345e420b28ccc3f9fadea874bdc1ebee",
+    "size": 93080
   },
   {
     "file": "ranch_visuals/animals/60006/4.png",
-    "sha256": "6dc015876077d2b15eb3847a02b256b000fe475bd6d457d158a27b1fd2c25857",
-    "size": 91050
+    "sha256": "11e1fe945a883192b773c7b56e39ede26b30eeb05b6013edb2f920012bbe1df5",
+    "size": 93754
   },
   {
     "file": "ranch_visuals/animals/60007/1.png",
-    "sha256": "2393e327c7d344aef4a61e46ff9fbd42503176c23673cb51b8729665de49c4fd",
-    "size": 48494
+    "sha256": "c6897b961cfe3573ec7a1a8db8a72ab3e3416e99701d001a5e37b08ac0de3595",
+    "size": 52182
   },
   {
     "file": "ranch_visuals/animals/60007/2.png",
-    "sha256": "514ee01f58317c5583284b7f3fd36d42cc28fecba944b30772df50baa532dcf4",
-    "size": 70154
+    "sha256": "cf12e6053acb45bcba2879842546e00d9417c02ff5664b3a40033581da7da90f",
+    "size": 78162
   },
   {
     "file": "ranch_visuals/animals/60007/3.png",
-    "sha256": "f892548726b9ef7eb830c79ec2891887bfea244484c9a95d7b90ec9178655686",
-    "size": 94553
+    "sha256": "346030a9716ef04bd549840089b371777df0c5ee84afb81b6bf58fd47a8ded21",
+    "size": 100993
   },
   {
     "file": "ranch_visuals/animals/60007/4.png",
-    "sha256": "031fa4bcec6f6c2d6f6ddf742741efb6977071363ea7a7c4c59d532f4ba84e1f",
-    "size": 94306
+    "sha256": "bf8cbf54f3275aa5e79bbf245482b42d57957f067bdbdc67fcb3f9ac8265dc4a",
+    "size": 101202
   },
   {
     "file": "ranch_visuals/animals/60008/1.png",
-    "sha256": "08cd58ede727ffae3d2c515bdf788541e230b2a10a3d7bea0b4a754c0c705b9c",
-    "size": 58483
+    "sha256": "715032a579a89cd85eac012cd843b20447c05a8735fe31853f2d7de16404a5d5",
+    "size": 60809
   },
   {
     "file": "ranch_visuals/animals/60008/2.png",
-    "sha256": "93a18093f93aa1f24ad19748b84d14ec26801dc85d46681b98fc44076eefecb5",
-    "size": 70450
+    "sha256": "e60565b6e1ae07d3ad01d0e9c6af8946f62f79b6e2a6df991eac8f5205abcd37",
+    "size": 73578
   },
   {
     "file": "ranch_visuals/animals/60008/3.png",
-    "sha256": "ae5232c4a6642b003b8de178a8dfb80012112b5672adcbbca25524919c80db78",
-    "size": 96722
+    "sha256": "2970dd3a8fbbe941e832431f0c8bcf938779f643b28de80968348656927f331e",
+    "size": 104350
   },
   {
     "file": "ranch_visuals/animals/60008/4.png",
-    "sha256": "0fbbd9529defc303bdfdbeccae0127afbd06a87088608e4c8d4c8889873f307f",
-    "size": 98023
+    "sha256": "53c36b419f4ed6909f19f82fa6f148cded73c4cb3cc340c53061e36e5f0a3a9f",
+    "size": 105725
   },
   {
     "file": "ranch_visuals/animals/60009/1.png",
-    "sha256": "38e183da1fcdd759aa9491d7845fd607ae8e415f7b156c90670fe4f1ae19cde4",
-    "size": 44924
+    "sha256": "fd7fe75cda69f9e83cfb34d9f8bef4eb1dd6e23c68bc8d5655ebf0489c204d91",
+    "size": 50202
   },
   {
     "file": "ranch_visuals/animals/60009/2.png",
-    "sha256": "5ad7a11c3f25290f8270c794c1e03e37145fb6ed3bbda59dde8e140d8f16c367",
-    "size": 58965
+    "sha256": "e4e52c2ec6b7bc0eaa291271ff1066566c3dd46cc6e99f5a93113fd72dee5292",
+    "size": 64380
   },
   {
     "file": "ranch_visuals/animals/60009/3.png",
-    "sha256": "40eb0ac943b8c659011cef3e4b0e347cc81b2bfcfd8bce84b2b9bb5a986a8434",
-    "size": 71906
+    "sha256": "c1babef56680bff2a3da4699195e2a86a1178f450b1e36d4b14b8ee3443545fa",
+    "size": 76293
   },
   {
     "file": "ranch_visuals/animals/60009/4.png",
-    "sha256": "15aff0b3eb46a4454abc443ada98de78167035210bc667b164504d440e5209ce",
-    "size": 74999
+    "sha256": "bdd6ae8bb91aa26822bb537399045a23384a59a421d1ebf63c92b9b4f3a0fa75",
+    "size": 79552
   },
   {
     "file": "ranch_visuals/animals/60010/1.png",
-    "sha256": "1b01daf84d5cabc840f0080d3c8e646c4e1887aa7844d463676c5ecaf88313a4",
-    "size": 49663
+    "sha256": "98b55ad91e45496fad8444fc2f39bb5e5c55956bba722b51bc97b8fc95a1ebaf",
+    "size": 53568
   },
   {
     "file": "ranch_visuals/animals/60010/2.png",
-    "sha256": "7928b5e33f4b0f3ca717621e0c7f11ced7291db4194e5c75480b83dd8d2e21e8",
-    "size": 63168
+    "sha256": "1c0a7ab9bc0c933e270c77f4345d35f89ceb62eb6befcaeddde07663e89d2207",
+    "size": 66139
   },
   {
     "file": "ranch_visuals/animals/60010/3.png",
-    "sha256": "cf1fef853689458867fbc3b7b080a348c7ccbd7fb897181308f0b6b2a254e5fd",
-    "size": 75770
+    "sha256": "147408e5aa3ba19448ad9fca6414f12a700b91287503c7aed189ae07cb722b66",
+    "size": 78573
   },
   {
     "file": "ranch_visuals/animals/60010/4.png",
-    "sha256": "f10f66a88ae615ed305c3db0a209778f2ffc03b9a6828deae00b9b282efab2e7",
-    "size": 78837
+    "sha256": "f5887d2e455305fde38cd4e9c9f55533b48af2cb3461b5649207518fb83c4c25",
+    "size": 83410
   },
   {
     "file": "ranch_visuals/animals/60011/1.png",
-    "sha256": "c872514cb5ae364bf97f018dd4a426b4003ce3cea01c0c2c3d9e46b796a8331f",
-    "size": 50930
+    "sha256": "6210d0137372b4a38834f1dacd3fcaea3e00d50fdab4669afa50fbcee2f554a3",
+    "size": 53612
   },
   {
     "file": "ranch_visuals/animals/60011/2.png",
-    "sha256": "50c5085d8b1f3c5f888686ba4454ac0e7c7baaab575210883ccaecdc1b1ba043",
-    "size": 69145
+    "sha256": "c936ff786079b011b1407ecfebe5829d8f76099390ba24c3cdc1ea4dcc13f096",
+    "size": 72420
   },
   {
     "file": "ranch_visuals/animals/60011/3.png",
-    "sha256": "b78ffa6debc1d6d0c36ff943ac83d0bc46028aa8a88369fd35cf5daf8830f52d",
-    "size": 93181
+    "sha256": "8e0dd80ef8d9d212c6b34e2406ebcfe9f521daf8cdee5a88e091ff7c6aae1d05",
+    "size": 98727
   },
   {
     "file": "ranch_visuals/animals/60011/4.png",
-    "sha256": "879cd56219799b69ec9e369838074264343dd7979de9bb1d94b4862f808b22b2",
-    "size": 96781
+    "sha256": "79c68c61624d5000d5f468c1239bfc642d139f1353edbc909cb84d7870174d2a",
+    "size": 101815
   },
   {
     "file": "ranch_visuals/animals/60012/1.png",
-    "sha256": "839cd9c1372a3704dbbde834f5e3802613a5ce6d85fa098ab97886b7e1eb8b2a",
-    "size": 70033
+    "sha256": "cbb1063ad65cc4d87f6c4c24fc3762ec17c271032a1c544c7fd74f86f752edf0",
+    "size": 73509
   },
   {
     "file": "ranch_visuals/animals/60012/2.png",
-    "sha256": "5bb8ea000f840dcb709b23a5eea1c765c78a859cb3236ee22a1ca6ef9d1038c8",
-    "size": 91925
+    "sha256": "da03f29872d37ebc674284218c87444a0c8f958b0269f34b7065f85b059c6cf5",
+    "size": 94127
   },
   {
     "file": "ranch_visuals/animals/60012/3.png",
-    "sha256": "b5c0600e1721ef1886fd92d6b17ef8f8eeaa39100239cfec4975f46f748c256f",
-    "size": 112265
+    "sha256": "1122f15e7f4ef48de8da7908d2f410abcafe027735ceefc87fad8f3db32618c7",
+    "size": 117474
   },
   {
     "file": "ranch_visuals/animals/60012/4.png",
-    "sha256": "e512c640666aea6bd5e43b870725ce136829cfe588e853ee63cab0b2c5a55ecb",
-    "size": 115718
+    "sha256": "21fa9a83c2ecf7b56250707d89ab9cb8abc6f5573aa0990eac3efa59e157b0d8",
+    "size": 121412
   },
   {
     "file": "ranch_visuals/animals/60013/1.png",
-    "sha256": "96a1a795ae421003ae1fc00865e2b448eb74fccfdf2c3462cccb7b27070df245",
-    "size": 44851
+    "sha256": "2ff481c442308e3bd68159c40ab76a178afb9d8bdd5a6087f95bf111937875d2",
+    "size": 45563
   },
   {
     "file": "ranch_visuals/animals/60013/2.png",
-    "sha256": "fe08883fdbc0d4bae704ae018317f556de6cbe5ac7657de8c9cc0ed1235aa70c",
-    "size": 61142
+    "sha256": "119ada1f81cf33e151bf1464fc01a55a140211285a9450b8ebfe860ce41a958e",
+    "size": 72438
   },
   {
     "file": "ranch_visuals/animals/60013/3.png",
-    "sha256": "a3d848f69f11def780bff789c6dc05b74ee3cf70c7f547f82e89aff02d0e6077",
-    "size": 112950
+    "sha256": "05140cb9df7c3a48d1050e81a0ac2f6790cc80aa4b851ffc1ff9a8867d0ad4fd",
+    "size": 116846
   },
   {
     "file": "ranch_visuals/animals/60013/4.png",
-    "sha256": "1f45fbab58354a618f2a4aa015abca4f4666f7f20a048a068da54df8b6d08b22",
-    "size": 117953
+    "sha256": "2e601af2542f59b051e9034853f1ef53d7727e13eeacdd9814d0f77b07217b00",
+    "size": 121789
   },
   {
     "file": "ranch_visuals/animals/60014/1.png",
-    "sha256": "8364a1e0ceb0250a272b1b30c14f27ad8692c687146932c0d8864bd55bc4a5cb",
-    "size": 60035
+    "sha256": "044966ef382df4cc11a64d1799d7271d202ba6458cdeec99dfe7c06b057d0e20",
+    "size": 63546
   },
   {
     "file": "ranch_visuals/animals/60014/2.png",
-    "sha256": "c2e36ee90e7ec1815e1d990f98886c1e07de0238746d23c8491bc11c55aff9e1",
-    "size": 89253
+    "sha256": "3140683a2e17b564b0225a3c33bc6fea4cb8889f72488abe407c8ca195a1dcdc",
+    "size": 91478
   },
   {
     "file": "ranch_visuals/animals/60014/3.png",
-    "sha256": "cd198024ea9fc92024cd43a627814c2f5288862727693a446c915376a291571f",
-    "size": 114749
+    "sha256": "4576889cdcf8af6247e62e847453189a311b3074f4a0abde8c1be55ddde71f85",
+    "size": 116634
   },
   {
     "file": "ranch_visuals/animals/60014/4.png",
-    "sha256": "63dc7178ebbee91809640b23ffd4fd2f0b1b1c4337723e1977c45bef6e2f16e9",
-    "size": 117042
+    "sha256": "ec3a5a80da427ef6398cd89a757b4db2c0b8ea35fe54d243c300552a1cce2511",
+    "size": 119612
   },
   {
     "file": "ranch_visuals/animals/60015/1.png",
-    "sha256": "de2f3bbae3987a909dfd94bfba03330359f392d7ade55defb1c11cfd06c63773",
-    "size": 41982
+    "sha256": "5c015e2e72c6056574865eea4fd1e1e69e19f368d88cacc657642c71cd6f95f1",
+    "size": 42509
   },
   {
     "file": "ranch_visuals/animals/60015/2.png",
-    "sha256": "867e8469efc711c6851666a0436fd7e903601f7c260e2effc34c247aae6f4b19",
-    "size": 66393
+    "sha256": "38770c1dc9581de0f15e1b96be8151bb222dcf86d0c10cf9d83fb0371c8b871d",
+    "size": 69077
   },
   {
     "file": "ranch_visuals/animals/60015/3.png",
-    "sha256": "447a6c9cc7a4a0e83467778d18f51b22784d90990fb5719af7c8c469c61bb174",
-    "size": 131980
+    "sha256": "548de6e25735030e85668304508fcd401d3db969b4c6ff21a4dbb98e5cc2ff3c",
+    "size": 141565
   },
   {
     "file": "ranch_visuals/animals/60015/4.png",
-    "sha256": "7dc6dfef126382a9c500240f8e6a67ac27dadf59aaf364a446954e37698ede9b",
-    "size": 136284
+    "sha256": "dd14ac3fdbf379a3f38e627d7f9c0c8800aed5e80739d1b74df7ffb5add762cf",
+    "size": 143696
   },
   {
     "file": "ranch_visuals/animals/60016/1.png",
-    "sha256": "36078662ee487cae6c4e61d3490cf5d611aa468ac3c72eff1c8b04cff2843736",
-    "size": 50242
+    "sha256": "0ba5fc44355d3f0e342bffb7b5eb05d8ef7d0363ee5a05c3872f6a8a02bd6d3b",
+    "size": 55395
   },
   {
     "file": "ranch_visuals/animals/60016/2.png",
-    "sha256": "a4ad545ea598d22114ed652217b73bf0e4ff072c4517717e32190b33de3f423f",
-    "size": 70816
+    "sha256": "ebdcf0c8e6c43729421a7a628f368a42d9cc7d24102b33a86bbc06b3a8b4d9d0",
+    "size": 75922
   },
   {
     "file": "ranch_visuals/animals/60016/3.png",
-    "sha256": "e33052070bbffa2ecedc935b8cce562d701d706a3585d7de8396ca9a4c6b05b9",
-    "size": 97236
+    "sha256": "5685e7eec754a936304754983bf3116dbe28cad8328e63eb99a8a3aae6082c45",
+    "size": 101691
   },
   {
     "file": "ranch_visuals/animals/60016/4.png",
-    "sha256": "17ffc8125ab533e3dfa316e94062a805b43fa17f0e81b30fbb84ed909ec35c7d",
-    "size": 100335
+    "sha256": "ac278f63e0d0e87c09e8e99e869b4db1eddc42f7b0f54db23581e7a665570d5c",
+    "size": 105107
   },
   {
     "file": "ranch_visuals/animals/70001/1.png",
-    "sha256": "e6265633826d2dbfbdab7485352ec56956a496eeeadc44c9a60bf889fba5d565",
-    "size": 57876
+    "sha256": "ade7dd16b7710acf2d7d75070a0b8230808333cf7b4480224994624fb075b1e8",
+    "size": 63009
   },
   {
     "file": "ranch_visuals/animals/70001/2.png",
-    "sha256": "66dba534723f748333e3de9d3341771260155290acc435ec32548320e30582ed",
-    "size": 86285
+    "sha256": "6810085abec3caf5600f9bb0923dd22ed523cd87815170886d9a0a1c82574891",
+    "size": 88116
   },
   {
     "file": "ranch_visuals/animals/70001/3.png",
-    "sha256": "133e3fabad464c1cf77714b67dd8994bb98891f9ffd6c82ff5f658e679e93526",
-    "size": 113092
+    "sha256": "e7dc92a952cdf932f0c18308fab36806dd7e2fd667d0c020fcdda463ef681972",
+    "size": 115421
   },
   {
     "file": "ranch_visuals/animals/70001/4.png",
-    "sha256": "a9adc11a74e93a5a4a58bb65ecac2e3a55f3cdd0b65f9ecd0965908577355b95",
-    "size": 118152
+    "sha256": "eaa738edfdb22b0cb8c1db0ed943ec4f36054ae807dec4b53beb5ef203ed4e9f",
+    "size": 121192
   },
   {
     "file": "ranch_visuals/animals/70002/1.png",
-    "sha256": "4f3860ac45b7e3660328f5c2a3e6f0d708004d224819105eed948a0d43b53332",
-    "size": 73939
+    "sha256": "02dcc19371064791196d4edb0b23df04393f8ef4b0cbc8a11da26421f7257bac",
+    "size": 76628
   },
   {
     "file": "ranch_visuals/animals/70002/2.png",
-    "sha256": "e805fe142e3d1d1f5a9d05309773e87f53839d10120061216d9f22ba8a76d04d",
-    "size": 92730
+    "sha256": "0d92d5a14334398009a586de94d8d90c91e5992a910b4c27a2a0ab62f9eb9ff8",
+    "size": 96132
   },
   {
     "file": "ranch_visuals/animals/70002/3.png",
-    "sha256": "03ea55d559a6df896707c98e152d8064eaae1667885642c5a9689528e9a56d1c",
-    "size": 141012
+    "sha256": "30d044872051520f10540b756c0c051821b6c31f227694545662643b6330795c",
+    "size": 142561
   },
   {
     "file": "ranch_visuals/animals/70002/4.png",
-    "sha256": "ddc134e69e2eb7f530b7fb397c969b33732c921f82f9045c911be1a28842cb62",
-    "size": 149044
+    "sha256": "51a04ec01b40a237e1c65f7b99df4c9e6c6a45e90ddc871800a39873c0f4d167",
+    "size": 150343
   },
   {
     "file": "ranch_visuals/animals/70003/1.png",
-    "sha256": "dbcb80dc23edd7596b411665d972871d90b5f46a70b79ab482976fb5e51e9388",
-    "size": 76535
+    "sha256": "caf230969768176bc6bf1b4912934aa3fed2ae6c72d63d4375953c6becdbf4fc",
+    "size": 79042
   },
   {
     "file": "ranch_visuals/animals/70003/2.png",
-    "sha256": "167934c23ecee124ed407c70e25aa264ba273359087bfd609e1d9e39b8da4745",
-    "size": 94029
+    "sha256": "d81e2eb25e0bed63825c6ecbfa3f7520291706e4dee6271e5acbaaa732dce3b8",
+    "size": 107932
   },
   {
     "file": "ranch_visuals/animals/70003/3.png",
-    "sha256": "2855f2b0914d10939ff9e7b1de8c90c8c2775c895add3f091bb31b5b2623e954",
-    "size": 113193
+    "sha256": "2c55cdf03fc8bf24b95c4e5e152a52745cec566ed8cf9c298c878abe1b3809cf",
+    "size": 130247
   },
   {
     "file": "ranch_visuals/animals/70003/4.png",
-    "sha256": "06c221c1ab6baae007a457dedacc59c341a2e94fc6cc276a164726831a80a6b0",
-    "size": 122708
+    "sha256": "ee359d56292b69d1dd52b1b541c623b3e904a1db9905c0a34aa5d73f2b68ed1b",
+    "size": 135304
   },
   {
     "file": "ranch_visuals/animals/70004/1.png",
-    "sha256": "a55b3533a74db3ac5a000e2faa6cc99a241b79dba4e5d7564ddf1cf8ec88fcc0",
-    "size": 59956
+    "sha256": "7922c45bfdc8e57a02a9957b8914bd8e643aa91a4f1b2e8f81d5a0e87d331e61",
+    "size": 60841
   },
   {
     "file": "ranch_visuals/animals/70004/2.png",
-    "sha256": "3490d7f0d1e4153b65317ba11352f1205fee2ac4d76a739fb2480bf1fa3b41fd",
-    "size": 74614
+    "sha256": "98fb1c378af495acd68d8fe0fbea8d43222f8191b5ada7d56355f4d5ddc1266a",
+    "size": 74879
   },
   {
     "file": "ranch_visuals/animals/70004/3.png",
-    "sha256": "ecd4805e15dcd045a1aa2ea7f2259046c503ea7f25bacda57d200e01da805cdd",
-    "size": 106129
+    "sha256": "3ebb58b4b0d3297dcdf38d619dd29c2166cab0a5b5b491211fe2685009e999df",
+    "size": 107134
   },
   {
     "file": "ranch_visuals/animals/70004/4.png",
-    "sha256": "b85d8c9fce7b7331435d528db189c517ec14736b0dde4ac337d105929139c0ef",
-    "size": 111958
+    "sha256": "8f5266c63e86b05c7986cb35b994a906f5282b7346480bfa086c393f12581013",
+    "size": 114656
   },
   {
     "file": "ranch_visuals/animals/70005/1.png",
-    "sha256": "538a34c1a2c1c88fb696ef1fd32af2cce7b122d64549be043fe358c103b89881",
-    "size": 57881
+    "sha256": "70da253ef91d5a4c3165543ffc9eb3ae168291fb842f1ae8add4a8b5f8f44160",
+    "size": 59516
   },
   {
     "file": "ranch_visuals/animals/70005/2.png",
-    "sha256": "c75e7d0a3d9027797603606f8b1a9a4f711b4e0cac416b0ee6c514ed829bcf83",
-    "size": 94225
+    "sha256": "7667a11fd341e4bb26ce8fef2fee8865a9e14ea349868f1bbf2b7824bb041a31",
+    "size": 95315
   },
   {
     "file": "ranch_visuals/animals/70005/3.png",
-    "sha256": "038b30b12d4727a0ae07579b8da14b9ed3149c9b57b63d8647e0081d940d99ca",
-    "size": 124329
+    "sha256": "6c948d5f7c41ca0345c8feda6c544f5d74fad0ceafbef69d5f56f469b41fa207",
+    "size": 129890
   },
   {
     "file": "ranch_visuals/animals/70005/4.png",
-    "sha256": "2322ed15d3aaabeb079468ce7eb8e13ce06027a542289620c3a9a3d2faf8aa5f",
-    "size": 130991
+    "sha256": "72ddc1147058d45a08b3929d36fbb415015a54ffb070f2fb6de8865c83607d5e",
+    "size": 137452
   },
   {
     "file": "ranch_visuals/animals/70006/1.png",
-    "sha256": "acbf5e8fa775be93e9e4e24cd9246b9b89f8af0fc714ccb5fea3dcd2a6cf933e",
-    "size": 55984
+    "sha256": "0427d5648d48028d0e5a68ce6a3109cc084dcbeef6f82c8e934c8405dd5d20cd",
+    "size": 61996
   },
   {
     "file": "ranch_visuals/animals/70006/2.png",
-    "sha256": "c871cdf4f965d5fa828c3def6a5d42cf6effeee4ac6f68fc041b03e8421c94ef",
-    "size": 96897
+    "sha256": "5b8242eeb8f28bdf4cd5eb276263a85a41b5a389d805ba0273840b770450b724",
+    "size": 96224
   },
   {
     "file": "ranch_visuals/animals/70006/3.png",
-    "sha256": "0f766ad30f48e063684620be8d5634f0c0a7035b06bb9f603ef943d3c8257635",
-    "size": 138937
+    "sha256": "d10a91b3261beda913a96307e406e2b940ff030fb9a51553de0ef125c2f4e1b3",
+    "size": 140452
   },
   {
     "file": "ranch_visuals/animals/70006/4.png",
-    "sha256": "1e4ff72a671570898aa430c63d948df4cb95fc0d130440e9f15dc1593d85bcd2",
-    "size": 144245
+    "sha256": "7e3f80c00177c83867930909b2af2d9097f078f8819011c68829243cae9a72ef",
+    "size": 145932
   },
   {
     "file": "ranch_visuals/animals/70007/1.png",
-    "sha256": "8f538c6eb04252177d3943d1ab6e94d987ac94013a6f6f2fa80e66c09bd721fd",
-    "size": 77428
+    "sha256": "13323f8696f5f3b6faa208e9a6ed6d1d2ecde493c0667513078a51aa257ee3cd",
+    "size": 78969
   },
   {
     "file": "ranch_visuals/animals/70007/2.png",
-    "sha256": "a810cf1dacc92d9115bb311287d5755f1d4fe6c288e16457896d40aefce1d3d6",
-    "size": 118691
+    "sha256": "5428e860936b1424e1706269e5722ed1dc1b313a9e288ab49ba9552326b9de46",
+    "size": 122160
   },
   {
     "file": "ranch_visuals/animals/70007/3.png",
-    "sha256": "979a1102427e3e4d39ba0d1e94dce45b6d10b8bad28a7ddba095dfdd601f6982",
-    "size": 174593
+    "sha256": "2a216c64a41852976034d893d1654d61ab8c38bbc263fb77f11f6f25ae2dcbfa",
+    "size": 174519
   },
   {
     "file": "ranch_visuals/animals/70007/4.png",
-    "sha256": "b11624791f1aa45228da30a11a5050a7b1786c6cc3464d3659c7b2386a3a3bea",
-    "size": 184127
+    "sha256": "5bfe67e35913d9633c5b0b32296499578da2fdecd581ca920e72e4198bf41ac7",
+    "size": 185041
   },
   {
     "file": "ranch_visuals/animals/70008/1.png",
-    "sha256": "ff4e423f93d041cf74925719a002ae74dcff3000ea23c013aac1802a0ae05c64",
-    "size": 88959
+    "sha256": "920c54c95a625d784db0f9b1498cd1e1d39d56feda1bef3dd40026f3865c091d",
+    "size": 90813
   },
   {
     "file": "ranch_visuals/animals/70008/2.png",
-    "sha256": "1c41c4966da38a271374bbf576424fd0f27e1921272a555ac3a0417a3fc2e126",
-    "size": 119085
+    "sha256": "6c11a7fb8138ce1598f66838a0150307a1b001ac2db0ee0f079b766409c31bdc",
+    "size": 128138
   },
   {
     "file": "ranch_visuals/animals/70008/3.png",
-    "sha256": "beac1638be3dd48a3ed997c303b007baead6de12858a29bc4f44791d54f84aca",
-    "size": 175752
+    "sha256": "7abcb4a7689ad66b797fb47c5d03d7ca56e1071a693a017e8888f34dba1ac8ab",
+    "size": 180677
   },
   {
     "file": "ranch_visuals/animals/70008/4.png",
-    "sha256": "b4aa06d2b7358d57d8a89f3ec516b383e752899c96e43b41401e25aa8e809095",
-    "size": 176325
+    "sha256": "0a9dcd3db5219f18532dace3b380bb5bec23943fe36bb37d2e4e40cb9fa5510a",
+    "size": 190305
   },
   {
     "file": "ranch_visuals/animals/70009/1.png",
-    "sha256": "9a6e3fb32fec5a46180f464f82046f926a9377b91cccf49d663bcae4d100020c",
-    "size": 56215
+    "sha256": "befcc89081f2a0196bdf5b8f9269ca18d03ea34893fbf1e2d0a95725c029bed3",
+    "size": 58840
   },
   {
     "file": "ranch_visuals/animals/70009/2.png",
-    "sha256": "177a7d501dfc84d2dcebeda94ba0e45dfdeafeec6e1c377ec698120498e23670",
-    "size": 84560
+    "sha256": "e56fb6a37a6106ebe6b4419c6f3e1e797f016ca71efbfbdfac81168697e4bc29",
+    "size": 89796
   },
   {
     "file": "ranch_visuals/animals/70009/3.png",
-    "sha256": "b26a6782f5591ae63d4f3f6d1359a8701a6ef92eca5fe420ffb107ebf5059368",
-    "size": 134571
+    "sha256": "56f85755cb2b2cb829ac6e08e04624f2c374a304d72b3f8a45645112bea5d0b9",
+    "size": 136891
   },
   {
     "file": "ranch_visuals/animals/70009/4.png",
-    "sha256": "17a94091b3267af16b2d6d3ac3a3445c808525b1300a43fffb675d567eca8b5d",
-    "size": 142149
+    "sha256": "2155a3f10ba6006caee553cd273034fdc806792a5cafed6778ac0d3a3a30468e",
+    "size": 143846
   },
   {
     "file": "ranch_visuals/animals/70010/1.png",
-    "sha256": "351cfbb90c9ca357b6782c9346749b4911e516813a837944c37506601028fba0",
-    "size": 62925
+    "sha256": "ccda1b3e302ea38b6ff383388c39e9e0f475f4c6763aa7384f21651041f1ab4e",
+    "size": 63504
   },
   {
     "file": "ranch_visuals/animals/70010/2.png",
-    "sha256": "29d062b3f07c302996488916c424b810808522ab7562bbec945de28bf895d911",
-    "size": 90506
+    "sha256": "d2ab99ab2d9f0f00eca42edd90ed757b1f4c41af2759614afe8ace273e8e7690",
+    "size": 92012
   },
   {
     "file": "ranch_visuals/animals/70010/3.png",
-    "sha256": "7e1096522ec68f187ee71787bf3e1ccbad9a574bb0e8d7ecad631f849b6dd11c",
-    "size": 118153
+    "sha256": "86a0c42c7184426d2da242769d94a596c7070166e84b3e1cbbfe50287b06fd89",
+    "size": 119965
   },
   {
     "file": "ranch_visuals/animals/70010/4.png",
-    "sha256": "63b8d496b3b29cb1bd4b8be322c2116dd6fedf3335ed6b0cbdec5c1adb72223e",
-    "size": 121112
+    "sha256": "5a77658706b4ef419ec51d657ca2c19e8520f15ef867f7baa98e20154177d9df",
+    "size": 123784
   },
   {
     "file": "ranch_visuals/animals/70011/1.png",
-    "sha256": "f3e8ad2054bd4cc78d151dfc8bda98c6ecde94aec17a5679544a8fe150ba9cc6",
-    "size": 51668
+    "sha256": "6422dfa461a862e1e6045e42e0d59a3103393a9cccd7a06abba15d7352f0e2d4",
+    "size": 56518
   },
   {
     "file": "ranch_visuals/animals/70011/2.png",
-    "sha256": "a9be43070d16faeec04d16468127a10b599c55302738375f98d463f28e60ab50",
-    "size": 68742
+    "sha256": "1bb5531e672d5ddda452346f0585e039fa0d2f488ea61f628ac4f5c40ca9c9cd",
+    "size": 75305
   },
   {
     "file": "ranch_visuals/animals/70011/3.png",
-    "sha256": "247e48c93b94c64e8a248d858ce17c139dcbc00be02202b86e938fc38ee6ac82",
-    "size": 96590
+    "sha256": "296da3ad015d46e5fb612c8e835924c5f8578925ecda337b1f71b652fc6ac927",
+    "size": 106186
   },
   {
     "file": "ranch_visuals/animals/70011/4.png",
-    "sha256": "a68adaf61e307747a9d66047a1511a8c3e974a4fcdb3a22f8a7d1277a93a6216",
-    "size": 101003
+    "sha256": "aa3083268e8896f73e8bff5af05d949a09fdccc3a763eb2b5de131d3928ea63c",
+    "size": 109769
   },
   {
     "file": "ranch_visuals/animals/70012/1.png",
-    "sha256": "7f94555cde7af9c48626482faa53b5bd22d8c17c1ac6d72f191a8778166a85a3",
-    "size": 77932
+    "sha256": "ada0e64f20874cf817566fb36a3995721a377c7030e9e1a9c6db9d0b09b817e7",
+    "size": 78507
   },
   {
     "file": "ranch_visuals/animals/70012/2.png",
-    "sha256": "9843ee5bcf618730c504cbe963c989fbe5f527ddafd8789bd1017ec53cb4cf4c",
-    "size": 107207
+    "sha256": "af329d1223bac8491b3001becd1e4ae4c31e4ea53f854a148dc19fd16fcb1549",
+    "size": 106631
   },
   {
     "file": "ranch_visuals/animals/70012/3.png",
-    "sha256": "35c0ab57b1fa26f6d38312af50b51df3b118b1106dea0077deeed484baa4bd17",
-    "size": 122887
+    "sha256": "01148c147dff895fe0b667ad6038c5307af85ad11fe3166bb1d8b8b970df5638",
+    "size": 124441
   },
   {
     "file": "ranch_visuals/animals/70012/4.png",
-    "sha256": "cd3a22a33963c258b11727c5a3b6bc7128d5745819edd785db9680c5342de176",
-    "size": 133347
+    "sha256": "9243a5590ebf1f13e3046edc41126dcfda43736506fb7278b13454e404c1157e",
+    "size": 135181
   },
   {
     "file": "ranch_visuals/facilities/GrassMachine_1/GrassMachine_1.png",
@@ -10901,8 +10901,8 @@
   },
   {
     "file": "ranch_visuals/sources.json",
-    "sha256": "0939741e85cee523685231fbcf2a197b59bc036c83ce0ef2b73e292e2aaae31e",
-    "size": 107068
+    "sha256": "98027dccb46ba8871b711f0d3946c60f7d3e9ec54764c59b07d843e1bb1f40cb",
+    "size": 107125
   },
   {
     "file": "seed_images_named/.removed/10018.png",
