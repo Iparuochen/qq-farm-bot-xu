@@ -505,6 +505,17 @@ async function ensurePinzanSettings(): Promise<boolean> {
   return true
 }
 
+function selectWxProxyMode(mode: 'direct' | 'pinzan' | 'static') {
+  if (wxProxyMode.value === mode)
+    return
+  wxProxyMode.value = mode
+  stopWxCheck()
+  wxLoginStore.resetState()
+  // 切回直连立即刷新二维码；切到代理模式先留空，由用户点「刷新二维码」再调用代理。
+  if (mode === 'direct')
+    void loadWxQRCode()
+}
+
 async function loadWxQRCode() {
   if (activeTab.value !== 'wx' || wxLoginStore.isLoading)
     return
@@ -671,8 +682,13 @@ watch(activeTab, (tab) => {
     activeTab.value = 'manual'
     return
   }
-  if (tab === 'wx')
-    loadWxQRCode()
+  if (tab === 'wx') {
+    // 品赞模式进入页面不自动提取，等用户点「刷新二维码」。
+    if (wxProxyMode.value === 'pinzan')
+      wxLoginStore.resetState()
+    else
+      loadWxQRCode()
+  }
   if (tab === 'qq' && !qqTaskId.value)
     void startQqLogin()
   if (tab !== 'qq')
@@ -800,7 +816,7 @@ useModalFocus(() => props.show, modalSurface, close)
                 :style="wxProxyMode === option.value
                   ? { backgroundColor: 'var(--theme-primary)', color: '#fff' }
                   : { backgroundColor: 'color-mix(in srgb, var(--theme-bg) 90%, var(--theme-text))', color: 'var(--theme-text)' }"
-                @click="wxProxyMode = option.value"
+                @click="selectWxProxyMode(option.value)"
               >
                 {{ option.label }}
               </button>
@@ -848,7 +864,7 @@ useModalFocus(() => props.show, modalSurface, close)
               />
             </template>
             <p class="text-xs opacity-60" :style="{ color: 'var(--theme-text)' }">
-              仅作用于微信扫码与 Code 获取，不影响农场网关；不选城市时按全省提取，品赞密钥保存在服务端。
+              代理只用于本次扫码登录和首次取 Code，登录后的后台刷新一律直连；仅作用于微信登录链路，不影响农场网关。品赞密钥保存在服务端。
             </p>
           </div>
 

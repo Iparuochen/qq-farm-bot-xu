@@ -44,9 +44,9 @@ const PASTURE_GRASS_REQUIRED_LEVEL = 1;
  * 查询饲料商店（shop 4）中的牧草种子商品
  * @returns {object|null} goods 原始结构，商店异常或下架时返回 null
  */
-async function getPastureGrassGoods() {
+async function getPastureGrassGoods({ cache = false } = {}) {
   try {
-    const shopInfo = await getShopInfo(PASTURE_GRASS_SHOP_ID);
+    const shopInfo = await getShopInfo(PASTURE_GRASS_SHOP_ID, { cache });
     const goods = (Array.isArray(shopInfo?.goods_list) ? shopInfo.goods_list : [])
       .find(item => toNum(item.id) === PASTURE_GRASS_GOODS_ID);
     return goods || null;
@@ -1055,27 +1055,25 @@ async function getAvailableSeeds() {
   let seeds = [];
 
   try {
-    const shopInfo = await getShopInfo(seedShopId);
-    if (shopInfo.goods_list) {
-      for (const goods of shopInfo.goods_list) {
-        let requiredLevel = 0;
-        for (const cond of (goods.conds || [])) {
-          if (toNum(cond.type) === 1) requiredLevel = toNum(cond.param);
-        }
-        const limitCount = toNum(goods.limit_count);
-        const boughtNum = toNum(goods.bought_num);
-        const soldOut = limitCount > 0 && boughtNum >= limitCount;
-
-        seeds.push({
-          seedId: toNum(goods.item_id),
-          goodsId: toNum(goods.id),
-          name: getPlantNameBySeedId(toNum(goods.item_id)),
-          price: toNum(goods.price),
-          requiredLevel,
-          locked: !goods.unlocked || userState.level < requiredLevel,
-          soldOut
-        });
+    const shopInfo = await getShopInfo(seedShopId, { cache: true });
+    for (const goods of (shopInfo?.goods_list || [])) {
+      let requiredLevel = 0;
+      for (const cond of (goods.conds || [])) {
+        if (toNum(cond.type) === 1) requiredLevel = toNum(cond.param);
       }
+      const limitCount = toNum(goods.limit_count);
+      const boughtNum = toNum(goods.bought_num);
+      const soldOut = limitCount > 0 && boughtNum >= limitCount;
+
+      seeds.push({
+        seedId: toNum(goods.item_id),
+        goodsId: toNum(goods.id),
+        name: getPlantNameBySeedId(toNum(goods.item_id)),
+        price: toNum(goods.price),
+        requiredLevel,
+        locked: !goods.unlocked || userState.level < requiredLevel,
+        soldOut
+      });
     }
   } catch (err) {
     const wsError = getWsErrorState();
@@ -1087,7 +1085,7 @@ async function getAvailableSeeds() {
   // 牧草种子挂在饲料商店（shop 4），补进列表供"优先种植种子"下拉选择
   if (!seeds.some(s => s.seedId === PASTURE_GRASS_SEED_ID)) {
     const pasture = buildPastureGrassCandidate(
-      await getPastureGrassGoods(),
+      await getPastureGrassGoods({ cache: true }),
       Number(userState?.level) || 0
     );
     if (pasture) {

@@ -454,14 +454,9 @@ async function resolveProxyForAccount(account = {}) {
       return handleProxyError(error);
     }
   }
-  const config = pinzanConfig();
-  if (!config) return null;
-  const area = String((account && account.wxProxyArea) || config.area || 'all').trim() || 'all';
-  try {
-    return await cachedPinzanProxy(config, area, DEFAULT_TIMEOUT);
-  } catch (error) {
-    return handleProxyError(error);
-  }
+  // 未显式选择代理时一律直连：全局品赞配置只服务扫码页的手动选择，
+  // 不再作为兜底，避免已登录账号的后台保活或定时任务消耗动态代理。
+  return null;
 }
 
 // 扫码页显式选择的出口：direct/static/pinzan。用户主动选择时不静默回退直连，失败直接返回错误。

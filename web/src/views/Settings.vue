@@ -62,7 +62,25 @@ async function scrollActiveTabIntoView() {
 watch(activeTab, (newTab) => {
   localStorage.setItem('settings-active-tab', newTab)
   void scrollActiveTabIntoView()
+  if (newTab === 'account-config')
+    void ensureSeeds()
 })
+
+// 种子目录/背包只在「账号设置」页需要；先让设置与自动化开关立即可用，
+// 种子数据等切到该页再懒加载，避免打开设置页就排队去网关拉商店。
+const seedsLoadedFor = ref('')
+async function ensureSeeds() {
+  const accountId = String(currentAccountId.value || '')
+  if (!accountId || seedsLoadedFor.value === accountId)
+    return
+  seedsLoadedFor.value = accountId
+  try {
+    await loadSeeds()
+  }
+  catch {
+    seedsLoadedFor.value = ''
+  }
+}
 
 const tabs = [
   { key: 'account', label: '账号管理', icon: 'i-carbon-user-settings' },
@@ -173,6 +191,7 @@ const {
   strategyPreviewLabel,
   availableSeeds,
   loadStrategyData,
+  loadSeeds,
   resetStrategyState,
 } = useStrategySettings({
   currentAccountId,
@@ -286,21 +305,25 @@ function confirmDefaultPlanOperation() {
 watch(currentAccountId, async () => {
   settingStore.clearSettingsState()
   resetStrategyState()
+  seedsLoadedFor.value = ''
   if (currentAccountId.value) {
-    await loadStrategyData()
+    await loadStrategyData({ withSeeds: false })
     syncLocalAutomationSettings()
     syncLocalOfflineSettings()
+    if (activeTab.value === 'account-config')
+      void ensureSeeds()
   }
 })
 
 onMounted(async () => {
-  await fetchAccounts()
-  await fetchDeviceProtocol()
+  await Promise.all([fetchAccounts(), fetchDeviceProtocol()])
   selectFirstAccountIfNeeded()
   if (currentAccountId.value) {
-    await loadStrategyData()
+    await loadStrategyData({ withSeeds: false })
     syncLocalAutomationSettings()
     syncLocalOfflineSettings()
+    if (activeTab.value === 'account-config')
+      void ensureSeeds()
   }
   await scrollActiveTabIntoView()
 })

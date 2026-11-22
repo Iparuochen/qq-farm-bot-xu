@@ -1,9 +1,9 @@
 {
   "id": "muge-ranch",
   "name": "牧歌初启",
-  "version": "1.0.0",
+  "version": "1.0.5",
   "apiVersion": 1,
-  "description": "兴牧庆典、牧友同行、成长手册三模块进度查看与奖励领取（牧场人格暂无协议样本，仅展示入口）",
+  "description": "兴牧庆典、牧友同行、成长手册三模块进度查看与奖励领取，支持牧场人格答题、结算与领取分享奖励",
   "activityIds": [2026111700, 2026111702, 2026111703, 2026111704, 2026111705],
   "windows": [
     { "key": "activity", "startTime": 1794880800, "endTime": 1796054399 }
@@ -16,7 +16,8 @@
   ],
   "frontend": {
     "entry": "frontend/plugin.mjs",
-    "css": "frontend/plugin.css"
+    "css": "frontend/plugin.css",
+    "assetPrefix": "/activity/muge-ranch"
   },
   "card": {
     "icon": "i-carbon-agriculture",

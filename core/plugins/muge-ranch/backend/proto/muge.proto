@@ -15,8 +15,11 @@ import "corepb.proto";
 //   - Operate(2026111704, cmd=83) → reply.183 = { ids[1], rewards[80021×5] }
 // Operate 的 action 槽位规律：field = 100 + cmd（cmd 82→182 … 85→185）。
 //
-// 未取到 2026111705（type 31 牧场人格）的任何 Operate 样本，186 只作占位，
-// 服务层不会据此发送请求。
+// 牧场人格（2026111705，type 31）协议来自上游客户端生成代码与实测实现：
+//   - body → ActivityNode field 127（MugeSurvey）
+//   - Operate cmd 86 → 请求 186（survey_save），答题进度保存
+//   - Operate cmd 87 → 请求 187（settle），结算人格
+//   - Operate cmd 89 → 请求 189（claim_share），领取首次分享奖励
 
 // ---- 活动节点 ----
 
@@ -87,12 +90,21 @@ message MugeManualBody {
   repeated MugeRewardTier stages = 3;
 }
 
+// type 31 牧场人格 → ActivityNode field 127
+message MugeSurvey {
+  map<int64, int64> answers = 1;      // 题目 id → 选项 value
+  int64 personality_id = 2;           // 0=尚未结算
+  int64 settle_count = 3;             // 已结算次数
+  bool share_reward_claimed = 4;      // 首次分享奖励是否已领取
+}
+
 message MugeNode {
   MugeActivityInfo activity = 1;
   repeated MugeNode children = 2;
   MugeManualBody manual = 124;
   MugeFriendBody friend = 125;
   MugeCelebrationBody celebration = 126;
+  MugeSurvey survey = 127;
 }
 
 message MugeGetGroupRequest {
@@ -103,11 +115,29 @@ message MugeGetGroupReply {
   MugeNode group = 1;
 }
 
+// ActivityService.List 回包：一次拿到所有活动节点（上游牧场人格即用此读取）
+message MugeListRequest {}
+
+message MugeListReply {
+  repeated MugeNode groups = 1;
+}
+
 // ---- Operate ----
 
 message MugeClaimParams {
   int64 id = 1;               // 样本恒为 0：交给服务端按可领取清单处理
 }
+
+message MugeSurveySaveParams {
+  map<int64, int64> answers = 1;          // 题目 id → 选项 value
+  bool clear = 2;                         // 重新测试时清空进度
+}
+
+message MugeSurveyClaimParams {
+  string share_id = 1;                    // 实测可留空
+}
+
+message MugeEmpty {}
 
 message MugeOperateRequest {
   int64 id = 1;
@@ -116,11 +146,23 @@ message MugeOperateRequest {
   MugeClaimParams manual_stage = 183;     // cmd 83
   MugeClaimParams friend = 184;           // cmd 84
   MugeClaimParams celebration = 185;      // cmd 85
+  MugeSurveySaveParams survey_save = 186; // cmd 86
+  MugeEmpty settle = 187;                 // cmd 87
+  MugeSurveyClaimParams claim_share = 189; // cmd 89
 }
 
 message MugeClaimResult {
   repeated int64 ids = 1;                 // 本次实际领取的档位/任务 id
   repeated corepb.Item rewards = 2;
+}
+
+message MugeSurveyResult {
+  int64 personality_id = 1;
+  int64 percent_bp = 2;
+}
+
+message MugeSurveyShareResult {
+  repeated corepb.Item rewards = 1;
 }
 
 message MugeOperateReply {
@@ -131,4 +173,7 @@ message MugeOperateReply {
   MugeClaimResult manual_stage = 183;
   MugeClaimResult friend = 184;
   MugeClaimResult celebration = 185;
+  MugeEmpty survey_save = 186;
+  MugeSurveyResult settle = 187;
+  MugeSurveyShareResult claim_share = 189;
 }

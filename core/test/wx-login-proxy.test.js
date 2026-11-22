@@ -287,3 +287,21 @@ test('resolveProxyForAccount is direct by default and prefers account override',
     }
   }
 });
+
+test('pinzan config is never used as a global fallback', async () => {
+  const keys = ['WX_LOGIN_PROXY', 'YYB_PINZAN_NO', 'YYB_PINZAN_SECRET'];
+  const saved = keys.map((key) => [key, process.env[key]]);
+  for (const key of keys) delete process.env[key];
+  process.env.YYB_PINZAN_NO = 'unit-test-no';
+  process.env.YYB_PINZAN_SECRET = 'unit-test-secret';
+  try {
+    // 没有显式选择品赞的账号必须直连，不能因为存在全局品赞配置就提取代理。
+    assert.equal(await resolveProxyForAccount({}), null);
+  }
+  finally {
+    for (const [key, value] of saved) {
+      if (value === undefined) delete process.env[key];
+      else process.env[key] = value;
+    }
+  }
+});

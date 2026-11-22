@@ -262,15 +262,32 @@ export const useSettingStore = defineStore('setting', () => {
     loading.value = false
   }
 
+  const inflightSettings = new Map<string, Promise<void>>()
+
   async function fetchSettings(accountId: string) {
     if (!accountId)
       return
     const requestedId = String(accountId)
+    const existing = inflightSettings.get(requestedId)
+    if (existing)
+      return existing
+    const task = fetchSettingsInternal(requestedId)
+    inflightSettings.set(requestedId, task)
+    try {
+      await task
+    }
+    finally {
+      if (inflightSettings.get(requestedId) === task)
+        inflightSettings.delete(requestedId)
+    }
+  }
+
+  async function fetchSettingsInternal(requestedId: string) {
     const requestId = ++fetchRequestId
     loading.value = true
     try {
       const { data } = await api.get('/api/settings', {
-        headers: { 'x-account-id': accountId },
+        headers: { 'x-account-id': requestedId },
       })
       if (requestId !== fetchRequestId || !isCurrentAccount(requestedId))
         return

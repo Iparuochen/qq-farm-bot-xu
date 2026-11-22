@@ -8,7 +8,6 @@ exports.consumePendingWxInfo = consumePendingWxInfo;
 exports.getAccountAvatar = getAccountAvatar;
 exports.getFarmCode = getFarmCode;
 exports.getQRCode = getQRCode;
-exports.keepWxCredentialAlive = keepWxCredentialAlive;
 exports.peekPendingWxInfo = peekPendingWxInfo;
 exports.proxyAccountFields = proxyAccountFields;
 exports.withAccountCredentialLock = withAccountCredentialLock;
@@ -343,10 +342,10 @@ async function issueFarmCode(openid, options = {}) {
             if (!accesstoken && account.accesstoken)
                 accesstoken = String(account.accesstoken);
         }
-        // 代理出口：扫码会话沿用创建二维码时的代理；后台刷新按账号级 → 全局 → 品赞顺序解析。
+        // 代理出口：只有扫码会话使用创建二维码时选择的代理；后台/定时链路一律直连。
         const proxy = sessionEntry && sessionEntry.session
             ? (sessionEntry.session.proxy || null)
-            : await resolveProxyForAccount(account || {});
+            : null;
         // 会话缓存按账号维度持久化，loginBuffer 轮换后仍可复用同一 MMTLS 会话。
         const cacheKey = account ? `account:${account.id}` : `openid:${String(openid || '')}`;
         if (!loginBuffer) {
@@ -471,53 +470,5 @@ async function getAccountAvatar(openid) {
         }
     }
     return null;
-}
-/**
- * 微信凭证主动保活：用账号 refreshtoken 刷新 loginBuffer + refreshtoken（滚动续期）
- * 关键：loginBuffer 实际有效期 > 2h，而 refreshtoken 约 2h 过期——必须主动刷新（不等 loginBuffer 失效），
- * 否则 loginBuffer 失效时 refreshtoken 已过期，续期必然失败（code=-109），只能重新扫码。
- * 每 30 分钟调用一次：refreshtoken 2h 窗口内滚动续期，永不失效。
- */
-async function keepWxCredentialAlive(acc) {
-    const account = asRecord(acc);
-    if (!account.wxid || !account.refreshtoken || !account.loginBuffer) {
-        return { Success: false, Message: '缺少微信凭证（refreshtoken/loginBuffer），请重新扫码登录' };
-    }
-    return withAccountCredentialLock(account.wxid, account.id, async () => {
-        const latestAccount = findAccountByWxid(account.wxid, account.id) || account;
-        try {
-            const proxy = await resolveProxyForAccount(latestAccount);
-            const refreshed = await wxLogin.refreshLoginBuffer({
-                openid: String(latestAccount.wxid),
-                refreshtoken: String(latestAccount.refreshtoken),
-                accesstoken: String(latestAccount.accesstoken || ''),
-                cookies: new Map(),
-                proxy,
-            });
-            if (typeof addOrUpdateAccount === 'function') {
-                addOrUpdateAccount({
-                    id: account.id,
-                    loginBuffer: refreshed.loginBuffer,
-                    refreshtoken: refreshed.refreshtoken,
-                    accesstoken: refreshed.accesstoken || latestAccount.accesstoken || '',
-                });
-            }
-            logger.info('wx credential keepalive ok', { accountId: account.id });
-            return { Success: true };
-        }
-        catch (error) {
-            const rotatedError = asRotatedCredentialError(error);
-            if ((rotatedError.refreshtoken || rotatedError.accesstoken) && typeof addOrUpdateAccount === 'function') {
-                addOrUpdateAccount({
-                    id: account.id,
-                    ...(rotatedError.refreshtoken ? { refreshtoken: rotatedError.refreshtoken } : {}),
-                    ...(rotatedError.accesstoken ? { accesstoken: rotatedError.accesstoken } : {}),
-                });
-            }
-            const message = humanizeWxCodeError(rotatedError.message);
-            logger.warn('keepWxCredentialAlive failed', { accountId: account.id, error: message });
-            return { Success: false, Message: message };
-        }
-    });
 }
 

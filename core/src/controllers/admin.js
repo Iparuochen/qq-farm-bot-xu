@@ -162,8 +162,85 @@ function configureCorsMiddleware(expressApp) {
   });
 }
 
+/**
+ * 对 JSON 响应做 gzip 压缩。
+ * 面板很多接口返回完整列表/快照（商城、牧场、活动、日志），页面首开在公网
+ * 链路上动辄几十上百 KB；管理员面板没有引入 compression 依赖，这里只包
+ * res.json，大响应压缩后再发，小响应保持原样。
+ */
+function configureJsonCompression(expressApp) {
+  const zlib = require("node:zlib");
+  expressApp.use((req, res, next) => {
+    if (!/\bgzip\b/i.test(String(req.headers["accept-encoding"] || ""))) return next();
+    const json = res.json.bind(res);
+    res.json = (body) => {
+      if (res.headersSent || req.method === "HEAD") return json(body);
+      let buffer;
+      try {
+        buffer = Buffer.from(JSON.stringify(body));
+      } catch {
+        return json(body);
+      }
+      if (buffer.length < 1024) return json(body);
+      let compressed;
+      try {
+        compressed = zlib.gzipSync(buffer, { level: 5 });
+      } catch {
+        return json(body);
+      }
+      res.setHeader("Content-Type", "application/json; charset=utf-8");
+      res.setHeader("Content-Encoding", "gzip");
+      res.setHeader("Vary", "Accept-Encoding");
+      res.setHeader("Content-Length", compressed.length);
+      return res.end(compressed);
+    };
+    next();
+  });
+}
+
 function configureStaticAssets(expressApp, webDist) {
   if (fs.existsSync(webDist)) {
+    // 前端构建已产出 .gz（vite 压缩插件），优先直接发送预压缩文件：
+    // 首开公网链路时省掉现场压缩与大量传输，命中后仍沿用长强缓存。
+    const MIME_TYPES = {
+      ".js": "application/javascript; charset=utf-8",
+      ".css": "text/css; charset=utf-8",
+      ".html": "text/html; charset=utf-8",
+      ".json": "application/json; charset=utf-8",
+      ".svg": "image/svg+xml",
+      ".webmanifest": "application/manifest+json; charset=utf-8",
+    };
+    expressApp.use((req, res, next) => {
+      if (req.method !== "GET" && req.method !== "HEAD") return next();
+      if (!/\bgzip\b/i.test(String(req.headers["accept-encoding"] || ""))) return next();
+      const requestPath = req.path || "/";
+      const ext = path.extname(requestPath).toLowerCase();
+      if (!MIME_TYPES[ext]) return next();
+      const relative = decodeURIComponent(requestPath.replace(/^\/+/, ""));
+      if (!relative) return next();
+      const gzipPath = path.join(webDist, `${relative}.gz`);
+      const rootResolved = path.resolve(webDist) + path.sep;
+      if (!gzipPath.startsWith(rootResolved)) return next();
+      let stat;
+      try {
+        stat = fs.statSync(gzipPath);
+      } catch {
+        return next();
+      }
+      if (!stat.isFile()) return next();
+      res.setHeader("Content-Encoding", "gzip");
+      res.setHeader("Vary", "Accept-Encoding");
+      res.setHeader("Content-Type", MIME_TYPES[ext]);
+      res.setHeader("Content-Length", stat.size);
+      res.setHeader(
+        "Cache-Control",
+        relative.includes("assets/")
+          ? "public, max-age=31536000, immutable"
+          : "no-cache",
+      );
+      if (req.method === "HEAD") return res.end();
+      fs.createReadStream(gzipPath).on("error", () => res.destroy()).pipe(res);
+    });
     expressApp.use(
       express.static(webDist, {
         setHeaders(res, filePath) {
@@ -422,6 +499,7 @@ function startAdminServer(dataProvider) {
 
   const webDist = path.join(__dirname, "../../../web/dist");
   configureCorsMiddleware(app);
+  configureJsonCompression(app);
   configureStaticAssets(app, webDist);
   app.use(
     "/game-config",

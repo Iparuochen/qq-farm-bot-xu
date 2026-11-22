@@ -4106,7 +4106,7 @@ const Eo = (e, t) => {
       { key: "friend", label: "牧友同行" },
       { key: "manual", label: "成长手册" },
       { key: "personality", label: "牧场人格" }
-    ], i = /* @__PURE__ */ bt(null), l = /* @__PURE__ */ bt(!1), o = /* @__PURE__ */ bt(""), f = /* @__PURE__ */ bt("celebration"), d = /* @__PURE__ */ bt(""), a = /* @__PURE__ */ bt({});
+    ], i = /* @__PURE__ */ bt(null), l = /* @__PURE__ */ bt(!1), o = /* @__PURE__ */ bt(""), f = /* @__PURE__ */ bt("celebration"), d = /* @__PURE__ */ bt(""), a = /* @__PURE__ */ bt({}), surveying = /* @__PURE__ */ bt(!1), surveyIndex = /* @__PURE__ */ bt(0), surveyBusy = /* @__PURE__ */ bt(""), surveyErrorText = /* @__PURE__ */ bt("");
     let p = null, C = !1;
     const O = {
       success: (A) => s.host?.toast?.success?.(A),
@@ -4135,7 +4135,7 @@ const Eo = (e, t) => {
       return Number(A.state) === 3 ? { text: "已领取", cls: "done" } : Number(A.state) === 2 ? { text: "可领取", cls: "ready" } : { text: "未达成", cls: "locked" };
     }
     function se(A) {
-      return Number(A.state) === 3 ? { text: "已领取", cls: "done" } : Number(A.state) === 1 || Number(A.state) === 2 ? { text: "可领取", cls: "ready" } : { text: "未解锁", cls: "locked" };
+      return Number(A.state) === 3 ? { text: "已领取", cls: "done" } : Number(A.state) === 2 ? { text: "可领取", cls: "ready" } : Number(A.state) === 4 ? { text: "未解锁", cls: "locked" } : { text: "未达成", cls: "locked" };
     }
     const we = ye(() => i.value?.activity || null), fe = ye(() => i.value?.celebration || null), me = ye(() => i.value?.friend || null), Ge = ye(() => i.value?.manual || null), Je = ye(() => i.value?.personality || null), te = ye(() => i.value?.summary || null), ot = ye(() => {
       const A = fe.value?.tiers || [];
@@ -4155,7 +4155,7 @@ const Eo = (e, t) => {
         stage: T,
         rows: Q,
         claimed: Q.filter((be) => Number(be.state) === 3).length,
-        claimable: Q.filter((be) => Number(be.state) === 1 || Number(be.state) === 2).length
+        claimable: Q.filter((be) => Number(be.state) === 2).length
       }));
     }), Ct = ye(() => {
       const A = Ge.value?.stages || [];
@@ -4172,6 +4172,7 @@ const Eo = (e, t) => {
       const A = we.value?.phase;
       return A === "upcoming" ? "未开始" : A === "ended" ? "已结束" : "进行中";
     });
+    const surveyQuestions = ye(() => Je.value?.questions || []), surveyAnswered = ye(() => surveyQuestions.value.filter((A) => Number(Je.value?.answers?.[String(A.id)]) > 0).length), surveyReady = ye(() => surveyQuestions.value.length > 0 && surveyAnswered.value >= surveyQuestions.value.length), surveyQuestion = ye(() => surveyQuestions.value[surveyIndex.value] || null), surveyIsLast = ye(() => surveyQuestions.value.length > 0 && surveyIndex.value >= surveyQuestions.value.length - 1);
     async function U(A = !1) {
       if (!(C || l.value)) {
         if (!V()) {
@@ -4207,6 +4208,38 @@ const Eo = (e, t) => {
           C || (d.value = "");
         }
       }
+    }
+    async function surveyOperate(A, w = {}) {
+      if (C || surveyBusy.value) return false;
+      surveyBusy.value = A, surveyErrorText.value = "";
+      try {
+        const { data: T } = await s.host.api.post("/api/activity/muge-ranch/personality", { action: A, input: w });
+        if (C) return false;
+        if (!T?.ok) throw new Error(T?.error || "操作失败");
+        T.activity && (i.value = T.activity);
+        A === "settle" ? O.success("人格测试完成") : A === "claimShare" && O.success("已领取首次分享奖励");
+        return true;
+      } catch (T) {
+        const A2 = T.response?.data?.error || T.message || "操作失败";
+        surveyErrorText.value = A2, O.error(A2);
+        return false;
+      } finally {
+        C || (surveyBusy.value = "");
+      }
+    }
+    async function surveyStart() {
+      if (surveyBusy.value) return;
+      if (!await surveyOperate("saveAnswers", { answers: {}, clear: true })) return;
+      surveyIndex.value = 0, surveying.value = true;
+    }
+    async function surveyAnswer(A) {
+      const w = surveyQuestion.value;
+      if (!w || surveyBusy.value) return;
+      const T = surveyIndex.value;
+      await surveyOperate("saveAnswers", { answers: { [w.id]: A }, clear: false }) && T < surveyQuestions.value.length - 1 && surveyIndex.value === T && (surveyIndex.value = T + 1);
+    }
+    async function surveySettle() {
+      await surveyOperate("settle") && (surveying.value = false);
     }
     function _t() {
       Re(), p = setInterval(() => {
@@ -4402,11 +4435,85 @@ const Eo = (e, t) => {
         ]))), 128)),
         Ge.value?.tasks?.length ? Ye("", !0) : (L(), B("p", $c, "暂无任务数据"))
       ])) : i.value && f.value === "personality" ? (L(), B("section", Dc, [
-        E("div", jc, [
-          w[12] || (w[12] = E("h3", null, "牧场人格", -1)),
-          E("p", null, $(Je.value?.reason || "尚未取得牧场人格的协议样本"), 1),
-          w[13] || (w[13] = E("p", { class: "muted" }, "该模块需要用官方客户端完成测试与分享；本插件暂不代操作，避免误发未知命令。", -1))
-        ])
+        surveyErrorText.value ? E("p", { class: "alert" }, $(surveyErrorText.value), 1) : Ye("", !0),
+        surveying.value && surveyQuestion.value ? (L(), B("div", { key: "quiz-" + surveyIndex.value, class: "survey-quiz" }, [
+          E("div", { class: "survey-head" }, [
+            E("span", null, $(`第 ${surveyIndex.value + 1} / ${surveyQuestions.value.length} 题`), 1),
+            E("button", {
+              class: "ghost",
+              type: "button",
+              disabled: Boolean(surveyBusy.value),
+              onClick: () => surveying.value = false
+            }, "退出测试", 8, ["disabled"])
+          ]),
+          E("div", { class: "bar" }, [
+            E("i", {
+              style: gs({ width: (surveyIndex.value + 1) / surveyQuestions.value.length * 100 + "%" })
+            }, null, 4)
+          ]),
+          E("h3", { class: "survey-title" }, $(surveyQuestion.value.title), 1),
+          E("div", { class: "survey-options" }, surveyQuestion.value.options.map((A) => E("button", {
+            key: A.value,
+            type: "button",
+            class: st(["survey-option", { active: Number(Je.value?.answers?.[String(surveyQuestion.value.id)]) === Number(A.value) }]),
+            disabled: Boolean(surveyBusy.value),
+            onClick: () => surveyAnswer(A.value)
+          }, [
+            E("b", null, $(A.label), 1),
+            E("span", null, $(A.text), 1)
+          ], 10, ["class", "disabled"]))),
+          E("div", { class: "survey-foot" }, [
+            E("button", {
+              class: "primary soft",
+              type: "button",
+              disabled: Boolean(surveyBusy.value) || surveyIndex.value === 0,
+              onClick: () => surveyIndex.value--
+            }, "上一题", 8, ["disabled"]),
+            surveyIsLast.value ? E("button", {
+              class: "primary",
+              type: "button",
+              disabled: Boolean(surveyBusy.value) || !surveyReady.value,
+              onClick: surveySettle
+            }, $(surveyBusy.value === "settle" ? "结算中…" : "查看人格结果"), 9, ["disabled"]) : E("button", {
+              class: "primary",
+              type: "button",
+              disabled: Boolean(surveyBusy.value) || !Number(Je.value?.answers?.[String(surveyQuestion.value?.id)]),
+              onClick: () => surveyIndex.value++
+            }, "下一题", 8, ["disabled"])
+          ])
+        ])) : (L(), B("div", { key: 9, class: "survey-result" }, [
+          Je.value?.image ? (L(), B("img", {
+            key: 0,
+            class: "survey-poster",
+            src: Je.value.image,
+            alt: "牧场人格测试结果"
+          }, null, 8, ["src"])) : Ye("", !0),
+          E("div", { class: "survey-result-main" }, [
+            w[12] || (w[12] = E("span", { class: "hero-label" }, "牧场人格", -1)),
+            E("strong", { class: "hero-value" }, $(Je.value?.personalityId ? `人格编号 ${Je.value.personalityId}` : "测一测你的牧场人格"), 1),
+            E("span", { class: "hero-sub" }, $(`已答 ${surveyAnswered.value} / ${surveyQuestions.value.length} 题 · 已测试 ${Je.value?.settleCount || (Je.value?.personalityId ? 1 : 0)} 次`), 1)
+          ]),
+          E("div", { class: "survey-facts" }, [
+            E("span", { class: "survey-fact" }, [
+              w[13] || (w[13] = E("em", null, "首次分享奖励", -1)),
+              E("b", null, $(Je.value?.shareRewardClaimed ? "已领取" : Je.value?.personalityId ? "可领取" : "完成测试后领取"), 1)
+            ])
+          ]),
+          E("div", { class: "hero-actions" }, [
+            E("button", {
+              class: st(["primary", { soft: Boolean(Je.value?.personalityId) }]),
+              type: "button",
+              disabled: surveyBusy.value === "saveAnswers",
+              onClick: surveyStart
+            }, $(Je.value?.personalityId ? "重新测试" : "开始测试"), 9, ["class", "disabled"]),
+            Je.value?.personalityId && !Je.value?.shareRewardClaimed ? E("button", {
+              class: "primary",
+              type: "button",
+              disabled: surveyBusy.value === "claimShare",
+              onClick: () => surveyOperate("claimShare")
+            }, $(surveyBusy.value === "claimShare" ? "领取中…" : "领取首次分享奖励"), 9, ["disabled"]) : Ye("", !0)
+          ])
+        ]))
       ])) : Ye("", !0),
       E("footer", Hc, [
         w[14] || (w[14] = E("span", null, "数据来源：活动网关实时读取", -1)),

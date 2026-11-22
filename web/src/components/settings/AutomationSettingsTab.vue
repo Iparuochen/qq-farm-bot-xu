@@ -160,7 +160,10 @@ function qixiFriendName(gid: number) {
   return qixiFriends.value.find(friend => friend.gid === gid)?.name || `好友 ${gid}`
 }
 onMounted(() => {
-  loadQixiFriends()
+  // 七夕活动已关闭或未开启香囊赠送时，不请求好友列表，避免打开设置页
+  // 就排队进活动场景（列表只在对应区块可见时才需要）。
+  if (SHOW_QIXI_ACTIVITY && settings.value.automation.qixi_sachet_gift)
+    loadQixiFriends()
   void pluginsStore.fetchPlugins()
   nowTimer = window.setInterval(() => {
     nowMs.value = Date.now()
@@ -170,7 +173,10 @@ onUnmounted(() => {
   if (nowTimer)
     window.clearInterval(nowTimer)
 })
-watch(() => props.currentAccountId, loadQixiFriends)
+watch(() => props.currentAccountId, () => {
+  if (SHOW_QIXI_ACTIVITY && settings.value.automation.qixi_sachet_gift)
+    loadQixiFriends()
+})
 </script>
 
 <template>

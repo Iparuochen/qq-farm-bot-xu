@@ -36,10 +36,6 @@ function createAutoCodeRefreshService(deps) {
     return `refresh_${  String(accountId || '')}`;
   }
 
-  function getKeepaliveTaskName(accountId) {
-    return `wx_keepalive_${String(accountId || '')}`;
-  }
-
   function findAccount(accountId) {
     const data = getAccounts();
     const accounts = Array.isArray(data && data.accounts) ? data.accounts : [];
@@ -59,10 +55,6 @@ function createAutoCodeRefreshService(deps) {
     if (!wxid) throw new Error('账号缺少 wxid，无法自动刷新 Code');
 
     if (!account.loginBuffer) throw new Error('账号缺少应用宝登录凭据，请重新扫码登录');
-    if (account.refreshtoken) {
-      const keepalive = await wxLoginAdapter.keepWxCredentialAlive(account);
-      if (!keepalive.Success) throw new Error(keepalive.Message || '微信凭证续期失败');
-    }
     const local = await wxLoginAdapter.getFarmCode(wxid, { accountId: account.id });
     if (local.Success && local.Data && local.Data.code) return String(local.Data.code);
     throw new Error(local.Message || '进程内获取 Code 失败');
@@ -121,10 +113,9 @@ function createAutoCodeRefreshService(deps) {
     const cfg = normalizeConfig(accountId);
     const taskName = getTaskName(accountId);
     scheduler.clear(taskName);
-    scheduler.clear(getKeepaliveTaskName(accountId));
 
     const account = findAccount(accountId);
-    // Code refresh and credential keepalive only apply to WeChat scan-login accounts.
+    // Code refresh only applies to WeChat scan-login accounts.
     // All accounts are passed through rescheduleAll(), so QQ accounts must exit quietly.
     if (!account || account.platform !== 'wx') return;
 
@@ -134,19 +125,6 @@ function createAutoCodeRefreshService(deps) {
         accountName: account.name || '',
       });
       return;
-    }
-
-    if (account.loginBuffer && account.refreshtoken) {
-      scheduler.setIntervalTask(getKeepaliveTaskName(accountId), 30 * 60000, async () => {
-        const latest = findAccount(accountId);
-        if (!latest) return;
-        const result = await wxLoginAdapter.keepWxCredentialAlive(latest);
-        if (!result.Success) {
-          log('错误', `微信凭证保活失败: ${latest.name} - ${result.Message || '未知错误'}`, {
-            accountId: String(accountId), accountName: latest.name,
-          });
-        }
-      }, { preventOverlap: true });
     }
 
     if (!cfg.enabled) return;
@@ -172,7 +150,6 @@ function createAutoCodeRefreshService(deps) {
 
   function stopAccount(accountId) {
     scheduler.clear(getTaskName(accountId));
-    scheduler.clear(getKeepaliveTaskName(accountId));
     scheduler.clear(`relogin_${String(accountId || '')}`);
   }
 

@@ -162,13 +162,33 @@ export function useStrategySettings({
     }
   }
 
-  async function loadStrategyData() {
-    if (currentAccountId.value) {
-      const accountId = String(currentAccountId.value)
+  let inflightLoad: { accountId: string; promise: Promise<void> } | null = null
+
+  async function loadStrategyData({ withSeeds = true }: { withSeeds?: boolean } = {}) {
+    if (!currentAccountId.value)
+      return
+    const accountId = String(currentAccountId.value)
+    if (inflightLoad && inflightLoad.accountId === accountId)
+      return inflightLoad.promise
+    const promise = (async () => {
       await settingStore.fetchSettings(accountId)
       syncLocalStrategySettings()
-      await farmStore.fetchSeeds(accountId)
+      if (withSeeds)
+        await farmStore.fetchSeeds(accountId)
+    })()
+    inflightLoad = { accountId, promise }
+    try {
+      await promise
     }
+    finally {
+      if (inflightLoad && inflightLoad.promise === promise)
+        inflightLoad = null
+    }
+  }
+
+  async function loadSeeds() {
+    if (currentAccountId.value)
+      await farmStore.fetchSeeds(String(currentAccountId.value))
   }
 
   async function saveStrategySettings() {
@@ -210,6 +230,7 @@ export function useStrategySettings({
     availableSeeds: seeds,
     syncLocalStrategySettings,
     loadStrategyData,
+    loadSeeds,
     saveStrategySettings,
     resetStrategyState,
   }

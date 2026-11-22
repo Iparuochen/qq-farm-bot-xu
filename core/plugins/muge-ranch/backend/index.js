@@ -6,7 +6,7 @@
  *   - worker.register：GetGroup/Operate 协议服务 + 四个领取开关的自动化 runner。
  *
  * 协议证据全部来自 2026-11-17 官方客户端抓包，见 backend/proto/muge.proto。
- * 2026111705（牧场人格）没有操作样本，只读展示、不发请求。
+ * 牧场人格（2026111705）支持手动答题、结算与领取首次分享奖励。
  */
 
 const path = require('node:path');
@@ -20,6 +20,8 @@ const AUTOMATION_KEYS = [
     'muge_manual_task_claim',
     'muge_manual_stage_claim',
 ];
+// 牧场人格仅支持手动操作，不进入自动化
+const PERSONALITY_ACTIONS = new Set(['saveAnswers', 'settle', 'claimShare']);
 
 let service = null;
 
@@ -29,8 +31,11 @@ function buildTypes(ctx) {
     const root = new protobuf.Root();
     root.loadSync(path.join(PLUGIN_ROOT, 'proto', 'muge.proto'), { keepCase: true });
     return {
+        util: protobuf.util,
         MugeGetGroupRequest: root.lookupType('gamepb.mugepb.MugeGetGroupRequest'),
         MugeGetGroupReply: root.lookupType('gamepb.mugepb.MugeGetGroupReply'),
+        MugeListRequest: root.lookupType('gamepb.mugepb.MugeListRequest'),
+        MugeListReply: root.lookupType('gamepb.mugepb.MugeListReply'),
         MugeOperateRequest: root.lookupType('gamepb.mugepb.MugeOperateRequest'),
         MugeOperateReply: root.lookupType('gamepb.mugepb.MugeOperateReply'),
     };
@@ -38,8 +43,10 @@ function buildTypes(ctx) {
 
 function ensureService(ctx) {
     if (service) return;
+    const types = buildTypes(ctx);
     service = createMugeService({
-        types: buildTypes(ctx),
+        types,
+        util: types.util,
         send: ctx.sendMsgAsync,
         itemDto: ctx.itemDto,
         now: ctx.getServerTimeSec,
@@ -88,6 +95,17 @@ module.exports = {
                     res.json({ ok: true, ...await ctx.callWorker(accountId, 'claimMuge', [action], 190000) });
                 } catch (error) { ctx.sendError(res, error); }
             });
+            ctx.route('post', '/api/activity/muge-ranch/personality', async (req, res) => {
+                const accountId = ctx.requireAccount(req, res);
+                if (!accountId) return;
+                try {
+                    if (!ctx.requireConnected(res, accountId, '账号未运行')) return;
+                    const action = String(req.body?.action || '');
+                    if (!PERSONALITY_ACTIONS.has(action)) return res.status(400).json({ ok: false, error: '不支持的牧场人格操作' });
+                    const input = req.body?.input && typeof req.body.input === 'object' ? req.body.input : {};
+                    res.json({ ok: true, ...await ctx.callWorker(accountId, 'personalityMuge', [action, input], 190000) });
+                } catch (error) { ctx.sendError(res, error); }
+            });
         },
         unregister() { /* 路由摘除由宿主完成 */ },
     },
@@ -98,6 +116,12 @@ module.exports = {
             ctx.registerApiMethod('claimMuge', async action => {
                 const result = await service.claim(action);
                 const activity = await service.getOverview(true);
+                return { result, activity };
+            });
+            ctx.registerApiMethod('personalityMuge', async (action, input) => {
+                const result = await service.personality(action, input);
+                // personality() 内部已重新读取并刷新缓存，这里直接取缓存即可
+                const activity = await service.getOverview();
                 return { result, activity };
             });
             ctx.registerAutomation({

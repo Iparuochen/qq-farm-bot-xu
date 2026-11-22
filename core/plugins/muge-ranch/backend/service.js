@@ -9,8 +9,12 @@
  * 领取：ActivityService.Operate，cmd 82/83/84/85 对应四个领取入口，
  *        action 槽位 = 100 + cmd，请求体恒为 { id: 0 }（交给服务端按可领取清单处理）。
  *
- * 2026111705（type 31 牧场人格）没有任何操作样本，只做存在性展示，不发请求。
+ * 牧场人格（2026111705）：GetGroup 回包 body 在 field 127；操作 cmd 86/87/89
+ * 分别对应保存答案、结算人格、领取首次分享奖励（请求槽位 186/187/189）。
  */
+
+const PERSONALITY = require('./data/personality.json');
+
 
 const ACTIVITY_IDS = {
   main: 2026111700,
@@ -27,8 +31,20 @@ const WORKFLOW = {
   manualStage: { cmd: 83, field: 'manual_stage', label: '成长手册阶段奖励', body: 'manual' },
 };
 
-// 任务状态：1=可领取 3=已领取 4=未解锁（阶段 1 内 1→3 已实证）
-const TASK_CLAIMABLE = new Set([1, 2]);
+// 牧场人格操作：cmd 86 保存答案、87 结算、89 领取首次分享奖励
+const SURVEY_WORKFLOW = {
+  saveAnswers: { cmd: 86, field: 'survey_save', label: '保存人格答案' },
+  settle: { cmd: 87, field: 'settle', label: '结算牧场人格' },
+  claimShare: { cmd: 89, field: 'claim_share', label: '领取人格分享奖励' },
+};
+
+const PERSONALITY_IMAGE_PREFIX = '/activity/muge-ranch/personality-';
+const PERSONALITY_QUESTIONS = list(PERSONALITY.questions);
+
+
+// 任务状态：1=未达成 2=可领取 3=已领取 4=未解锁
+// 与官方后台/上游实现一致：只有 2 才是可领取，1（进行中）领取会被服务端拒绝（1034164）。
+const TASK_CLAIMABLE = 2;
 // 档位状态：1=未达成 2=可领取 3=已领取（cmd 83 回包实测 2→3）
 const TIER_CLAIMABLE = 2;
 
@@ -43,10 +59,12 @@ function list(value) {
   return Array.isArray(value) ? value : [];
 }
 
-function createMugeService({ types, send, itemDto, now = () => Math.floor(Date.now() / 1000), log = () => {} }) {
+function createMugeService({ types, util, send, itemDto, now = () => Math.floor(Date.now() / 1000), log = () => {} }) {
   let cache = null;
   let cacheAt = 0;
   let inflight = null;
+  // 记录「同一批可领取项」领取失败的签名，避免状态未刷新时每个心跳重复请求、重复报错。
+  const failedClaims = new Map();
 
   async function rpc(method, requestType, replyType, input) {
     const body = Buffer.from(requestType.encode(requestType.fromObject(input)).finish());
@@ -80,7 +98,7 @@ function createMugeService({ types, send, itemDto, now = () => Math.floor(Date.n
       target: num(row.target),
       state: num(row.state),
       stage: num(row.stage),
-      claimable: TASK_CLAIMABLE.has(num(row.state)),
+      claimable: num(row.state) === TASK_CLAIMABLE,
       title: String(row.title || ''),
       reward: item(row.reward),
     };
@@ -132,9 +150,81 @@ function createMugeService({ types, send, itemDto, now = () => Math.floor(Date.n
     return { info, celebration, friend, manual };
   }
 
+  // protobufjs 的 map<int64, ...> 键在 toObject 后是 8 字节 hash 字符串，
+  // 需要经 longFromHash 还原成题号；纯数字键直接使用。
+  function answerKey(key) {
+    const text = String(key);
+    if (/^\d+$/.test(text)) return String(Number(text));
+    try {
+      const long = util?.longFromHash ? util.longFromHash(text) : null;
+      return long ? String(long) : text;
+    } catch {
+      return text;
+    }
+  }
+
+  function answersDto(answers) {
+    const out = {};
+    for (const [key, value] of Object.entries(answers || {})) out[answerKey(key)] = num(value);
+    return out;
+  }
+
+  // GetGroup 的人格 body 可能挂在 group 或 group.children[0]
+  function surveyNodeOf(group) {
+    const nodes = [group, ...list(group?.children)];
+    return nodes.find(node => node && node.survey) || null;
+  }
+
+  function normalizePersonality(group) {
+    const survey = surveyNodeOf(group)?.survey || null;
+    const answers = answersDto(survey?.answers);
+    const personalityId = num(survey?.personality_id);
+    const answered = PERSONALITY_QUESTIONS.filter(question => answers[String(question.id)] > 0).length;
+    const total = PERSONALITY_QUESTIONS.length;
+    return {
+      id: ACTIVITY_IDS.personality,
+      available: Boolean(survey),
+      answers,
+      personalityId,
+      settleCount: num(survey?.settle_count),
+      shareRewardClaimed: Boolean(survey?.share_reward_claimed),
+      image: personalityId ? `${PERSONALITY_IMAGE_PREFIX}${personalityId}.png` : '',
+      answered,
+      total,
+      canSettle: total > 0 && answered >= total,
+      questions: PERSONALITY_QUESTIONS,
+      reason: survey ? '' : '牧场人格模块读取失败',
+    };
+  }
+
   async function readGroup(id) {
     const reply = await rpc('GetGroup', types.MugeGetGroupRequest, types.MugeGetGroupReply, { id });
     return groupOf(reply);
+  }
+
+  /**
+   * 与上游一致：优先用 ActivityService.List 一次读取所有活动节点。
+   * List 回包里子活动节点直接携带 body（124/125/126/127）。
+   */
+  async function readListGroups() {
+    const reply = await rpc('List', types.MugeListRequest, types.MugeListReply, {});
+    return list(reply.groups);
+  }
+
+  async function readPersonalityNode() {
+    try {
+      const groups = await readListGroups();
+      const root = groups.find(group => num(group?.activity?.id) === ACTIVITY_IDS.main) || groups[0] || null;
+      const child = list(root?.children).find(node => num(node?.activity?.id) === ACTIVITY_IDS.personality);
+      if (child) return child;
+    } catch {
+      // List 不可用时回退到 GetGroup
+    }
+    return readGroup(ACTIVITY_IDS.personality);
+  }
+
+  async function readPersonalityState() {
+    return normalizePersonality(await readPersonalityNode());
   }
 
   function summarize(celebration, friend, manual) {
@@ -166,7 +256,7 @@ function createMugeService({ types, send, itemDto, now = () => Math.floor(Date.n
       readGroup(ACTIVITY_IDS.celebration),
       readGroup(ACTIVITY_IDS.friend),
       readGroup(ACTIVITY_IDS.manual),
-      readGroup(ACTIVITY_IDS.personality),
+      readPersonalityNode(),
     ]);
     const warnings = [];
     const groups = results.map((result, index) => {
@@ -192,13 +282,7 @@ function createMugeService({ types, send, itemDto, now = () => Math.floor(Date.n
       celebration,
       friend,
       manual,
-      personality: {
-        id: ACTIVITY_IDS.personality,
-        available: Boolean(personalityGroup),
-        // 没有 1705 的 Operate/body 样本，面板只展示入口，不提供任何操作。
-        supported: false,
-        reason: personalityGroup ? '尚未取得牧场人格的协议样本，暂仅展示活动入口' : '牧场人格模块读取失败',
-      },
+      personality: normalizePersonality(personalityGroup),
       summary: summarize(celebration, friend, manual),
       warnings,
     };
@@ -280,9 +364,13 @@ function createMugeService({ types, send, itemDto, now = () => Math.floor(Date.n
       if (enabled[key] !== true) continue;
       const pending = claimableIds(state, action);
       if (!pending.length) continue;
+      const signature = pending.slice().sort().join(',');
+      // 上一次同一批可领取项已被服务端拒绝（如 1034164 已领取），状态没变化前不再重试。
+      if (failedClaims.get(action) === signature) continue;
       if (typeof enabled.canProceed === 'function' && !enabled.canProceed()) break;
       try {
         const result = await operate(action);
+        failedClaims.delete(action);
         done.push(result);
         if (rows && result.ids.length) {
           log?.('活动', `自动领取${result.label}完成：${result.ids.length} 项`, {
@@ -290,6 +378,7 @@ function createMugeService({ types, send, itemDto, now = () => Math.floor(Date.n
           });
         }
       } catch (error) {
+        failedClaims.set(action, signature);
         // 领不到（已领完/时间窗变化）不视为故障：下一个心跳会重新读状态
         log?.('活动', `自动领取${WORKFLOW[action].label}失败：${error.message}`, {
           module: 'activity', event: '牧歌初启自动领取', result: 'error', action,
@@ -299,7 +388,93 @@ function createMugeService({ types, send, itemDto, now = () => Math.floor(Date.n
     return done;
   }
 
-  return { getOverview, claim: async action => operate(action), claimEnabled, invalidate, ACTIVITY_IDS, WORKFLOW };
+  function surveyError(code, message) {
+    const error = new Error(message);
+    error.code = code;
+    throw error;
+  }
+
+  function assertSurveyAction(action) {
+    const workflow = SURVEY_WORKFLOW[action];
+    if (!workflow) surveyError('INVALID_ARGUMENT', `不支持的牧场人格操作：${action}`);
+    return workflow;
+  }
+
+  function normalizeSurveyAnswers(input) {
+    const answers = input?.answers;
+    if (!answers || typeof answers !== 'object' || Array.isArray(answers)) {
+      surveyError('INVALID_MUGE_ANSWERS', '请选择题目答案');
+    }
+    if (input.clear !== undefined && typeof input.clear !== 'boolean') {
+      surveyError('INVALID_MUGE_ANSWERS', '重答标记无效');
+    }
+    const clear = input.clear === true;
+    const keys = Object.keys(answers);
+    if (clear && keys.length) surveyError('INVALID_MUGE_ANSWERS', '清空进度和保存答案需要分开提交，请刷新页面重新测试');
+    if (!clear && !keys.length) surveyError('INVALID_MUGE_ANSWERS', '请选择题目答案');
+    const normalized = {};
+    for (const [questionId, value] of Object.entries(answers)) {
+      const question = PERSONALITY_QUESTIONS.find(row => String(row.id) === String(questionId));
+      if (!question || !question.options.some(option => num(option.value) === num(value))) {
+        surveyError('INVALID_MUGE_ANSWERS', '题目或答案无效');
+      }
+      normalized[String(questionId)] = num(value);
+    }
+    return { answers: normalized, clear };
+  }
+
+  /**
+   * 牧场人格操作：cmd 86 保存答案 / 87 结算 / 89 领取首次分享奖励。
+   * 手工入口使用；不做自动化，避免替用户生成随机人格结果。
+   *
+   * Operate 回包结构可能因服务端版本不同而缺少 survey，因此操作后重新读取一次
+   * 人格节点（优先 ActivityService.List）作为唯一确认依据，避免回包字段差异导致
+   * 「实际成功却提示失败」。
+   */
+  async function personality(action, input = {}) {
+    const workflow = assertSurveyAction(action);
+    // 与上游一致：只读取牧场人格节点，避免整页 4 个子活动重复刷新
+    const personalityState = await readPersonalityState();
+    if (!personalityState?.available) surveyError('MUGE_UNAVAILABLE', '牧场人格数据暂不可用');
+    let params = {};
+    if (action === 'saveAnswers') {
+      params = normalizeSurveyAnswers(input);
+    } else if (action === 'settle') {
+      if (!personalityState.canSettle) surveyError('MUGE_ANSWERS_INCOMPLETE', '请先完成全部题目');
+    } else if (!personalityState.personalityId || personalityState.shareRewardClaimed) {
+      surveyError('MUGE_NOT_CLAIMABLE', '请先完成人格测试，首次分享奖励仅可领取一次');
+    }
+    const request = { id: ACTIVITY_IDS.personality, cmd: workflow.cmd };
+    request[workflow.field] = params;
+    const reply = await rpc('Operate', types.MugeOperateRequest, types.MugeOperateReply, request);
+    if (num(reply.id) !== ACTIVITY_IDS.personality || num(reply.cmd) !== workflow.cmd) {
+      surveyError('MUGE_RESULT_UNKNOWN', '活动响应与请求不匹配，请刷新后查看');
+    }
+    const result = reply[workflow.field] || {};
+    const after = await readPersonalityState();
+    let confirmed = true;
+    if (action === 'saveAnswers') {
+      const nextAnswers = after.answers || {};
+      confirmed = params.clear
+        ? !Object.values(nextAnswers).some(value => value > 0)
+        : Object.entries(params.answers).every(([key, value]) => nextAnswers[key] === num(value));
+    } else if (action === 'settle') {
+      confirmed = num(after.personalityId) > 0;
+    } else {
+      confirmed = Boolean(after.shareRewardClaimed);
+    }
+    if (!confirmed) surveyError('MUGE_RESULT_UNKNOWN', '操作状态未能确认，请刷新核对，勿重复提交');
+    const rewards = list(result.rewards || result.awards).map(item).filter(Boolean);
+    // 用最新人格状态合并进概览缓存，避免前端操作后再整页重读
+    if (cache) cache = { ...cache, personality: after, activity: { ...cache.activity, serverTime: now() } };
+    else invalidate();
+    log?.('活动', `牧场人格${workflow.label}完成`, {
+      module: 'activity', event: '牧场人格操作', result: 'success', action,
+    });
+    return { action, label: workflow.label, rewards, repliedAt: now() };
+  }
+
+  return { getOverview, claim: async action => operate(action), claimEnabled, personality, invalidate, ACTIVITY_IDS, WORKFLOW };
 }
 
 module.exports = { createMugeService, ACTIVITY_IDS, WORKFLOW };

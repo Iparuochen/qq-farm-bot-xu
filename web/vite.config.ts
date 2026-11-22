@@ -84,6 +84,10 @@ export default defineConfig({
         target: process.env.VITE_API_TARGET || 'http://localhost:3007',
         changeOrigin: true,
       },
+      '/activity/muge-ranch': {
+        target: process.env.VITE_API_TARGET || 'http://localhost:3007',
+        changeOrigin: true,
+      },
     },
   },
 })
