@@ -5,10 +5,11 @@ const { isAutomationOn, getAutomation, getPrioritize2x2Crops } = require('../mod
 const { recordOperation } = require('./stats');
 const { createScheduler } = require('./scheduler');
 const { getAllLands, harvest, farming, unlockLand, upgradeLand } = require('./farm-api');
-const { analyzeLands, resolveRemovableHarvestedLands } = require('./farm-land-analyzer');
+const { analyzeLands, resolveRemovableHarvestedLands, buildLandsDetailFromReply } = require('./farm-land-analyzer');
 const { runFertilizerByConfig } = require('./farm-fertilizer');
 const { autoPlantEmptyLands } = require('./planting-service');
 const { startFertilizerBuyCheckTimer, stopFertilizerBuyCheckTimer } = require('./farm-scheduler');
+const { cacheFarmPanel, peekFarmPanel, dropFarmPanel } = require('./farm-panel-cache');
 
 // ─── 状态标记 ───
 
@@ -72,6 +73,14 @@ async function runFarmOperation(opType) {
   }
 
   const lands = landsReply.lands;
+  // 顺手把本次巡田拿到的土地快照喂给面板缓存：零额外请求，让自动化持锁期间的前端读命中缓存、不排队。
+  // 保留上一份缓存里的 weather（天气由 worker getLands 单独取），避免被无 weather 的快照覆盖。
+  try {
+    const landsDetail = buildLandsDetailFromReply(landsReply);
+    const prev = peekFarmPanel('lands');
+    if (prev && prev.weather) landsDetail.weather = prev.weather;
+    cacheFarmPanel('lands', landsDetail);
+  } catch { /* 缓存写入失败不影响巡田 */ }
   const analysis = analyzeLands(lands, isFirstFarmCheck);
   await require('./capital-mode').prepareForFarmOperation({ lands, analysis, opType });
   const labels = [];
@@ -273,6 +282,8 @@ async function runFarmOperation(opType) {
     });
   }
 
+  // 自动化直接写土地（绕过 worker 分发的失效逻辑），有改动时主动失效 lands 快照，下次读回填。
+  if (actions.length > 0) dropFarmPanel('lands');
   return { hadWork: actions.length > 0, actions };
 }
 

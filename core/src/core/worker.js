@@ -30,6 +30,21 @@ const {
     upgradeLand
 } = require('../services/farm');
 const { startFertilizerBuyCheckTimer } = require('../services/farm-scheduler');
+const { cacheFarmPanel, peekFarmPanel, dropFarmPanel } = require('../services/farm-panel-cache');
+
+// 会修改农场土地状态的前端写操作 → 执行成功后失效 lands 快照
+const FARM_LAND_WRITE_METHODS = new Set([
+    'doFarmOp', 'fertilizeLand', 'fertilizeAllOwnLands', 'removePlant', 'upgradeLand', 'removeAllPlants'
+]);
+// 会修改背包的写操作 → 执行成功后失效 bag / bagSeeds 快照（宁可多 drop，不漏）
+const BAG_WRITE_METHODS = new Set([
+    'setItemsLocked', 'useItem', 'sellItems',
+    'buyFertilizer', 'checkAndBuyFertilizer', 'buyGoods', 'buyMallGoods', 'buyMysteryShopGoods',
+    'buyActivityShopItem', 'exchangeStarShopItem', 'exchangeHeluShopItem',
+    'claimStarRecordRewards', 'claimSeasonPassportRewards', 'claimSolarTermsReward',
+    'claimQingmeiSeeds', 'claimDogSkillGifts', 'claimIllustratedRewards',
+    'brewAndSellQingmeiWine', 'drawHeluGiftLotus', 'abandonMysteryShop', 'refreshActivityShop'
+]);
 const {
     checkFriends,
     runScheduledStealCheck,
@@ -280,7 +295,10 @@ async function runDailyRoutines(force = false, options = {}) {
         const automation = getAutomation() || {};
         await checkAndClaimEmails(force);
         if (automation.task && !options.skipTask) await checkAndClaimTasks();
-        if (automation.fertilizer_gift) await openFertilizerGiftPacksSilently();
+        if (automation.fertilizer_gift) {
+            await openFertilizerGiftPacksSilently();
+            dropFarmPanel('bag', 'bagSeeds');
+        }
         await performDailyShare(force);
         await performDailyMonthCardGift(force);
         await buyFreeGifts(force);
@@ -1682,6 +1700,7 @@ async function startBot(config) {
         // 打开肥料礼包
         if (getAutomation().fertilizer_gift) {
             await openFertilizerGiftPacksSilently().catch(() => 0);
+            dropFarmPanel('bag', 'bagSeeds');
         }
 
         // 延迟执行放虫放草
@@ -1892,6 +1911,18 @@ async function handleApiCall(msg) {
             } catch { /* 服务不可用时退回正常场景读 */ }
         }
     }
+    // 农场面板读：命中快照直接回包，不进场景、不排队（手动刷新 args[0]===true 绕过缓存）
+    if (msg.method === 'getLands' || msg.method === 'getBag' || msg.method === 'getBagSeeds') {
+        const force = msg.args?.[0] === true;
+        if (!force) {
+            const cacheKey = msg.method === 'getLands' ? 'lands' : msg.method === 'getBag' ? 'bag' : 'bagSeeds';
+            const cached = peekFarmPanel(cacheKey);
+            if (cached) {
+                sendToMaster({ type: 'api_response', id: msg.id, result: cached });
+                return;
+            }
+        }
+    }
     // 批量加好友：在进入场景租约之前先暂停并等待其他自动化收尾。
     // 必须放在租约外——若持有农场租约再等，正在跑的自动化反而拿不到租约，
     // 只会互相卡到超时（leaseTimeoutMs=180s）。
@@ -2012,6 +2043,7 @@ async function handleApiCallInScene(msg) {
                 } catch (weatherError) {
                     result.weather = { type: 0, status: 0, rainstorm: false, error: weatherError.message };
                 }
+                cacheFarmPanel('lands', result);
                 break;
             case 'getFarmScene':
                 result = await require('../services/farm-scene').getFarmScene();
@@ -2060,9 +2092,11 @@ async function handleApiCallInScene(msg) {
                 break;
             case 'getBag':
                 result = await require('../services/warehouse').getBagDetail();
+                cacheFarmPanel('bag', result);
                 break;
             case 'getBagSeeds':
                 result = await require('../services/warehouse').getBagSeeds();
+                cacheFarmPanel('bagSeeds', result);
                 break;
             case 'setItemsLocked':
                 result = await require('../services/warehouse').setItemsLocked(args[0], Boolean(args[1]));
@@ -2469,6 +2503,12 @@ async function handleApiCallInScene(msg) {
         log('系统', '好友同步操作完成，已恢复自动化进程', {
             module: 'system', event: '好友同步恢复', method
         });
+    }
+
+    // 农场面板缓存失效：写操作成功后清掉对应分区，下次读回填（读未命中时自然刷新）
+    if (!error) {
+        if (FARM_LAND_WRITE_METHODS.has(method)) dropFarmPanel('lands');
+        if (BAG_WRITE_METHODS.has(method)) dropFarmPanel('bag', 'bagSeeds');
     }
 
     sendToMaster({
