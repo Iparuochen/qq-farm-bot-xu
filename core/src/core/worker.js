@@ -1736,6 +1736,13 @@ async function startBot(config) {
                     try { await getShopInfo(shopId, { cache: true }); } catch { /* noop */ }
                 }
                 try { await require('../services/mall').getAllMallGoodsCached(); } catch { /* noop */ }
+                // 图鉴同样是低频变化数据：登录稳定后顺手预热两种类型，
+                // 之后面板读取命中 worker 缓存，不必和牧场任务抢游戏连接。
+                try {
+                    const { getIllustratedListV2 } = require('../services/illustrated');
+                    await getIllustratedListV2(false, 1);
+                    await getIllustratedListV2(false, 2);
+                } catch { /* noop */ }
             }, { key: 'shop-preload' });
         }, { scene: null });
 

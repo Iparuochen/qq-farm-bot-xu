@@ -164,12 +164,57 @@ function decodeIllustratedReplyRaw(rawBody) {
 
 // ---- RPC 调用 ----
 
+// 图鉴是低频变化的展示数据；牧场任务占用游戏连接时，10 秒读超时会让面板
+// 反复转圈。这里在 worker 内按类型缓存成功结果，普通读取直接命中缓存，
+// 只有手动刷新或缓存过期才真正排队走网关。
+const ILLUSTRATED_CACHE_TTL_MS = 5 * 60 * 1000;
+const illustratedCache = new Map();
+const illustratedInflight = new Map();
+
+function hasIllustratedData(data) {
+  return !!(data && Array.isArray(data.items) && data.items.length > 0);
+}
+
+async function getIllustratedListV2(refresh = false, illustratedType = 1) {
+  const type = Number(illustratedType) || 1;
+  const cached = illustratedCache.get(type);
+  if (!refresh && cached && Date.now() - cached.at < ILLUSTRATED_CACHE_TTL_MS) {
+    return cached.data;
+  }
+  const inflight = illustratedInflight.get(type);
+  if (inflight) return inflight;
+
+  const load = fetchIllustratedListV2(refresh, type).then((data) => {
+    if (hasIllustratedData(data)) {
+      illustratedCache.set(type, { at: Date.now(), data });
+    }
+    return data;
+  });
+  // 防止底层 RPC 一直不返回导致 inflight 永久占位；超时后让下一次请求重新尝试
+  let timer = null;
+  const timeout = new Promise((_, reject) => {
+    timer = setTimeout(() => reject(new Error('图鉴读取超时')), 20000);
+  });
+  const request = Promise.race([load, timeout])
+    .catch((error) => {
+      // 读超时/断线时退回上一次成功快照，避免面板直接报错
+      if (cached) return cached.data;
+      throw error;
+    })
+    .finally(() => {
+      if (timer) clearTimeout(timer);
+      if (illustratedInflight.get(type) === request) illustratedInflight.delete(type);
+    });
+  illustratedInflight.set(type, request);
+  return request;
+}
+
 /**
  * 获取图鉴列表
  * @param {boolean} refresh - 是否强制刷新
  * @param {number} illustratedType - 图鉴类型，默认 1
  */
-async function getIllustratedListV2(refresh = false, illustratedType = 1) {
+async function fetchIllustratedListV2(refresh = false, illustratedType = 1) {
   const request = types.GetIllustratedListV2Request.encode(
     types.GetIllustratedListV2Request.create({
       refresh: !!refresh,
