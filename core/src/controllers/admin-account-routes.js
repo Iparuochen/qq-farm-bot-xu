@@ -265,6 +265,8 @@ function registerAdminAccountRoutes({
           avatar: pending.avatar || nextAccount.avatar || "",
           wxDefaultsApplied: true,
         });
+        // 扫码页选择的代理出口写入账号，后续保活和取 Code 沿用同一出口。
+        Object.assign(nextAccount, wxLoginAdapter.proxyAccountFields(pending.proxyConfig));
       }
 
       // wxid 换绑后旧账号凭据绝不能继续使用；只有新的扫码会话可以重新写入。

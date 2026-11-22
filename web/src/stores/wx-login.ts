@@ -44,8 +44,15 @@ export const useWxLoginStore = defineStore('wx-login', () => {
     catch (error: any) {
       throw new ProtocolNetworkError(error.message)
     }
-    if (!response.ok)
-      throw new Error(`HTTP ${response.status}`)
+    if (!response.ok) {
+      let message = `HTTP ${response.status}`
+      try {
+        const body = await response.json()
+        message = body?.msg || body?.error || message
+      }
+      catch {}
+      throw new Error(message)
+    }
     try {
       return await response.json()
     }
@@ -57,14 +64,14 @@ export const useWxLoginStore = defineStore('wx-login', () => {
   }
 
   // 获取二维码
-  async function getQRCode(): Promise<boolean> {
+  async function getQRCode(proxyConfig?: { mode: string, url?: string, area?: string }): Promise<boolean> {
     isLoading.value = true
     status.value = 'qr_loading'
     statusMessage.value = '正在获取二维码...'
     errorMessage.value = ''
 
     try {
-      const result = await requestProtocol({ action: 'getqr' })
+      const result = await requestProtocol({ action: 'getqr', ...(proxyConfig ? { proxy: proxyConfig } : {}) })
       let data: any
       if (result.code === 0 && result.data) {
         data = {

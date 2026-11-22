@@ -5,7 +5,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.WxLoginService = void 0;
 const node_crypto_1 = __importDefault(require("node:crypto"));
+const node_fetch_1 = __importDefault(require("node-fetch"));
 const { getNativeWxLoginCode } = require("./native-protocol");
+const { createProxyAgents } = require("./proxy");
 function asRecord(value) {
     return value !== null && typeof value === "object" && !Array.isArray(value)
         ? value
@@ -24,12 +26,19 @@ const LOGIN_BUFFER_ACCESS_KEY = "wgrdg373hy26ww2";
 function cookieHeader(cookies) {
     return [...cookies].map(([name, value]) => `${name}=${value}`).join("; ");
 }
-function storeCookies(cookies, headers) {
+function setCookieValues(headers) {
+    if (typeof headers.getSetCookie === "function")
+        return headers.getSetCookie();
+    if (typeof headers.raw === "function") {
+        const raw = headers.raw()["set-cookie"];
+        if (Array.isArray(raw))
+            return raw;
+    }
     const headerValue = headers.get("set-cookie");
-    const extendedHeaders = headers;
-    const values = typeof extendedHeaders.getSetCookie === "function"
-        ? extendedHeaders.getSetCookie()
-        : headerValue ? [headerValue] : [];
+    return headerValue ? [headerValue] : [];
+}
+function storeCookies(cookies, headers) {
+    const values = setCookieValues(headers);
     for (const value of values) {
         const pair = value.split(";", 1)[0].trim();
         const separator = pair.indexOf("=");
@@ -37,7 +46,32 @@ function storeCookies(cookies, headers) {
             cookies.set(pair.slice(0, separator), pair.slice(separator + 1));
     }
 }
-async function request(url, cookies, init = {}, timeout = 35e3) {
+// 无代理时保持原有全局 fetch 逻辑；配置代理时用 node-fetch + 自建隧道 Agent，
+// 代理只在 yyb 登录链路生效，不影响农场网关连接。
+async function rawRequest(url, init, method, body, headers, signal, proxy) {
+    if (!proxy) {
+        const response = await fetch(url, { ...init, method, body, headers, redirect: "manual", signal });
+        return { status: response.status, headers: response.headers, bytes: Buffer.from(await response.arrayBuffer()) };
+    }
+    const agents = createProxyAgents(proxy);
+    // 全局 Headers（undici）与 node-fetch 的 Headers 不是同一个类，先拍平成普通对象。
+    const plainHeaders = {};
+    headers.forEach((value, name) => {
+        plainHeaders[name] = value;
+    });
+    try {
+        const response = await node_fetch_1.default(url, {
+            ...init, method, body, headers: plainHeaders, redirect: "manual", signal,
+            agent: (parsed) => (parsed.protocol === "https:" ? agents.httpsAgent : agents.httpAgent),
+        });
+        return { status: response.status, headers: response.headers, bytes: Buffer.from(await response.arrayBuffer()) };
+    }
+    finally {
+        agents.httpAgent.destroy();
+        agents.httpsAgent.destroy();
+    }
+}
+async function request(url, cookies, init = {}, timeout = 35e3, proxy = null) {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), timeout);
     try {
@@ -49,11 +83,11 @@ async function request(url, cookies, init = {}, timeout = 35e3) {
             headers.set("User-Agent", USER_AGENT);
             if (cookies.size)
                 headers.set("Cookie", cookieHeader(cookies));
-            const response = await fetch(currentUrl, { ...init, method, body, headers, redirect: "manual", signal: controller.signal });
+            const response = await rawRequest(currentUrl, init, method, body, headers, controller.signal, proxy);
             storeCookies(cookies, response.headers);
             const location = response.headers.get("location");
             if (response.status < 300 || response.status >= 400 || !location) {
-                return { status: response.status, body: Buffer.from(await response.arrayBuffer()), headers: response.headers };
+                return { status: response.status, body: response.bytes, headers: response.headers };
             }
             currentUrl = new URL(location, currentUrl).toString();
             if (response.status === 303 || (response.status === 301 || response.status === 302) && method === "POST") {
@@ -89,7 +123,7 @@ function attachRotatedCredentials(error, refreshToken, accessToken) {
     return credentialError;
 }
 class WxLoginService {
-    async createQrSession() {
+    async createQrSession(proxy = null) {
         const cookies = /* @__PURE__ */ new Map();
         const params = new URLSearchParams({
             appid: OAUTH_APP_ID,
@@ -100,22 +134,22 @@ class WxLoginService {
             fast_login: "1",
             self_redirect: "true"
         });
-        const page = await request(`${QR_CONNECT_URL}?${params}`, cookies);
+        const page = await request(`${QR_CONNECT_URL}?${params}`, cookies, {}, 35e3, proxy);
         if (page.status < 200 || page.status >= 300)
             throw new Error(`Unable to create WeChat QR session (HTTP ${page.status})`);
         const uuid = /\/connect\/qrcode\/([^"'>\s]+)/.exec(page.body.toString("utf8"))?.[1];
         if (!uuid)
             throw new Error("Unable to parse the WeChat QR session");
-        const qr = await request(`${QR_IMAGE_BASE}${encodeURIComponent(uuid)}`, cookies);
+        const qr = await request(`${QR_IMAGE_BASE}${encodeURIComponent(uuid)}`, cookies, {}, 35e3, proxy);
         if (qr.status < 200 || qr.status >= 300)
             throw new Error(`Unable to download WeChat QR image (HTTP ${qr.status})`);
-        return { session: { cookies, uuid }, qr: qr.body };
+        return { session: { cookies, uuid, proxy }, qr: qr.body };
     }
     async poll(session) {
         if (session.oauthCode)
             return "authorized";
         const params = new URLSearchParams({ uuid: String(session.uuid || ""), _: String(Date.now()) });
-        const response = await request(`${QR_POLL_URL}?${params}`, session.cookies, {}, 35e3);
+        const response = await request(`${QR_POLL_URL}?${params}`, session.cookies, {}, 35e3, session.proxy);
         if (response.status < 200 || response.status >= 300)
             throw new Error(`WeChat QR polling failed (HTTP ${response.status})`);
         const body = response.body.toString("utf8");
@@ -141,7 +175,7 @@ class WxLoginService {
         if (!session.oauthCode)
             throw new Error("Waiting for scan authorization");
         const params = new URLSearchParams({ login_type: "WX", code: session.oauthCode, state: "web" });
-        const callback = await request(`${CALLBACK_URL}?${params}`, session.cookies);
+        const callback = await request(`${CALLBACK_URL}?${params}`, session.cookies, {}, 35e3, session.proxy);
         if (callback.status < 200 || callback.status >= 400)
             throw new Error(`WeChat authorization callback failed (HTTP ${callback.status})`);
         const openid = requiredCookie(session.cookies, "openid");
@@ -156,7 +190,7 @@ class WxLoginService {
             method: "POST",
             body: payload,
             headers: { "Content-Type": "application/json", "Ual-Access-Businessid": "pc_yyb_auth", "Ual-Access-Timestamp": timestamp, "Ual-Access-Nonce": nonce, "Ual-Access-Signature": signature }
-        });
+        }, 35e3, session.proxy);
         if (response.status < 200 || response.status >= 300)
             throw new Error(`Unable to obtain WeChat login buffer (HTTP ${response.status})`);
         const data = asRecord(JSON.parse(response.body.toString("utf8")));
@@ -189,7 +223,7 @@ class WxLoginService {
                 "Ual-Access-Signature": signature,
                 "Ual-Access-Timestamp": timestamp
             }
-        });
+        }, 35e3, session.proxy);
         if (response.status < 200 || response.status >= 300)
             throw new Error(`Unable to fetch WeChat user info (HTTP ${response.status})`);
         return asRecord(JSON.parse(response.body.toString("utf8")));
@@ -197,7 +231,7 @@ class WxLoginService {
     async issueCode(session, appId) {
         if (!session.loginBuffer)
             throw new Error("WeChat login session has not been confirmed");
-        return getNativeWxLoginCode(session.loginBuffer, appId);
+        return getNativeWxLoginCode(session.loginBuffer, appId, { proxy: session.proxy || null, cacheKey: session.cacheKey || null });
     }
     async refreshLoginBuffer(session) {
         if (!session || !session.openid || !session.refreshtoken)
@@ -212,7 +246,7 @@ class WxLoginService {
             method: "POST",
             body: payload,
             headers: { "Content-Type": "application/json", "Ual-Access-Businessid": "pc_yyb_auth", "Ual-Access-Timestamp": timestamp, "Ual-Access-Nonce": nonce, "Ual-Access-Signature": signature }
-        });
+        }, 35e3, session.proxy);
         if (response.status < 200 || response.status >= 300)
             throw new Error(`Unable to refresh WeChat token (HTTP ${response.status})`);
         const data = asRecord(JSON.parse(response.body.toString("utf8")));
@@ -237,7 +271,7 @@ class WxLoginService {
                 method: "POST",
                 body: lbPayload,
                 headers: { "Content-Type": "application/json", "Ual-Access-Businessid": "pc_yyb_auth", "Ual-Access-Timestamp": ts2, "Ual-Access-Nonce": nonce2, "Ual-Access-Signature": sig2, "Cookie": `openid=${session.openid}; accesstoken=${accessToken}; refreshtoken=${refreshToken}` }
-            });
+            }, 35e3, session.proxy);
             if (lbResp.status < 200 || lbResp.status >= 300)
                 throw new Error(`Unable to obtain WeChat login buffer (HTTP ${lbResp.status})`);
             const lbData = asRecord(JSON.parse(lbResp.body.toString("utf8")));

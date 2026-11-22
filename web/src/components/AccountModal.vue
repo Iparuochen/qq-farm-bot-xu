@@ -5,6 +5,7 @@ import { useModalFocus } from '@/composables/useModalFocus'
 import api from '@/api'
 import BaseButton from '@/components/ui/BaseButton.vue'
 import BaseInput from '@/components/ui/BaseInput.vue'
+import BaseSelect from '@/components/ui/BaseSelect.vue'
 import BaseTextarea from '@/components/ui/BaseTextarea.vue'
 import { useWxLoginStore } from '@/stores/wx-login'
 import { parseManualLoginInput } from '@/utils/gateway-url'
@@ -49,6 +50,69 @@ const loading = ref(false)
 const wxChecking = ref(false)
 const errorMessage = ref('')
 const wxAccountName = ref('')
+const wxProxyMode = ref<'direct' | 'pinzan' | 'static'>('direct')
+const wxProxyUrl = ref('')
+const wxProxyOptions: { label: string, value: 'direct' | 'pinzan' | 'static' }[] = [
+  { label: '直连', value: 'direct' },
+  { label: '品赞动态', value: 'pinzan' },
+  { label: '自定义静态', value: 'static' },
+]
+const pinzanNo = ref('')
+const pinzanSecret = ref('')
+const pinzanMinute = ref(5)
+const pinzanConfigured = ref(false)
+const pinzanSecretMasked = ref('')
+const pinzanRegions = ref<{ label: string, code: string, cities: { label: string, code: string }[] }[]>([])
+const pinzanProvince = ref('all')
+const pinzanCity = ref('')
+const pinzanLegacyArea = ref('')
+
+const pinzanProvinceOptions = computed(() => {
+  const options = pinzanRegions.value.map(province => ({ label: province.label, value: province.code }))
+  if (pinzanLegacyArea.value)
+    options.unshift({ label: `已保存：${pinzanLegacyArea.value}`, value: pinzanLegacyArea.value })
+  return [{ label: '全国', value: 'all' }, ...options]
+})
+
+const pinzanCityOptions = computed(() => {
+  const province = pinzanRegions.value.find(item => item.code === pinzanProvince.value)
+  if (!province)
+    return []
+  return [
+    { label: `${province.label}（全省）`, value: province.code },
+    ...province.cities.map(city => ({ label: city.label, value: city.code })),
+  ]
+})
+
+function effectivePinzanArea(): string {
+  if (pinzanCity.value)
+    return pinzanCity.value
+  if (pinzanProvince.value && pinzanProvince.value !== 'all')
+    return pinzanProvince.value
+  return 'all'
+}
+
+function applyPinzanArea(area: string) {
+  pinzanLegacyArea.value = ''
+  if (!area || area === 'all') {
+    pinzanProvince.value = 'all'
+    pinzanCity.value = ''
+    return
+  }
+  const province = pinzanRegions.value.find(item => item.code === area || item.cities.some(city => city.code === area))
+  if (!province) {
+    pinzanLegacyArea.value = area
+    pinzanProvince.value = area
+    pinzanCity.value = ''
+    return
+  }
+  pinzanProvince.value = province.code
+  pinzanCity.value = area
+}
+
+function onPinzanProvinceChange() {
+  pinzanCity.value = pinzanProvince.value === 'all' ? '' : pinzanProvince.value
+}
 const qqEnabled = ref(false)
 const qqAccountName = ref('')
 const qqTaskId = ref('')
@@ -388,12 +452,76 @@ function shouldRefreshWxQr() {
     && Date.now() - wxLoginStore.qrCreatedAt > QR_AUTO_REFRESH_MS
 }
 
+async function loadPinzanRegions() {
+  try {
+    const { data } = await api.get('/api/wx-login/pinzan/regions', { timeout: 15000 } as any)
+    pinzanRegions.value = data?.data?.provinces || []
+  }
+  catch {}
+}
+
+async function loadPinzanSettings() {
+  try {
+    const { data } = await api.get('/api/wx-login/pinzan', { timeout: 15000 } as any)
+    const info = data?.data || {}
+    pinzanNo.value = info.no || ''
+    pinzanMinute.value = Number(info.minute) || 5
+    pinzanConfigured.value = !!info.configured
+    pinzanSecretMasked.value = info.secretMasked || ''
+    applyPinzanArea(info.area || 'all')
+  }
+  catch {}
+}
+
+async function loadPinzanConfig() {
+  await loadPinzanRegions()
+  await loadPinzanSettings()
+}
+
+async function ensurePinzanSettings(): Promise<boolean> {
+  const no = pinzanNo.value.trim()
+  if (no) {
+    try {
+      const { data } = await api.post('/api/wx-login/pinzan', {
+        no,
+        secret: pinzanSecret.value.trim(),
+        area: effectivePinzanArea(),
+        minute: Number(pinzanMinute.value) || 5,
+      })
+      pinzanConfigured.value = !!data?.data?.configured
+      pinzanSecretMasked.value = data?.data?.secretMasked || ''
+      pinzanSecret.value = ''
+      return true
+    }
+    catch (e: any) {
+      wxLoginStore.errorMessage = e.response?.data?.error || e.message || '保存品赞配置失败'
+      return false
+    }
+  }
+  if (!pinzanConfigured.value) {
+    wxLoginStore.errorMessage = '请填写品赞套餐编号和密钥，或在服务端配置环境变量'
+    return false
+  }
+  return true
+}
+
 async function loadWxQRCode() {
   if (activeTab.value !== 'wx' || wxLoginStore.isLoading)
     return
+  if (wxProxyMode.value === 'static' && !wxProxyUrl.value.trim()) {
+    wxLoginStore.errorMessage = '请填写静态代理地址'
+    return
+  }
+  if (wxProxyMode.value === 'pinzan' && !(await ensurePinzanSettings()))
+    return
   stopWxCheck()
   wxLoginStore.resetState()
-  const success = await wxLoginStore.getQRCode()
+  const proxy = wxProxyMode.value === 'static'
+    ? { mode: 'static', url: wxProxyUrl.value.trim() }
+    : wxProxyMode.value === 'pinzan'
+      ? { mode: 'pinzan', area: effectivePinzanArea() }
+      : { mode: 'direct' }
+  const success = await wxLoginStore.getQRCode(proxy)
   if (success)
     startWxCheck()
 }
@@ -505,12 +633,17 @@ watch(() => props.show, (newVal) => {
     captureHelpMode.value = localStorage.getItem(CAPTURE_SUCCESS_STORAGE_KEY) === '1' ? 'daily' : 'first'
     void loadCaptureConfig()
     void loadQqCapability()
+    void loadPinzanConfig()
     if (props.editData) {
       activeTab.value = 'manual'
       form.name = props.editData.name || ''
       form.code = props.editData.code || ''
       form.platform = props.editData.platform || 'qq'
       wxAccountName.value = props.editData.name || ''
+      wxProxyMode.value = props.editData.wxProxyMode === 'pinzan'
+        ? 'pinzan'
+        : (props.editData.wxProxyMode === 'static' || props.editData.wxProxy) ? 'static' : 'direct'
+      wxProxyUrl.value = props.editData.wxProxy || ''
       qqAccountName.value = props.editData.name || ''
     }
     else {
@@ -519,6 +652,8 @@ watch(() => props.show, (newVal) => {
       form.code = ''
       form.platform = 'qq'
       wxAccountName.value = ''
+      wxProxyMode.value = 'direct'
+      wxProxyUrl.value = ''
       qqAccountName.value = ''
     }
   }
@@ -653,6 +788,69 @@ useModalFocus(() => props.show, modalSurface, close)
             label="账号备注（可选）"
             placeholder="留空则使用微信昵称"
           />
+
+          <div class="flex flex-col gap-1.5">
+            <label class="text-sm font-medium" :style="{ color: 'var(--theme-text)' }">登录代理</label>
+            <div class="grid grid-cols-3 gap-2">
+              <button
+                v-for="option in wxProxyOptions"
+                :key="option.value"
+                type="button"
+                class="h-9 rounded-lg px-3 text-sm transition-colors"
+                :style="wxProxyMode === option.value
+                  ? { backgroundColor: 'var(--theme-primary)', color: '#fff' }
+                  : { backgroundColor: 'color-mix(in srgb, var(--theme-bg) 90%, var(--theme-text))', color: 'var(--theme-text)' }"
+                @click="wxProxyMode = option.value"
+              >
+                {{ option.label }}
+              </button>
+            </div>
+            <BaseInput
+              v-if="wxProxyMode === 'static'"
+              v-model="wxProxyUrl"
+              label="静态代理地址"
+              placeholder="socks5://user:pass@host:port"
+            />
+            <template v-if="wxProxyMode === 'pinzan'">
+              <BaseInput
+                v-model="pinzanNo"
+                label="品赞套餐编号"
+                placeholder="品赞后台的套餐编号"
+              />
+              <BaseInput
+                v-model="pinzanSecret"
+                type="password"
+                label="品赞提取密钥"
+                :placeholder="pinzanConfigured ? `已配置 ${pinzanSecretMasked}，留空不修改` : '填写品赞提取密钥'"
+              />
+              <div class="grid grid-cols-2 gap-2">
+                <BaseSelect
+                  v-model="pinzanProvince"
+                  label="省份"
+                  :options="pinzanProvinceOptions"
+                  placeholder="全国"
+                  @change="onPinzanProvinceChange"
+                />
+                <BaseSelect
+                  v-model="pinzanCity"
+                  label="城市（可选）"
+                  :options="pinzanCityOptions"
+                  :disabled="pinzanProvince === 'all'"
+                  placeholder="全省"
+                />
+              </div>
+              <BaseInput
+                v-model="pinzanMinute"
+                type="number"
+                label="提取时长（分钟）"
+                :min="1"
+                :max="30"
+              />
+            </template>
+            <p class="text-xs opacity-60" :style="{ color: 'var(--theme-text)' }">
+              仅作用于微信扫码与 Code 获取，不影响农场网关；不选城市时按全省提取，品赞密钥保存在服务端。
+            </p>
+          </div>
 
           <div class="flex flex-col items-center justify-center py-4 space-y-4">
             <div

@@ -10,10 +10,12 @@ exports.getFarmCode = getFarmCode;
 exports.getQRCode = getQRCode;
 exports.keepWxCredentialAlive = keepWxCredentialAlive;
 exports.peekPendingWxInfo = peekPendingWxInfo;
+exports.proxyAccountFields = proxyAccountFields;
 exports.withAccountCredentialLock = withAccountCredentialLock;
 const node_crypto_1 = __importDefault(require("node:crypto"));
 const logger_1 = require("./logger");
 const service_1 = require("./wx-login/service");
+const { resolveProxyForAccount, resolveProxyConfig } = require('./wx-login/proxy');
 /**
  * 微信登录适配层（vxcode 风格接口）
  * 内部实现：纯 Node 进程内应用宝协议（wx-login service，MMTLS）
@@ -96,7 +98,37 @@ function buildPendingWxInfo(matched) {
         accesstoken: entry.accesstoken || '',
         avatar: entry.avatar || '',
         nickname: entry.nickname || '',
+        proxyConfig: entry.proxyConfig || null,
     };
+}
+// 扫码页选择的出口 → 落盘到账号字段，后续保活/取 code 沿用同一出口。
+function sanitizeProxyConfig(input) {
+    const source = input && typeof input === 'object' ? input : null;
+    if (!source)
+        return null;
+    const mode = String(source.mode || '').trim().toLowerCase();
+    if (mode === 'direct')
+        return { mode: 'direct' };
+    if (mode === 'static') {
+        const url = String(source.url || '').trim();
+        if (!url)
+            throw new Error('请填写静态代理地址');
+        return { mode: 'static', url };
+    }
+    if (mode === 'pinzan')
+        return { mode: 'pinzan', area: String(source.area || '').trim() || 'all' };
+    return null;
+}
+function proxyAccountFields(config) {
+    if (!config || !config.mode)
+        return {};
+    if (config.mode === 'direct')
+        return { wxProxyMode: 'direct', wxProxy: '', wxProxyArea: '' };
+    if (config.mode === 'static')
+        return { wxProxyMode: 'static', wxProxy: config.url, wxProxyArea: '' };
+    if (config.mode === 'pinzan')
+        return { wxProxyMode: 'pinzan', wxProxy: '', wxProxyArea: config.area || 'all' };
+    return {};
 }
 // 从应用宝用户信息响应中取字段（顶层优先，兜底 ext_info.list_s 嵌套）
 function pickUserInfoValue(info, keys) {
@@ -168,14 +200,19 @@ function humanizeWxCodeError(raw) {
  * 获取微信登录二维码
  * 返回: { Success, Data: { Uuid, QrBase64 } }
  */
-async function getQRCode(owner) {
+async function getQRCode(owner, proxyConfig) {
     if (!owner)
         return { Success: false, Message: '缺少登录用户信息' };
     cleanupExpiredSessions();
     try {
-        const { session, qr } = await wxLogin.createQrSession();
+        // 扫码页可显式选择直连/静态代理/品赞；未传则沿用全局配置。
+        const normalizedProxy = sanitizeProxyConfig(proxyConfig);
+        const proxy = normalizedProxy
+            ? await resolveProxyConfig(normalizedProxy)
+            : await resolveProxyForAccount({});
+        const { session, qr } = await wxLogin.createQrSession(proxy);
         const uuid = node_crypto_1.default.randomBytes(16).toString('hex');
-        wxSessions.set(uuid, { owner: String(owner || ''), session, createdAt: Date.now() });
+        wxSessions.set(uuid, { owner: String(owner || ''), session, createdAt: Date.now(), proxyConfig: normalizedProxy });
         return {
             Success: true,
             Data: {
@@ -306,20 +343,26 @@ async function issueFarmCode(openid, options = {}) {
             if (!accesstoken && account.accesstoken)
                 accesstoken = String(account.accesstoken);
         }
+        // 代理出口：扫码会话沿用创建二维码时的代理；后台刷新按账号级 → 全局 → 品赞顺序解析。
+        const proxy = sessionEntry && sessionEntry.session
+            ? (sessionEntry.session.proxy || null)
+            : await resolveProxyForAccount(account || {});
+        // 会话缓存按账号维度持久化，loginBuffer 轮换后仍可复用同一 MMTLS 会话。
+        const cacheKey = account ? `account:${account.id}` : `openid:${String(openid || '')}`;
         if (!loginBuffer) {
             return { Success: false, Message: '缺少登录凭证（loginBuffer），请重新扫码登录' };
         }
         // 3. 换 code；loginBuffer 失效（ManualAuth rejected）时用 refreshtoken 自动续期重试
         let code = '';
         try {
-            code = await wxLogin.issueCode({ loginBuffer }, TARGET_APP_ID);
+            code = await wxLogin.issueCode({ loginBuffer, proxy, cacheKey }, TARGET_APP_ID);
         }
         catch (issueError) {
             const msg = errorMessage(issueError);
             if (refreshtoken && msg.includes('ManualAuth rejected')) {
                 try {
                     // 传空 cookie jar（refresh 请求不依赖 OAuth 回调 cookie，Ual-Access 头鉴权）
-                    const refreshed = await wxLogin.refreshLoginBuffer({ openid: String(openid), refreshtoken, accesstoken, cookies: new Map() });
+                    const refreshed = await wxLogin.refreshLoginBuffer({ openid: String(openid), refreshtoken, accesstoken, cookies: new Map(), proxy });
                     loginBuffer = refreshed.loginBuffer;
                     refreshtoken = refreshed.refreshtoken;
                     accesstoken = refreshed.accesstoken || accesstoken;
@@ -329,7 +372,7 @@ async function issueFarmCode(openid, options = {}) {
                         sessionEntry.refreshtoken = refreshtoken;
                         sessionEntry.accesstoken = accesstoken;
                     }
-                    code = await wxLogin.issueCode({ loginBuffer }, TARGET_APP_ID);
+                    code = await wxLogin.issueCode({ loginBuffer, proxy, cacheKey }, TARGET_APP_ID);
                 }
                 catch (refreshError) {
                     const rotatedError = asRotatedCredentialError(refreshError);
@@ -443,11 +486,13 @@ async function keepWxCredentialAlive(acc) {
     return withAccountCredentialLock(account.wxid, account.id, async () => {
         const latestAccount = findAccountByWxid(account.wxid, account.id) || account;
         try {
+            const proxy = await resolveProxyForAccount(latestAccount);
             const refreshed = await wxLogin.refreshLoginBuffer({
                 openid: String(latestAccount.wxid),
                 refreshtoken: String(latestAccount.refreshtoken),
                 accesstoken: String(latestAccount.accesstoken || ''),
                 cookies: new Map(),
+                proxy,
             });
             if (typeof addOrUpdateAccount === 'function') {
                 addOrUpdateAccount({

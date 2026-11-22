@@ -39,6 +39,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getNativeWxLoginCode = getNativeWxLoginCode;
 const node_crypto_1 = __importDefault(require("node:crypto"));
 const net = __importStar(require("node:net"));
+const { createTunnelSocket } = require("./proxy");
 const U8 = Buffer.from;
 const REC = 61699;
 const HOST_APP = U8("wxd44977328b36e647");
@@ -303,25 +304,30 @@ function pskClientHello(ticket, timestamp) {
     ]);
     return hs(1, body);
 }
-async function socket(host, port, timeout = 3e4) {
-    const s = net.createConnection({ host, port });
+async function socket(host, port, timeout = 3e4, proxy = null) {
+    // 有代理时先建立 SOCKS5 / HTTP CONNECT 隧道，再在隧道上跑 MMTLS；无代理保持原来的直连。
+    const s = proxy
+        ? await createTunnelSocket({ host, port, proxy, timeout })
+        : net.createConnection({ host, port });
     const chunks = [];
     let ended = false;
     s.on("data", (chunk) => chunks.push(Buffer.from(chunk)));
     s.on("end", () => {
         ended = true;
     });
-    await new Promise((resolve, reject) => {
-        const timer = setTimeout(() => reject(new Error("connection timeout")), timeout);
-        s.once("connect", () => {
-            clearTimeout(timer);
-            resolve();
+    if (!proxy) {
+        await new Promise((resolve, reject) => {
+            const timer = setTimeout(() => reject(new Error("connection timeout")), timeout);
+            s.once("connect", () => {
+                clearTimeout(timer);
+                resolve();
+            });
+            s.once("error", (error) => {
+                clearTimeout(timer);
+                reject(error);
+            });
         });
-        s.once("error", (error) => {
-            clearTimeout(timer);
-            reject(error);
-        });
-    });
+    }
     let offset = 0;
     async function take() {
         const until = Date.now() + timeout;
@@ -459,7 +465,19 @@ function asRecord(value) {
 function errorMessage(error) {
     return error instanceof Error ? error.message : String(error);
 }
+const dnsCache = /* @__PURE__ */ new Map();
 async function targets(kind) {
+    const ttlMinutes = Math.max(0, Number(process.env.WX_LOGIN_DNS_TTL_MIN ?? 30));
+    const ttlMs = ttlMinutes * 60000;
+    const cached = dnsCache.get(kind);
+    if (ttlMs > 0 && cached && Date.now() - cached.at < ttlMs)
+        return cached.targets;
+    const result = await fetchTargets(kind);
+    if (ttlMs > 0)
+        dnsCache.set(kind, { targets: result, at: Date.now() });
+    return result;
+}
+async function fetchTargets(kind) {
     const r = await fetch("http://aedns.weixin.qq.com/cgi-bin/default/getdns?clientversion=0&devicetype=Windows&uin=0&format=json", { headers: { "User-Agent": "MicroMessenger Client" } });
     const data = await r.json();
     const dns = asRecord(asRecord(data).dns);
@@ -476,13 +494,13 @@ async function targets(kind) {
     const out = ips.flatMap((ip) => orderedPorts.map((port) => ({ ip, port })));
     return out.length ? out : [{ ip: kind === "long" ? "180.153.202.85" : "120.241.131.173", port: kind === "long" ? 8080 : 80 }];
 }
-async function getNativeWxLoginCode(loginBuffer, appId) {
+async function establishSession(loginBuffer, proxy) {
     const { req, device, host } = manualRequest(loginBuffer, node_crypto_1.default.randomBytes(32));
     let session = null;
     const failures = [];
     for (const t of (await targets("long")).slice(0, 12)) {
         try {
-            const c = await socket(t.ip, t.port, 5e3);
+            const c = await socket(t.ip, t.port, 5e3, proxy);
             const a = ecdh();
             const b = ecdh();
             const hello = ch(a.pub, b.pub);
@@ -549,7 +567,9 @@ async function getNativeWxLoginCode(loginBuffer, appId) {
     }
     if (!session)
         throw new Error(`Unable to establish WeChat protocol session: ${failures.join("; ") || "no HTTPDNS target succeeded"}`);
-    const activeSession = session;
+    return session;
+}
+async function issueCodeWithSession(activeSession, appId, proxy) {
     const env = envelope(activeSession, jsPlain(activeSession.uin, appId, activeSession.hostAppId));
     const early = async (target) => {
         const ts = Math.floor(Date.now() / 1e3);
@@ -571,7 +591,7 @@ User-Agent: MicroMessenger Client\r
 X-Online-Host: shortcloud.weixin.com\r
 \r
 `;
-        const c = await socket(target.ip, target.port, 8e3);
+        const c = await socket(target.ip, target.port, 8e3, proxy);
         const chunks = [];
         c.s.on("data", (chunk) => chunks.push(Buffer.from(chunk)));
         await c.send(Buffer.concat([U8(requestHead), body]));
@@ -633,5 +653,77 @@ X-Online-Host: shortcloud.weixin.com\r
     if (last instanceof Error)
         throw last;
     throw new Error(last ? String(last) : "Unable to request wx.login code");
+}
+// MMTLS 会话复用：同一 loginBuffer + 同一代理出口下，30 分钟内复用握手结果，
+// 减少长连接握手次数。取 code 失败时立即丢弃缓存并回退完整握手，不改变正确性。
+const sessionCache = /* @__PURE__ */ new Map();
+function sessionCacheTtlMs() {
+    return Math.max(0, Number(process.env.WX_LOGIN_SESSION_TTL_MIN ?? 30)) * 60000;
+}
+function sessionCacheKey(loginBuffer, proxy, explicitKey) {
+    const scope = explicitKey
+        ? `id:${explicitKey}`
+        : `lb:${node_crypto_1.default.createHash("sha256").update(String(loginBuffer || "")).digest("hex")}`;
+    return `${scope}|${proxy ? proxy.url : "direct"}`;
+}
+let persistedStore;
+function getSessionStore() {
+    if (persistedStore !== undefined)
+        return persistedStore;
+    if (String(process.env.WX_LOGIN_SESSION_PERSIST || "1").trim() === "0") {
+        persistedStore = null;
+        return persistedStore;
+    }
+    try {
+        const { getDataFile, ensureDataDir } = require("../../config/runtime-paths");
+        const { SessionStore } = require("./session-store");
+        ensureDataDir();
+        persistedStore = new SessionStore({
+            file: getDataFile("wx-session-cache.bin"),
+            keyFile: getDataFile("wx-session-cache.key"),
+            ttlMs: sessionCacheTtlMs(),
+            maxEntries: 64,
+        });
+    }
+    catch (error) {
+        console.warn(`[wx-session-cache] 持久化不可用，退回内存缓存: ${error instanceof Error ? error.message : String(error)}`);
+        persistedStore = null;
+    }
+    return persistedStore;
+}
+function pruneMemoryCache(keepKey) {
+    if (sessionCache.size <= 64)
+        return;
+    for (const oldest of sessionCache.keys()) {
+        if (oldest !== keepKey) {
+            sessionCache.delete(oldest);
+            break;
+        }
+    }
+}
+async function getNativeWxLoginCode(loginBuffer, appId, options = {}) {
+    const proxy = options.proxy || null;
+    const ttlMs = sessionCacheTtlMs();
+    const key = sessionCacheKey(loginBuffer, proxy, options.cacheKey);
+    const store = getSessionStore();
+    const cached = sessionCache.get(key) || (store ? store.get(key) : null);
+    if (ttlMs > 0 && cached && Date.now() - cached.at < ttlMs) {
+        try {
+            return await issueCodeWithSession(cached.session, appId, proxy);
+        }
+        catch {
+            sessionCache.delete(key);
+            if (store)
+                store.delete(key);
+        }
+    }
+    const session = await establishSession(loginBuffer, proxy);
+    if (ttlMs > 0) {
+        sessionCache.set(key, { session, at: Date.now() });
+        pruneMemoryCache(key);
+        if (store)
+            store.set(key, session);
+    }
+    return issueCodeWithSession(session, appId, proxy);
 }
 

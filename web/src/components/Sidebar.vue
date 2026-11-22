@@ -84,7 +84,7 @@ onBeforeUnmount(() => {
 useIntervalFn(checkConnection, 30000)
 useIntervalFn(() => {
   refreshStatusFallback()
-  accountStore.fetchAccounts()
+  accountStore.fetchAccounts({ silent: true })
 }, 10000)
 
 watch(() => currentAccount.value?.id || currentAccount.value?.uin || '', () => {

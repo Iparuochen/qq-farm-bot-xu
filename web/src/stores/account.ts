@@ -113,8 +113,12 @@ export const useAccountStore = defineStore('account', () => {
       currentAccountId.value = String(first.id)
   })
 
-  async function fetchAccounts() {
-    loading.value = true
+  async function fetchAccounts(options: { silent?: boolean } = {}) {
+    // silent：后台轮询用。不切换 loading，避免依赖它的卡片（如定时刷新重登设置）
+    // 每次轮询都在「加载中」与内容之间闪烁。
+    const silent = options.silent === true
+    if (!silent)
+      loading.value = true
     try {
       // api interceptor adds x-admin-token
       const res = await api.get('/api/accounts')
@@ -130,7 +134,8 @@ export const useAccountStore = defineStore('account', () => {
       // Keep the last usable account selection to avoid blanking the app on transient failures.
     }
     finally {
-      loading.value = false
+      if (!silent)
+        loading.value = false
     }
   }
 
