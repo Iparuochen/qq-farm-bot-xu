@@ -132,6 +132,7 @@ const summary = computed(() => ({
   skipped: results.value.filter(r => r.skipped).length,
   existing: results.value.filter(r => r.existing).length,
   poolSkipped: results.value.filter(r => r.poolSkipped).length,
+  poolRemoved: results.value.filter(r => r.poolRemoved).length,
   failed: results.value.filter(r => !r.ok && !r.skipped).length,
 }))
 
@@ -449,6 +450,7 @@ async function start() {
                 skipped: row.skipped === true,
                 existing: row.existing === true,
                 poolSkipped: row.poolSkipped === true,
+                poolRemoved: row.poolRemoved === true,
                 limitReached: row.limitReached === true,
                 switchBlocked: row.switchBlocked === true,
                 level: row.level == null ? null : Number(row.level),
@@ -531,6 +533,8 @@ async function start() {
     }
     else
       toast.success(`处理完成：成功 ${summary.value.success}，失败 ${summary.value.failed}`)
+    if (summary.value.poolRemoved > 0)
+      toast.info(`已从号池剔除 ${summary.value.poolRemoved} 条失效死链`)
     if (!limitReached && !switchBlocked)
       fetchPool()
   }

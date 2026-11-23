@@ -8,6 +8,7 @@ export interface InviteResultRow {
   skipped?: boolean
   existing?: boolean
   poolSkipped?: boolean
+  poolRemoved?: boolean
   limitReached?: boolean
   switchBlocked?: boolean
   level?: number | null

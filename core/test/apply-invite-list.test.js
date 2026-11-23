@@ -90,6 +90,13 @@ function createFakePool(seed = {}) {
       }
       return count;
     },
+    removeEntry(uid) {
+      const key = String(uid);
+      if (!items.has(key)) return false;
+      items.delete(key);
+      for (const map of accounts.values()) map.delete(key);
+      return true;
+    },
     peeks: [],
     peekStatus(accountId, uid) {
       this.peeks.push(String(uid));
@@ -422,6 +429,43 @@ test('applyInviteList 等级查询失败且 allowUnknownLevel 时也无法申请
   assert.equal(added.failed, 1);
   assert.match(added.results[0].error, /进入对方农场失败/);
   assert.equal(lenient.sent.filter(item => item.method === 'ApplyFriend').length, 0);
+});
+
+test('applyInviteList Enter 失败（死链）时从号池剔除该条目', async (t) => {
+  const ctx = loadInviteService({ visitFailFor: new Set(['301']) });
+  t.after(() => ctx.restore());
+
+  // 号池里已有这条链接：模拟之前导入过、现在分享卡已过期
+  ctx.pool.upsertInviteItems([{ uid: '301', openid: 'open-a', shareKey: 'expired' }]);
+  assert.ok(ctx.pool.items.has('301'));
+
+  const result = await ctx.applyInviteList([
+    { uid: '301', openid: 'open-a', shareKey: 'expired' },
+  ], { delayMs: 0 });
+
+  assert.equal(result.failed, 1);
+  assert.equal(result.results[0].poolRemoved, true);
+  assert.match(result.results[0].error, /已从号池剔除/);
+  assert.equal(ctx.pool.items.has('301'), false);
+  assert.equal(ctx.sent.filter(item => item.method === 'ApplyFriend').length, 0);
+});
+
+test('applyInviteList Enter 网络抖动时保留号池条目不误删', async (t) => {
+  const ctx = loadInviteService({
+    sendImpl: (_service, method) => (method === 'Enter' ? new Error('请求超时') : null),
+  });
+  t.after(() => ctx.restore());
+
+  ctx.pool.upsertInviteItems([{ uid: '311', openid: 'open-a', shareKey: 'k1' }]);
+
+  const result = await ctx.applyInviteList([
+    { uid: '311', openid: 'open-a', shareKey: 'k1' },
+  ], { delayMs: 0 });
+
+  assert.equal(result.failed, 1);
+  assert.equal(result.results[0].poolRemoved, undefined);
+  assert.doesNotMatch(result.results[0].error, /已从号池剔除/);
+  assert.equal(ctx.pool.items.has('311'), true);
 });
 
 test('applyInviteList 等级为 0（服务端没给）按未知处理', async (t) => {

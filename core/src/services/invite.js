@@ -44,6 +44,23 @@ function isVisitSwitchError(message) {
 
 const VISIT_SWITCH_HINT = '未开启「好友功能 · 点击分享链接可拜访好友」：请到游戏 设置 → 好友功能 里打开该开关后再试';
 
+// 网络抖动 / 限流：这类 Enter 失败是临时的，不能当成死链清除号池
+const TRANSIENT_NETWORK_PATTERN = /连接未打开|请求超时|请求已中断|连接关闭|发送失败|请求队列已满|ECONNRESET|ETIMEDOUT|EPIPE|socket/i;
+const RATE_LIMIT_PATTERN = /操作太频繁|请求过于频繁|访问过于频繁|频率过高|稍后再试|too\s*frequent|rate.?limit/i;
+
+/**
+ * 判断 Enter 阶段的失败是否代表「链接本身已失效/过期」（死链）。
+ * 排除网络抖动、限流、账号级开关（1002007）和当日上限（1005027），
+ * 其余进农场失败都按死链处理：分享卡过期 / 对方账号失效等，留着只会每天白跑一次 Enter。
+ */
+function isDeadLinkError(message) {
+  const msg = String(message || '');
+  if (!msg) return false;
+  if (isDailyLimitError(msg) || isVisitSwitchError(msg)) return false;
+  if (TRANSIENT_NETWORK_PATTERN.test(msg) || RATE_LIMIT_PATTERN.test(msg)) return false;
+  return true;
+}
+
 // 开关状态缓存：前端按 10 条一批提交，不缓存的话每批都要多读一次设置
 const VISIT_SWITCH_TTL_MS = 5 * 60 * 1000;
 let visitSwitchCache = { value: null, ts: 0 };
@@ -330,9 +347,11 @@ async function sendFriendRequestToSharer(item, opts = {}) {
         error: VISIT_SWITCH_HINT,
       };
     }
+    // Enter 阶段失败且不是网络抖动/限流 → 死链（分享卡过期等），交由上层从号池剔除
+    const deadLink = isDeadLinkError(err.message);
     levelCache.set(String(uid), { level: 0, name: '', gid: String(uid), ts: Date.now() });
     return {
-      uid, openid, ok: false, skipped: minLevel > 0 && !allowUnknownLevel, level: null,
+      uid, openid, ok: false, skipped: minLevel > 0 && !allowUnknownLevel, deadLink, level: null,
       error: minLevel > 0 && !allowUnknownLevel ? `等级查询失败：${err.message}` : `进入对方农场失败：${err.message}`,
     };
   }
@@ -570,6 +589,20 @@ async function applyInviteList(items, options = {}) {
           }
         }
 
+        // 死链（分享卡过期/失效等）：从号池剔除，避免每天重复白跑 Enter。
+        // 只删 Enter 失败的条目；网络抖动 / 限流 / 账号级错误已在 isDeadLinkError 里排除。
+        if (!row.ok && row.deadLink) {
+          try {
+            if (friendPool.removeEntry(uid)) {
+              row.poolRemoved = true;
+              row.error = `${row.error}（死链，已从号池剔除）`;
+              logWarn('邀请', `检测到死链，已从号池剔除 uid=${uid}: ${row.error}`);
+            }
+          } catch (_) {
+            // 号池删除失败不影响结果
+          }
+        }
+
         if (row.ok) {
           try {
             friendPool.markApplied(accountId, uid, {
@@ -759,6 +792,14 @@ async function processInviteCodes() {
     } else {
       failed++;
       logWarn('邀请', `[${i + 1}/${codes.length}] 向 uid=${code.uid} 发送申请失败: ${row.error}`);
+      // 死链（分享卡过期/失效）从号池剔除，避免每天重复白跑 Enter
+      if (row.deadLink) {
+        try {
+          if (friendPool.removeEntry(uid)) logWarn('邀请', `检测到死链，已从号池剔除 uid=${uid}: ${row.error}`);
+        } catch (_) {
+          // ignore
+        }
+      }
     }
 
     // 最后一个不需要等待
