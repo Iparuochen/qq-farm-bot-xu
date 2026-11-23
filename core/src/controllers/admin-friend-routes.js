@@ -451,6 +451,46 @@ function registerAdminFriendRoutes({
     }
   });
 
+  // 仅把链接并入号池，不发送好友申请。
+  // 前端「粘贴 → 开始添加」会先把整批链接落到号池，再分批发申请：
+  // 这样任何中断（中止 / 断网 / 撞上限 / 关页面）都不会让后面的链接丢失，
+  // 下次点「开始添加」直接从号池里继续即可。
+  app.post("/api/friends/pool/import", (req, res) => {
+    const accountId = getAccountOrRespond(req, res, access);
+    if (!accountId) return;
+
+    const body = req.body || {};
+    const rawItems = Array.isArray(body.items) ? body.items : [];
+    const items = rawItems
+      .map((item) => ({
+        uid: String((item && item.uid) == null ? "" : item.uid).trim(),
+        openid: String((item && (item.openid || item.openId)) || "").trim(),
+        shareSource: item && item.shareSource != null
+          ? item.shareSource
+          : (item && item.share_source != null ? item.share_source : ""),
+        docId: item && item.docId != null
+          ? item.docId
+          : (item && item.doc_id != null ? item.doc_id : ""),
+        shareKey: String((item && (item.shareKey || item.share_key)) || "").trim(),
+      }))
+      .filter((item) => item.uid && item.openid);
+
+    if (items.length === 0) {
+      return res.status(400).json({ ok: false, error: "没有可导入的链接：每条都需要 uid 和 openid" });
+    }
+    if (items.length > 1000) {
+      return res.status(400).json({ ok: false, error: "单次最多导入 1000 条，请分批提交" });
+    }
+
+    try {
+      const friendPool = require("../services/friend-pool");
+      const merged = friendPool.upsertInviteItems(items);
+      res.json({ ok: true, data: merged, imported: items.length });
+    } catch (error) {
+      sendProviderError(res, error);
+    }
+  });
+
   // 恢复某条为可申请（人工解除误判）
   app.post("/api/friends/pool/reset", (req, res) => {
     const accountId = getAccountOrRespond(req, res, access);

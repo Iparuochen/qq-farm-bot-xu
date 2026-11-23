@@ -45,6 +45,8 @@ interface PoolEntry {
 
 // 单次请求条数：worker 内每条间隔默认 2s，10 条约 20s，避免 HTTP 超时
 const CHUNK_SIZE = 10
+// 号池导入单次条数：主进程 express.json 限 256kb，200 条约 30kb，远低于上限
+const POOL_IMPORT_CHUNK_SIZE = 200
 
 const accountStore = useAccountStore()
 const toast = useToastStore()
@@ -367,15 +369,41 @@ async function start() {
     return
   }
 
-  // 今天已撞过上限：后端连请求都不会发，这里直接拦住，省得白等一轮
-  if (poolDailyLimit.value.blocked) {
-    toast.error(`本账号今日好友申请已达上限（${poolDailyLimit.value.dateKey}），明天再试；链接已保留在号池`)
-    return
-  }
-
   running.value = true
   cancelled.value = false
   resetResults()
+
+  // 先把粘贴的链接整批并入号池（只落库，不发申请）。
+  // 这样之后任何中断（中止 / 断网 / 撞上限 / 关页面）都不会让后面的链接丢失，
+  // 下次点「开始添加」可直接从号池继续。号池全账号共享，用首个待执行账号鉴权即可。
+  if (hasPasted) {
+    const importAccountId = String(accounts[0]?.id ?? '')
+    let failedChunks = 0
+    for (let offset = 0; offset < items.length; offset += POOL_IMPORT_CHUNK_SIZE) {
+      try {
+        await api.post('/api/friends/pool/import', {
+          items: items.slice(offset, offset + POOL_IMPORT_CHUNK_SIZE),
+        }, {
+          headers: { 'x-account-id': importAccountId },
+          skipErrorToast: true,
+        } as any)
+      }
+      catch {
+        failedChunks++
+      }
+    }
+    if (failedChunks > 0)
+      toast.error(`${failedChunks} 批链接并入号池失败，本次仍会继续尝试发送申请`)
+  }
+
+  // 今天已撞过上限：链接已并入号池，直接拦住不再发请求，明天从号池继续即可
+  if (poolDailyLimit.value.blocked) {
+    running.value = false
+    toast.error(`本账号今日好友申请已达上限（${poolDailyLimit.value.dateKey}），明天再试；链接已保存到号池`)
+    fetchPool()
+    return
+  }
+
   progress.value = { done: 0, total: items.length * accounts.length }
   if (!hasPasted)
     toast.info(`未粘贴链接，改用号池里 ${items.length} 条「未申请」的条目`)
