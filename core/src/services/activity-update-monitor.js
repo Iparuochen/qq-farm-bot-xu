@@ -14,6 +14,8 @@ let intervalMs = DEFAULT_INTERVAL_MS;
 let nextScanAt = 0;
 let onlineScanner = null;
 let localScanEnabled = false;
+// 自动扫描默认开启；宿主传 autoScanEnabled=false 时只保留手动触发。
+let autoScanEnabled = true;
 
 function emptyLocalReport() {
   return {
@@ -152,8 +154,10 @@ function startActivityUpdateMonitor(options = {}) {
   onlineScanner = typeof options.onlineScanner === 'function' ? options.onlineScanner : null;
   localScanEnabled = options.localScanEnabled === true
     || String(process.env.ACTIVITY_LOCAL_SCAN_ENABLED || '').toLowerCase() === 'true';
+  autoScanEnabled = options.autoScanEnabled !== false;
   intervalMs = Math.max(MIN_INTERVAL_MS, Number(options.intervalMs) || Number(process.env.ACTIVITY_UPDATE_INTERVAL_MS) || DEFAULT_INTERVAL_MS);
   report = report || readSavedReport();
+  if (!autoScanEnabled) return;
   scheduleNextScan();
   setImmediate(() => runActivityUpdateScan().catch(error => {
     console.warn(`[活动更新] 初始分析失败: ${error.message}`);
@@ -163,6 +167,7 @@ function startActivityUpdateMonitor(options = {}) {
 function getActivityUpdateState() {
   return {
     running,
+    autoScanEnabled,
     intervalMs,
     nextScanAt,
     report: report || readSavedReport(),

@@ -142,6 +142,9 @@ function registerAdminActivityUpdateRoutes({ app, provider, requireAdminToken })
     knownActivityIds,
     onlineScanner: scanOnlineActivities,
     localScanEnabled: String(process.env.ACTIVITY_LOCAL_SCAN_ENABLED || '').toLowerCase() === 'true',
+    // 自动扫描会固定复用 accounts[0] 的连接批量发 GetGroup，与该账号的场景自动化抢场景，
+    // 已确认会导致账号掉线；这里只保留手动触发（POST /api/activity/update/scan）。
+    autoScanEnabled: false,
   });
 
   app.get('/api/activity/source-asset/:bundle/:filename', (req, res) => {
